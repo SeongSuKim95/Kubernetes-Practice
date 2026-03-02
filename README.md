@@ -12,7 +12,7 @@
 | 11–12 | 네트워크 정책 | Network-Policy → CNI 설치 |
 | 13–17 | 고급/운영 | Gateway API → ArgoCD → CRDs → Cri-Dockerd → Etcd 트러블슈팅 |
 
-각 개념은 별도 폴더에 세 개의 bash 파일로 구성됩니다:
+실습 파일은 각 개념의 폴더에 세 개의 bash 파일로 구성됩니다:
 
 - `LabSetUp.bash` — Killercoda(또는 다른 Kubernetes 클러스터)에 복사/붙여넣기하여 환경을 준비합니다.
 - `Questions.bash` — 시나리오 설명입니다.
