@@ -10,8 +10,7 @@
 6. Docker Engine과 Daemon
 7. Docker는 어떻게 프로세스 격리를 구현하는가?
 8. Image와 Container의 차이
-9. 전체 흐름 정리
-
+9. 결론
 
 # 1. 왜 가상화가 필요했을까?
 
@@ -230,8 +229,7 @@ docker run my-app
 - Image는 설계도에 해당하며, Container는 그 설계도를 기반으로 실제로 실행된 프로세스라고 이해하면 됩니다.
 
 
-# 9. 최종 개념
-
+## 9. 결론
 - VM은 OS 단위 가상화이다.
 - Docker는 프로세스 단위 격리이다.
 - Docker는 Linux Kernel 위에서 동작한다.

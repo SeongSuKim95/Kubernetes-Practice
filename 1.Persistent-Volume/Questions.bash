@@ -3,7 +3,7 @@
 # was configured with persistent storage. Your responsibility is to re-establish the deployment
 # while ensuring data is preserved by reusing the available PersistentVolume
 
-#Task
+# Task
 # A PersistentVolume already exists and is retained for reuse. Only one PV exists
 # Create a Persistent Volume Claim (PVC) named mariadb in the mariadb namespace with the spec
 # Access Mode = ReadWriteOnce
