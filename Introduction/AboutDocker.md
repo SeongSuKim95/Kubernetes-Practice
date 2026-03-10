@@ -229,9 +229,50 @@ docker run my-app
 - Image는 설계도에 해당하며, Container는 그 설계도를 기반으로 실제로 실행된 프로세스라고 이해하면 됩니다.
 
 
-## 9. 결론
+# 9. Docker Compose
+
+<p align="center">
+  <img src="../images/Introduction/9_Docker_Compose.png" alt="Docker Compose" width="80%" />
+</p>
+컨테이너 하나만 실행하는 것은 `docker run` 명령으로 쉽게 가능합니다.  
+하지만 실제 서비스는 대부분 **여러 컨테이너가 함께 동작하는 구조**입니다.
+
+예를 들어 하나의 웹 서비스는 다음과 같은 구성으로 이루어질 수 있습니다.
+
+- Web Server
+- Application Server
+- Database
+- Cache
+- Message Queue
+
+이 경우 각 컨테이너를 일일이 `docker run`으로 실행하고 네트워크를 연결하는 것은 매우 번거로운 작업입니다.
+
+이 문제를 해결하기 위해 등장한 도구가 **Docker Compose**입니다.
+
+Docker Compose는 **여러 컨테이너로 이루어진 애플리케이션을 하나의 YAML 파일로 정의하고 실행할 수 있도록 해주는 도구**입니다.
+
+```yaml
+version: "3"
+
+services:
+  web:
+    image: nginx
+  app:
+    image: node:18
+  db:
+    image: mysql
+```
+
+```bash
+docker compose up
+```
+
+# 10. 정리
+
 - VM은 OS 단위 가상화이다.
-- Docker는 프로세스 단위 격리이다.
-- Docker는 Linux Kernel 위에서 동작한다.
-- Docker Daemon이 Namespace와 Cgroups를 설정한다.
-- Image는 설계도이고, Container는 실행 중인 인스턴스이다.
+- Container는 프로세스 단위 격리이다.
+- Docker는 Linux Kernel 기능을 활용하여 컨테이너를 실행한다.
+- Docker Engine은 Namespace와 Cgroups를 이용해 격리 환경을 구성한다.
+- Image는 실행 환경의 설계도이다.
+- Container는 Image를 기반으로 실행되는 프로세스 인스턴스이다.
+- Docker Compose는 여러 컨테이너 서비스를 하나의 애플리케이션으로 실행할 수 있도록 해준다.
