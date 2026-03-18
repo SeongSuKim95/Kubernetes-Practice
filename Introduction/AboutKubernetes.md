@@ -17,7 +17,6 @@ docker run -p 8080:80 my-app:1.0
 이 이미지 하나로 로컬, 테스트, 운영 환경을 동일하게 맞출 수 있게 되었고, 실행 환경의 불일치 문제는 사실상 해결되었습니다.
 
 이후 Docker Compose를 통해 여러 컨테이너를 하나의 애플리케이션처럼 구성할 수 있게 되었고, Docker Swarm을 통해 여러 서버에 걸쳐 컨테이너를 분산 배포하는 것도 가능해졌습니다.
-
 이 지점에서 자연스럽게 다음과 같은 질문을 하게 됩니다.
 
 “Docker Compose나 Docker Swarm으로도 충분히 운영할 수 있는 것 아닌가? Kubernetes는 왜 필요한가?”
@@ -45,7 +44,6 @@ Docker Swarm은 “Docker 사용 경험을 가진 팀이 빠르게 멀티 호스
 - Swarm은 “한동안 안정적이지만 큰 변화가 적은” 방향으로 흘렀고,
   업계에서는 사실상 Kubernetes가 오케스트레이션 표준으로 자리 잡았습니다.
 
-결론적으로 Swarm은 ‘못 쓰는 도구’가 아니라,
 운영 요구가 커질수록 Kubernetes가 제공하는 표준화된 기능과 생태계가 더 강한 선택지가 되는 경우가 많아진 것입니다.
 
 ### 2) 실제 운영 환경에서의 한계
@@ -131,37 +129,54 @@ Kubernetes는 이러한 문제를 해결하기 위해 등장했습니다.
 이제부터는 “Kubernetes가 뭘 해준다”가 아니라, “그 일을 누가 수행하는가”를 등장인물처럼 먼저 소개해보겠습니다.  
 설계 철학을 설명할 때도 API Server, Controller, Scheduler, Kubelet 같은 구성요소들이 계속 등장하므로, 이들을 먼저 알고 가면 전체 흐름이 훨씬 자연스럽게 연결됩니다.
 
+<p align="center">
+  <img src="../images/Introduction/2_Kubernetes_Components.png" width="80%">
+</p>
+
 ### 2.1 Control Plane
 
-- API Server: 모든 요청의 입구  
-- Scheduler: Pod 배치 결정  
-- Controller Manager: 상태 유지 (여러 컨트롤러가 Control Loop 수행)  
-- etcd: 상태 저장  
+Control Plane은 클러스터의 **두뇌**에 해당하며, Desired State를 해석·유지하고 Pod가 어느 노드에 갈지 결정하는 등의 판단을 담당합니다. 대표 구성요소는 API Server, Scheduler, Controller Manager, etcd입니다.
 
-#### (보강) etcd란 무엇인가?
+> **API Server**는 Kubernetes의 **중앙 관문(Entry Point)** 입니다. 
 
-etcd는 Kubernetes 클러스터의 상태를 저장하는 **분산 Key-Value 데이터베이스**입니다.  
-Pod, Deployment, Service 같은 리소스 정의(YAML로 제출된 Desired State)와, 그 리소스의 현재 상태(Current State)가 최종적으로 etcd에 기록됩니다.
+- 사용자의 `kubectl` 호출, 컨트롤러·스케줄러·Kubelet이 보내는 요청이 모두 API Server를 거쳐야만 클러스터 상태를 조회하거나 바꿀 수 있습니다. RESTful API를 제공하고, 인증·인가와 스키마에 맞는지에 대한 유효성 검사를 수행한 뒤 변경 내용을 etcd에 반영합니다. 예를 들어 `kubectl apply`로 리소스를 제출하면 API Server가 이를 검증·저장하고, 그 결과를 다른 컴포넌트들이 Watch 하며 감지할 수 있게 됩니다.
 
-조금 과장해서 말하면, etcd는 “클러스터의 기억 장치”이고, API Server는 그 기억 장치에 읽고/쓰는 창구입니다.
+> **Scheduler**는 각 노드의 자원·제약 조건을 고려하여 pod를 어떤 노드에 배치할지 결정합니다.
 
-- API Server는 리소스 변경 요청을 받으면 etcd에 저장합니다.
-- Controller/Scheduler/Kubelet 같은 컴포넌트들은 API Server를 통해 상태를 읽고(또는 Watch 하고), 필요한 경우 다시 상태 변경을 요청합니다.
+**Scheduler**는 API Server를 통해 **아직 노드가 정해지지 않은(unscheduled) Pod**를 알아채고, 각 Worker 노드의 CPU·메모리 여유, taint/toleration, node affinity/anti-affinity, 노드 셀렉터 등을 고려해 **어느 노드에 둘지**만 결정합니다. Scheduler는 컨테이너를 직접 실행하지 않으며, “이 Pod는 이 노드에 할당한다”는 결정을 API Server(및 etcd)에 기록합니다. 이후 해당 노드의 Kubelet이 그 Pod를 받아 실제 컨테이너를 띄웁니다.
 
-그래서 etcd가 불안정해지면 “컨테이너가 당장 다 꺼진다”기보다는,  
-**클러스터의 상태를 저장/갱신하는 관리 기능이 크게 제한**될 수 있습니다.
+> **Controller Manager**는 클러스터 상태가 사용자가 선언한 원하는 상태와 계속 일치하도록 자동으로 감시·조정하는 역할을 합니다.
 
-모든 컴포넌트는 직접 통신하지 않고 API Server를 통해 상태를 공유합니다.
+- Controller Manager **는 Deployment Controller, ReplicaSet Controller, Node Controller 등 여러 컨트롤러를 한 프로세스에서 묶어 실행**합니다. 각 컨트롤러는 API Server의 리소스를 Watch 하면서, 사용자가 선언한 Desired State와 실제 상태(Current State)를 비교하고 다르면 Pod 생성·삭제·노드 상태 반영 등 **보정(Reconcile)** 을 수행합니다. 장애로 Pod가 사라지면 ReplicaSet 쪽 컨트롤러가 개수를 맞추기 위해 새 Pod를 만들도록 API Server에 요청하는 식입니다. 컨트롤러는 노드에 직접 접속하지 않고, **API Server에 리소스 변경을 남기는 방식**으로만 조치를 요청합니다.
+
+> **etcd**는 Kubernetes 클러스터의 상태를 저장하는 **분산 Key-Value 데이터베이스**입니다. 
+
+- Pod, Deployment, Service 같은 리소스 정의(YAML로 제출된 Desired State)와 그 리소스의 현재 상태(Current State)가 최종적으로 etcd에 기록됩니다. 여러 Control Plane 인스턴스가 동시에 접근해도 **강한 일관성(Strong Consistency)** 을 제공해 상태가 어긋나지 않도록 하며, 클러스터 관점에서는 **단일 진실 소스(Single Source of Truth)** 로 취급됩니다. 따라서 장애 복구·업그레이드 시 **etcd 백업 전략**이 매우 중요합니다.
+  - etcd는 “클러스터의 기억 장치”이고, API Server는 그 기억 장치에 읽고/쓰는 창구입니다.
+  - API Server는 리소스 변경 요청을 받으면 etcd에 저장합니다.
+  - Controller/Scheduler/Kubelet 같은 컴포넌트들은 API Server를 통해 상태를 읽고(또는 Watch 하고), 필요한 경우 다시 상태 변경을 요청합니다. etcd가 불안정해지면 **클러스터의 상태를 저장/갱신하는 관리 기능이 크게 제한**될 수 있습니다.
+
+**모든 컴포넌트는 직접 통신하지 않고 API Server를 통해 상태를 공유합니다.**
 
 ### 2.2 Worker Node
 
-- Kubelet: Pod 실행  
-- Kube Proxy: 네트워크 처리  
-- Container Runtime: 컨테이너 실행  
+Worker Node는 실제 워크로드가 돌아가는 머신이며, **Kubelet**, **Kube Proxy**, **Container Runtime**이 함께 동작합니다.
+
+> **Kubelet**은 각 노드에서 돌아가는 **에이전트**입니다. 
+
+- API Server로부터 “이 노드에서 실행해야 할 Pod” 스펙을 받아오고, **Container Runtime**을 호출해 컨테이너를 만들고 시작·중지합니다. Pod와 노드의 상태(리소스 사용, 프로브 결과 등)를 주기적으로 API Server에 보고해, Control Plane이 전체 클러스터 상태를 파악할 수 있게 합니다.
+
+> **Kube Proxy**는 **Service**라는 추상 개념을 실제 네트워크 규칙으로 구현합니다. 
+
+- API Server로부터 Service와 Endpoints 정보를 받아, iptables나 IPVS 등으로 **Service IP → 실제 Pod IP** 로 트래픽이 전달되도록 설정합니다. Pod가 늘거나 줄거나 다른 노드로 옮겨져도, 클라이언트는 동일한 Service 이름·ClusterIP로 안정적으로 통신할 수 있습니다.
+
+> **Container Runtime**은 이미지를 내려받고, 컨테이너의 파일 시스템·네트워크를 준비한 뒤 **프로세스를 실제로 실행·종료**하는 소프트웨어입니다. 
+
+- Docker, containerd, CRI-O 등이 여기에 해당하며, Kubelet은 **CRI(Container Runtime Interface)** 라는 표준으로 런타임과 통신합니다.
 
 Kubernetes는 Docker를 직접 사용하지 않고 containerd를 사용합니다. 이는 불필요한 계층을 제거하고 성능을 높이기 위한 설계입니다.
 
-#### (보강) Kubernetes는 왜 containerd를 사용하는가?
+#### **(보강)** Kubernetes는 왜 containerd를 사용하는가?
 
 “어? Kubernetes는 컨테이너를 돌리는 시스템이라며? 그럼 Docker로 실행해야 하는 거 아닌가요?”
 
@@ -209,6 +224,13 @@ Kubernetes를 처음 접할 때는 아키텍처 그림(Control Plane/Worker Node
 하지만 실무 관점에서 개발자가 “매일 손으로 만지는 대상”은 인프라 구성요소 그 자체가 아니라, **서비스를 배포하기 위한 리소스 객체**들입니다.
 
 그래서 이제부터는 시선을 한 단계 더 아래로 내려, 개발자 관점에서 가장 자주 만나게 되는 3가지 핵심 리소스인 **Pod / Deployment / Service**를 중심으로 Kubernetes를 이해해보겠습니다.
+
+실무에서 “쿠버네티스에 배포한다”는 말은 보통 다음 4가지 리소스를 조합해 서비스를 외부에 제공하는 것을 의미합니다.
+
+- **Deployment**: 애플리케이션 배포를 위한 상위 리소스이며, 롤링 업데이트 시 동시에 교체되는 Pod 수를 조절할 수 있고, 배포 히스토리를 기반으로 롤백도 가능합니다.
+- **ReplicaSet**: 지정한 replicas 수만큼 Pod를 복제·유지하여 가용성과 안정성을 높입니다. (일반적으로 Deployment가 내부적으로 ReplicaSet을 생성·관리합니다.)
+- **Service**: 여러 Pod를 하나의 논리적 서비스로 묶고, **고정된 서비스 IP(ClusterIP 등)** 와 로드밸런싱을 제공해 Pod IP가 바뀌어도 안정적으로 접근할 수 있게 합니다.
+- **Ingress**: 애플리케이션 단의 네트워크 진입점으로, 도메인 기반 라우팅과 TLS 종료(HTTPS 인증서 처리) 등을 담당하여 외부 요청을 적절한 Service로 연결합니다.
 
 ### 3.1 Pod: 왜 컨테이너가 아닌 Pod인가
 
@@ -339,19 +361,51 @@ kubectl get events
 
 ### 3.3 Service: 네트워크 추상화
 
-Pod는 재생성될 때마다 IP가 변경됩니다.
+<p align="center">
+  <img src="../images/Introduction/3_Kubernetes_service.png" width="80%">
+</p>
 
-이 문제를 해결하기 위해 Service가 등장합니다.
+> Service는 계속 변하는 Pod 집합 앞단에 안정적인 진입점(고정 가상 IP/이름)을 제공하는 리소스입니다. 
 
-Service는 다음을 제공합니다.
+- 레이블 셀렉터로 대상 Pod들을 동적으로 묶고 kube‑proxy(IPTables/IPVS)가 생성한 규칙을 통해 트래픽을 해당 Pod들로 로드밸런싱합니다. 
+- 클러스터 내부에서는 DNS(`my-svc.my-namespace.svc.cluster.local`)로 서비스 디스커버리가 이루어지며, Pod의 생성·삭제로 IP가 바뀌어도 클라이언트는 항상 동일한 Service 이름/ClusterIP로 접근할 수 있습니다. 
+- 용도에 따라 ClusterIP(기본, 내부 전용), NodePort(각 노드의 고정 포트로 노출), LoadBalancer(클라우드 LB와 연동해 외부에 공개), Headless(`clusterIP: None`, 개별 Pod 직접 해석) 형태로 동작하며, 필요 시 세션 어피니티(ClientIP 기반 고정), 여러 포트 정의, 헤드리스 + StatefulSet 조합으로 직접 엔드포인트 접근 같은 고급 패턴을 구성할 수 있습니다.
 
-- 고정 IP  
-- 로드 밸런싱  
-- 서비스 디스커버리  
+예시(Service: ClusterIP)
 
-즉 사용자는 Pod가 아니라 Service를 통해 접근합니다.
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  namespace: default
+spec:
+  type: ClusterIP
+  selector:
+    app: web
+  ports:
+    - name: http
+      port: 80        # 클라이언트가 접근하는 서비스 포트
+      targetPort: 8080 # Pod 컨테이너가 실제로 리스닝하는 포트
+      protocol: TCP
+```
 
-### 3.4 Pod / Deployment / Service의 관계
+요약: `selector`가 Pod 집합을 정하고, `port`→`targetPort`로 트래픽이 전달되며, `type`으로 노출 범위를 결정합니다.
+
+### 3.4 Ingress: 외부 트래픽의 진입점
+
+Service는 클러스터 내부에서 Pod로 안정적으로 연결되는 “고정된 접근점”을 만들어주지만, 외부(인터넷)에서 들어오는 요청까지의 경로는 별도 구성이 필요합니다. 이때 Ingress는 “어떤 도메인/경로로 들어온 요청을 어떤 Service로 보낼지”를 정의하는 라우팅 계층이며, **도메인 기반 라우팅**과 **TLS 종료(HTTPS 인증서 처리)** 같은 기능을 담당합니다.
+
+> Ingress 리소스만 만든다고 바로 동작하는 것은 아니고, 실제 트래픽을 받아 처리하는 Ingress Controller(NGINX Ingress, Traefik 등)가 클러스터에 함께 배포되어 있어야 합니다.
+
+여기서 Ingress와 Ingress Controller는 역할과 “위치”가 다릅니다.
+
+- **Ingress**: Kubernetes API에 저장되는 **라우팅 규칙(설정) 리소스**입니다. 즉 “어떤 도메인/경로를 어떤 Service로 보낼지” 같은 선언(Desired State) 자체이며, Control Plane(etcd)에 객체로 기록됩니다.
+- **Ingress Controller**: 위 Ingress 규칙을 Watch 하다가 실제 L7 프록시/로드밸런서 설정으로 변환해 적용하는 **실행 컴포넌트(프로그램)** 입니다. 보통 Worker Node에 Pod(Deployment/DaemonSet)로 떠서 외부 트래픽을 직접 받고, 규칙에 따라 Service로 전달합니다.
+
+정리하면, **Ingress는 설정(리소스)** 이고 **Ingress Controller는 그 설정을 실제 트래픽 처리로 구현하는 실행체**입니다.
+
+### 3.5 Pod / Deployment / Service / Ingress의 관계
 
 처음에는 세 개가 각각 다른 이야기처럼 보이지만, 실제로는 “역할 분담” 관계로 이어집니다.
 
@@ -361,7 +415,15 @@ Deployment
 Pod (여러 개)
   ↓ (안정적인 접근점 제공)
 Service
+  ↓ (외부 트래픽 라우팅 / TLS 종료)
+Ingress
 ```
+
+요청 흐름을 배포 리소스 관점에서 한 줄로 연결하면 다음과 같습니다.
+
+1) 사용자의 요청이 들어오면 **Ingress**가 요청 도메인(URL)에 따라 라우팅 규칙을 적용해 대상 **Service**로 트래픽을 전달합니다.  
+2) **Service**는 레이블 셀렉터로 연결된 Pod 집합을 찾고, 그중 하나의 **Pod**로 요청을 로드밸런싱하여 전달합니다.  
+3) 이 Pod들은 **Deployment가 관리하는 ReplicaSet**에 포함되어 있으며, ReplicaSet이 replicas 수만큼 Pod를 유지함으로써 가용성과 안정성을 보장합니다.
 
 배포를 시작할 때 최소 구성은 보통 다음 두 장의 YAML로 결정됩니다.
 
@@ -410,21 +472,26 @@ spec:
 ## 4. Kubernetes의 동작 방식
 
 이제 “구성요소(등장 인물)”와 “리소스 객체(개발자가 만지는 대상)”를 알았으니, 실제로 그 둘이 어떻게 맞물려 동작하는지 한 번에 연결해보겠습니다.
+<p align="center">
+  <img src="../images/Introduction/4_Pod_creation_sequence.png" width="80%">
+</p>
 
 Pod 생성 흐름:
 
 ```text
-kubectl apply
-→ API Server 저장
-→ Controller 감지
-→ Scheduler 배치
-→ Kubelet 실행
+1. Master Node의 kube-apiserver에 Pod 생성을 요청 
+2. kube-apiserver는 etcd에 새로운 상태를 저장
+3. kube-apiserver가 etcd의 상태 변경을 확인하여, kube-controller-manager에게 새로운 Pod 생성을 요청
+4. kube-controller-manager는 새로운 Pod를 생성(no assign)을 kube-apiserver에 전달하고, 이를 전달받은 kube-apiserver는 etcd에 저장 
+5. kube-scheduler는 kube-apiserver에 의해 Pod(no assign)가 확인되면, 조건에 맞는 Worker Node를 찾고 해당 Pod를 할당하기 위해 우선, kube-apiserver는 etcd에 업데이트
+6. 모든 Worker Node의 kubelet은 자신의 Node에 할당되었지만, 생성되지 않은 Pod가 있는지 체크하고 있다면 Pod를 생성
+7. 해당 Worker Node의 kubelet은 Pod의 상태를 주기적으로 API Server에 전달
 ```
 
 
-“내가 터미널에서 `kubectl`로 엔터를 치면, 요청은 정확히 어디로 날아가는가?”
+> “ControlPlane에서 `kubectl` 명령어를 치면, 요청은 정확히 어디로 날아가는가?”
 
-핵심부터 말하면, `kubectl`은 단순한 명령 모음이 아니라 **REST API 클라이언트**입니다.  
+`kubectl`은 단순한 명령 모음이 아니라 **REST API 클라이언트**입니다.  
 즉, `kubectl get pods` 같은 명령은 내부적으로 API Server로 향하는 HTTPS 요청으로 바뀝니다.
 
 그리고 이때 연결의 열쇠가 바로 **kubeconfig**입니다. kubectl은 kubeconfig를 읽어서
@@ -432,24 +499,6 @@ kubectl apply
 - 어떤 사용자/인증 정보로 접근할지
 - 어떤 컨텍스트를 사용할지
 를 결정합니다.
-
-그래서 전체 흐름은 아래 한 장으로 정리됩니다.
-
-```
-사용자 터미널
-  ↓ kubectl 명령
-kubectl (kubeconfig 읽기)
-  ↓ HTTPS / REST 요청 생성
-로드 밸런서(또는 API Server 엔드포인트)
-  ↓ 트래픽 분산
-API Server (인증/권한 확인)
-  ↓ 상태 조회/저장
-etcd
-  ↓ 응답 반환
-kubectl (출력 포맷팅)
-```
-
-이 관점을 잡아두면, 이후에 “왜 권한이 없지?”, “왜 연결이 안 되지?” 같은 문제를 디버깅할 때도 원인을 훨씬 빠르게 좁힐 수 있습니다.
 
 #### kubeconfig는 실제로 어떻게 생겼나?
 
@@ -554,7 +603,7 @@ Deployment/ReplicaSet/Node 같은 여러 리소스에 대해 컨트롤러들이 
 5) **다시 관찰(Repeat)**  
    - 한 번으로 끝나지 않고 계속 반복해서, 목표 상태가 유지되게 만듭니다.
 
-#### 미니 시나리오: Desired 3 → Current 2 → 다시 3 (Self-Healing)
+#### 예시 시나리오: Desired 3 → Current 2 → 다시 3 (Self-Healing)
 
 아래처럼 선언되어 있다고 해보겠습니다.
 
@@ -576,11 +625,9 @@ Result: 다시 Pod 3개 (Desired와 일치)
 그래서 Kubernetes의 장애 복구(Self-Healing)는 “특수 기능”이 아니라,  
 **원하는 상태를 유지하려는 Control Loop의 자연스러운 결과**가 됩니다.
 
-#### Control Loop는 누가 돌리는가? (`kube-controller-manager`)
+#### Control Loop는 누가 실행하는가? (`kube-controller-manager`)
 
-그런데 여기서 한 가지 질문이 남습니다.
-
-“그럼 이 Control Loop는 도대체 **누가** 실행하는거지?”
+> “그럼 이 Control Loop는 도대체 **누가** 실행하는거지?”
 
 정답은 Kubernetes의 **Control Plane에 실제로 떠 있는 컨트롤러 프로세스(또는 Pod)**입니다.
 
@@ -738,3 +785,15 @@ Worker Nodes (여러 대)
 - etcd 3개 중 2개 장애 → 과반 붕괴 → 읽기/쓰기 불가(클러스터 관리 기능 중단)
 
 그래서 운영에서는 보통 홀수 개(3/5/7)로 구성하고, 장애 허용치를 계산해 설계합니다.
+
+## 6. 정리
+
+- Kubernetes는 여러 서버(Node)에서 Pod를 자동으로 배포, 복구, 확장하는 컨테이너 오케스트레이션 플랫폼이다.
+- Control Plane은 `API Server`를 중심으로 상태를 공유하며, `etcd`에 클러스터 상태를 저장하고, `Scheduler`/`Controller Manager`가 Watch 기반으로 Desired State를 유지한다.
+- Controller/Control Loop는 현재 상태(Current State)와 원하는 상태(Desired State)를 비교해 Reconcile(보정)을 수행하며, 이것이 Kubernetes의 Self-Healing과 자동 복구의 핵심 메커니즘이다.
+- Worker Node는 `Kubelet`(실행 담당), `kube-proxy`(Service 네트워크 규칙), `Container Runtime`(컨테이너 실행)이 협력해 실제 Pod/컨테이너를 동작시킨다.
+- Pod는 Kubernetes의 최소 실행 단위이며, 같은 Pod 안의 컨테이너는 네트워크/볼륨을 공유하고 함께 배치·생명주기를 가진다.
+- `Deployment`는 배포의 상위 리소스로 롤링 업데이트/롤백 같은 배포 기능을 제공하고, 내부적으로 `ReplicaSet`을 통해 replicas 수만큼 Pod를 유지해 가용성을 높인다.
+- `Service`는 레이블 셀렉터로 Pod 집합을 묶어 고정된 접근점(ClusterIP/DNS)을 제공하고, 로드밸런싱/서비스 디스커버리로 Pod IP 변동을 감춘다.
+- `Ingress`는 “도메인/경로 → Service” 라우팅과 TLS 종료 같은 규칙을 정의하는 리소스이며, 실제 트래픽 처리는 Worker Node에 떠 있는 `Ingress Controller`가 수행한다.
+- Liveness/Readiness Probe는 “정상” 기준을 정의해 재시작/트래픽 제외 같은 동작을 자동화하며, 선언형(Declarative) 운영은 GitOps/IaC처럼 버전 관리와 재현 가능한 배포를 가능하게 한다.

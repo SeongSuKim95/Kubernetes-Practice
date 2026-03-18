@@ -115,10 +115,41 @@
 - API Server, Scheduler, Controller Manager, etcd 등으로 구성됩니다.
 - **Docker Swarm의 Manager Node와 유사한 역할**이지만, Kubernetes에서는 Control Plane과 Worker Node가 명확히 분리됩니다.
 
+### API Server (kube-apiserver)
+- Kubernetes의 **중앙 관문(Entry Point)** 으로, `kubectl`/컨트롤러/노드(Kubelet 등)의 모든 요청이 거치는 API 서버입니다.
+- 인증/인가, 요청 유효성 검증을 수행하고, 클러스터 상태를 etcd에 읽고/쓰는 창구 역할을 합니다.
+
+### Scheduler (kube-scheduler)
+- 아직 노드가 정해지지 않은 Pod를 감지해, 노드 자원/제약 조건을 고려하여 **어느 노드에 배치할지**를 결정합니다.
+- 컨테이너를 실행하지는 않으며, 스케줄링 결과(노드 할당)를 API Server를 통해 반영합니다.
+
+### Controller Manager (kube-controller-manager)
+- 여러 컨트롤러(Deployment/ReplicaSet/Node 등)를 묶어 실행하며, Desired State와 Current State의 차이를 감지해 **보정(Reconcile)** 을 수행합니다.
+- 예: Pod 개수가 줄면 다시 생성되도록 요청해 상태를 유지합니다.
+
+### etcd
+- Kubernetes 클러스터 상태를 저장하는 **분산 Key-Value 데이터베이스**입니다.
+- Control Plane의 단일 진실 소스(Single Source of Truth)로, 안정적인 운영을 위해 백업/쿼럼 구성이 중요합니다.
+
 ### Worker Node (워커 노드) - Kubernetes
 - 실제 Pod가 실행되는 서버입니다.
 - Kubelet, Kube Proxy, Container Runtime으로 구성됩니다.
 - **Docker Swarm의 Worker Node와 개념적으로 유사**하지만, Kubernetes에서는 Control Plane이 Worker 역할을 수행하지 않습니다.
+
+### Kubelet
+- 각 Worker Node에서 동작하는 에이전트로, API Server의 Pod 스펙을 받아 **Container Runtime**을 통해 컨테이너를 생성/시작/중지합니다.
+- Pod/노드 상태를 주기적으로 API Server에 보고합니다.
+
+### kube-proxy
+- Service/Endpoints 정보를 바탕으로 iptables/IPVS 규칙을 구성해 **Service IP → Pod IP** 로 트래픽이 전달되도록 합니다.
+- Service의 로드밸런싱/네트워크 추상화를 노드 수준에서 구현합니다.
+
+### Container Runtime (컨테이너 런타임)
+- 이미지를 내려받고 컨테이너의 파일시스템/네트워크를 준비한 뒤, 프로세스를 실제로 실행·종료하는 실행 엔진입니다.
+- 대표적으로 containerd, CRI-O 등이 있으며, Kubelet은 CRI를 통해 런타임과 통신합니다.
+
+### CRI (Container Runtime Interface)
+- Kubernetes(Kubelet)가 컨테이너 런타임과 통신하기 위한 표준 인터페이스입니다.
 
 ### Pod (파드)
 - Kubernetes에서 스케줄링되는 최소 단위입니다.
@@ -126,10 +157,22 @@
 - 같은 Pod 안의 컨테이너는 항상 같은 노드에서 함께 배치되고, localhost 네트워크를 공유합니다.
 - **Docker Swarm의 Task와 유사하지만**, Pod는 여러 컨테이너를 포함할 수 있습니다.
 
+### Deployment (디플로이먼트)
+- 배포를 위한 상위 리소스이며, 롤링 업데이트/롤백 같은 배포 기능을 제공합니다.
+- 일반적으로 내부적으로 ReplicaSet을 생성·관리하여 원하는 replicas 수를 유지합니다.
+
 ### Service (서비스) - Kubernetes
 - Pod에 대한 네트워크 접근을 제공하는 리소스입니다.
 - Pod의 IP 주소가 변경되어도 Service를 통해 안정적으로 접근할 수 있습니다.
 - **Docker Swarm의 Service와는 완전히 다른 개념**입니다. Docker Swarm의 Service는 배포 단위이고, Kubernetes의 Service는 네트워크 추상화입니다.
+
+### Ingress (인그레스)
+- “도메인/경로 → Service” 같은 HTTP/HTTPS 라우팅 규칙과 TLS 종료 등을 정의하는 **리소스(설정)** 입니다.
+- Ingress는 규칙을 담는 객체이며, 실제 트래픽 처리는 Ingress Controller가 수행합니다.
+
+### Ingress Controller (인그레스 컨트롤러)
+- Ingress 리소스를 Watch 하여 실제 L7 프록시/로드밸런서 설정으로 적용하는 **실행 컴포넌트**입니다.
+- 보통 Worker Node에 Pod(Deployment/DaemonSet)로 배포되어 외부 트래픽을 직접 수신합니다.
 
 ### Namespace (네임스페이스) - Kubernetes
 - 클러스터 내에서 리소스를 논리적으로 분리하는 메커니즘입니다.
@@ -140,6 +183,14 @@
 - 지정된 수의 Pod 복제본을 유지하는 리소스입니다.
 - Pod가 실패하면 자동으로 새로운 Pod를 생성합니다.
 - **Docker Swarm의 Replica와 유사한 개념**이지만, Kubernetes에서는 독립적인 리소스입니다.
+
+### Control Loop / Reconcile (컨트롤 루프 / 보정)
+- 컨트롤러가 “원하는 상태(Desired)와 현재 상태(Current)의 차이”를 지속적으로 감시하고, 차이가 있으면 보정하는 동작 방식입니다.
+- Kubernetes의 자동 복구(Self-Healing)와 상태 유지의 핵심 메커니즘입니다.
+
+### Liveness Probe / Readiness Probe
+- **Liveness Probe**: 컨테이너가 살아 있는지 확인하며, 실패 시 재시작 같은 조치가 일어납니다.
+- **Readiness Probe**: 트래픽을 받을 준비가 되었는지 확인하며, 실패 시 Service 엔드포인트에서 제외됩니다.
 
 ### Desired State (원하는 상태) vs Current State (현재 상태)
 - **Desired State**: 사용자가 정의한 원하는 상태입니다.
