@@ -5,8 +5,9 @@ NS="dev"
 OTHER_NS="prod"
 
 echo "[1/5] Check required namespaces..."
-kubectl get namespace "${NS}" >/dev/null
-kubectl get namespace "${OTHER_NS}" >/dev/null
+echo "[1/5] Ensure required namespaces exist..."
+kubectl create namespace "${NS}" --dry-run=client -o yaml | kubectl apply -f -
+kubectl create namespace "${OTHER_NS}" --dry-run=client -o yaml | kubectl apply -f -
 
 echo "[2/5] Cleanup old resources in ${NS}..."
 kubectl -n "${NS}" delete svc hello-svc hello-svc-badmeta hello-svc-badselector web-pod-svc --ignore-not-found=true
