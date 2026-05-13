@@ -1,0 +1,17 @@
+# ingressLab.sh 의 `kubectl expose deployment ...` 와 동일한 ClusterIP Service.
+# 적용 예:
+#   export NS=lab-hong
+#   export DEPLOY_NAME=echo SVC_NAME=echo-service
+#   envsubst '${NS} ${DEPLOY_NAME} ${SVC_NAME}' < echo-service.yaml | kubectl apply -f -
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${SVC_NAME}
+  namespace: ${NS}
+spec:
+  type: ClusterIP
+  selector:
+    app: echo
+  ports:
+    - port: 8080
+      targetPort: 8080

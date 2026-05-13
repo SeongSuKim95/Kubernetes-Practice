@@ -1,0 +1,25 @@
+# ingressLab.sh 와 동일한 echo Deployment.
+# 적용 예 (스크립트와 같은 변수명):
+#   export NS=lab-hong
+#   export DEPLOY_NAME=echo   # 선택, 기본 echo
+#   envsubst '${NS} ${DEPLOY_NAME}' < echo-deployment.yaml | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${DEPLOY_NAME}
+  namespace: ${NS}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: echo
+  template:
+    metadata:
+      labels:
+        app: echo
+    spec:
+      containers:
+        - name: echo
+          image: gcr.io/google_containers/echoserver:1.10
+          ports:
+            - containerPort: 8080
