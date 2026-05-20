@@ -1,0 +1,27 @@
+# ingressLab.sh 와 동일한 Ingress (TLS Secret 은 스크립트에서 openssl 로 생성).
+# 적용 예:
+#   export NS=lab-hong APP_HOST=hong.k8s-study.club
+#   export INGRESS_NAME=echo SVC_NAME=echo-service INGRESS_PATH=/echo TLS_SECRET=echo-tls
+#   envsubst '${NS} ${INGRESS_NAME} ${APP_HOST} ${INGRESS_PATH} ${SVC_NAME} ${TLS_SECRET}' < echo-ingress.yaml | kubectl apply -f -
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ${INGRESS_NAME}
+  namespace: ${NS}
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - ${APP_HOST}
+      secretName: ${TLS_SECRET}
+  rules:
+    - host: ${APP_HOST}
+      http:
+        paths:
+          - path: ${INGRESS_PATH}
+            pathType: Prefix
+            backend:
+              service:
+                name: ${SVC_NAME}
+                port:
+                  number: 8080
