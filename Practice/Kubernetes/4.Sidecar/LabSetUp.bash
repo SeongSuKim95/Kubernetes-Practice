@@ -47,4 +47,5 @@ echo
 echo "✅ Lab setup complete!"
 echo
 echo "WordPress deployment created in the default namespace."
-echo "You can now edit the deployment to add the sidecar container and shared volume."
+echo "You can now edit the deployment to add the sidecar container and shared emptyDir volume."
+echo "See Preliminaries.md in this folder"
