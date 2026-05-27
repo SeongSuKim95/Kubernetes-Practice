@@ -282,6 +282,8 @@ curl_cache() {
       echo "ASSERT FAIL: expected X-Cache-Hit=${expect_hit}, got '${actual}' (${label})" >&2
       if [[ -z "${actual}" ]]; then
         echo "  hint: Pod 삭제 후 port-forward가 끊겼을 수 있습니다. ensure_backend_ready 확인." >&2
+      elif [[ "${expect_hit}" == "true" && "${actual}" == "false" ]]; then
+        show_hostpath_cache_diagnostic
       fi
       exit 1
     fi
@@ -291,14 +293,65 @@ curl_cache() {
 
 delete_pod() {
   local pod
+  LAST_POD_NODE_BEFORE="$(kubectl get pod -l "app=${APP_LABEL}" -o jsonpath='{.items[0].spec.nodeName}' 2>/dev/null || true)"
   pod=$(kubectl get pod -l "app=${APP_LABEL}" -o jsonpath='{.items[0].metadata.name}')
-  echo "Deleting pod: ${pod}"
+  echo "Deleting pod: ${pod} (node=${LAST_POD_NODE_BEFORE})"
   kubectl delete pod "${pod}" --wait=true
   ensure_backend_ready
+  LAST_POD_NODE_AFTER="$(kubectl get pod -l "app=${APP_LABEL}" -o jsonpath='{.items[0].spec.nodeName}' 2>/dev/null || true)"
+  if [[ -n "${LAST_POD_NODE_BEFORE}" && -n "${LAST_POD_NODE_AFTER}" && "${LAST_POD_NODE_BEFORE}" != "${LAST_POD_NODE_AFTER}" ]]; then
+    echo "WARN: new pod on different node (${LAST_POD_NODE_BEFORE} -> ${LAST_POD_NODE_AFTER}) — hostPath cache miss likely" >&2
+  fi
 }
 
 clear_pod_cache() {
   kubectl exec "deploy/${DEPLOY_NAME}" -- sh -c 'rm -rf /cache/*' 2>/dev/null || true
+}
+
+# hostPath 캐시는 "노드의 HOST_CACHE_PATH"에만 남음 → Pod 재스케줄 시 같은 노드 필요
+pin_deployment_to_current_node() {
+  local node
+  node="$(kubectl get pod -l "app=${APP_LABEL}" -o jsonpath='{.items[0].spec.nodeName}')"
+  if [[ -z "${node}" ]]; then
+    echo "ERROR: could not determine node for pod (app=${APP_LABEL})" >&2
+    exit 1
+  fi
+  echo "Pinning ${DEPLOY_NAME} to node: ${node}"
+  echo "  (hostPath ${HOST_CACHE_PATH} is per-node; multi-node clusters need this)"
+  kubectl patch deployment "${DEPLOY_NAME}" --type=strategic -p "$(cat <<EOF
+spec:
+  template:
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - ${node}
+EOF
+)"
+  kubectl rollout status "deployment/${DEPLOY_NAME}" --timeout=120s
+  wait_ready
+}
+
+show_hostpath_cache_diagnostic() {
+  local node pod
+  pod="$(kubectl get pod -l "app=${APP_LABEL}" -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)"
+  node="$(kubectl get pod -l "app=${APP_LABEL}" -o jsonpath='{.items[0].spec.nodeName}' 2>/dev/null || true)"
+  echo "  diagnostic: pod=${pod:-?} node=${node:-?} hostPath=${HOST_CACHE_PATH}" >&2
+  if [[ -n "${LAST_POD_NODE_BEFORE:-}" && -n "${LAST_POD_NODE_AFTER:-}" ]]; then
+    echo "  diagnostic: node before delete=${LAST_POD_NODE_BEFORE} after=${LAST_POD_NODE_AFTER}" >&2
+    if [[ "${LAST_POD_NODE_BEFORE}" != "${LAST_POD_NODE_AFTER}" ]]; then
+      echo "  → Pod가 다른 노드로 이동하면 hostPath 캐시가 비어 X-Cache-Hit=false 가 납니다." >&2
+    fi
+  fi
+  if [[ -n "${pod}" ]]; then
+    echo "  diagnostic: /cache in pod:" >&2
+    kubectl exec "deploy/${DEPLOY_NAME}" -- ls -la /cache 2>&1 | sed 's/^/    /' >&2 || true
+  fi
 }
 
 echo "=============================================="
@@ -336,6 +389,7 @@ echo " (노드 경로: ${HOST_CACHE_PATH})"
 echo "=============================================="
 apply_hostpath
 wait_ready
+pin_deployment_to_current_node
 clear_pod_cache
 start_port_forward
 

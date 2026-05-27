@@ -120,8 +120,8 @@ OK: X-Cache-Hit=true
 ## 5. 환경·주의
 
 - **Killercoda·minikube·kind**: `port-forward`만 있으면 됨 (LoadBalancer 불필요).
-- **hostPath Phase 2**: Pod가 **같은 노드**에 다시 스케줄되어야 캐시가 남습니다. 단일 노드 실습에 적합합니다.
-- **멀티 노드**: Pod가 다른 노드로 가면 hostPath 캐시는 보이지 않습니다 → [`Preliminaries-Volume-StorageClass.md`](Preliminaries-Volume-StorageClass.md) [6.1 “다른 노드에 Replica”](Preliminaries-Volume-StorageClass.md#pod가-죽고-다른-노드에-replica가-뜨면) 참고.
+- **hostPath Phase 2**: Pod가 **같은 노드**에 다시 스케줄되어야 캐시가 남습니다. 스크립트가 첫 Pod가 올라간 노드에 **nodeAffinity로 고정(pin)** 합니다.
+- **멀티 노드**: 고정 없이 Pod가 다른 노드로 가면 hostPath 캐시는 보이지 않습니다 (`X-Cache-Hit: false`) → [`Preliminaries-Volume-StorageClass.md`](Preliminaries-Volume-StorageClass.md) [6.1 “다른 노드에 Replica”](Preliminaries-Volume-StorageClass.md#pod가-죽고-다른-노드에-replica가-뜨면) 참고.
 - Phase 2 시작 시 스크립트가 `/cache/*`를 비워 **1회차 캐시 미스**가 재현 가능하도록 합니다. (이전 데모의 hostPath 잔여 파일 방지)
 
 ---
