@@ -4,6 +4,10 @@
 #   cd Practice/Kubernetes/1.Persistent-Volume && ./emptydir-demo.bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=demo-restart-helper.bash
+source "${SCRIPT_DIR}/demo-restart-helper.bash"
+
 cleanup() {
   kubectl delete deploy/emptydir-demo --ignore-not-found >/dev/null 2>&1 || true
 }
@@ -43,20 +47,9 @@ kubectl rollout status deploy/emptydir-demo --timeout=60s >/dev/null
 echo "== [1] emptyDir에 파일 생성 =="
 kubectl exec deploy/emptydir-demo -- sh -c 'echo "storage-lab-emptydir" > /emptydir/marker.txt && cat /emptydir/marker.txt'
 
-echo "== [2] 재시작 전 containerID =="
-before="$(kubectl get pod -l app=emptydir-demo -o jsonpath='{.items[0].status.containerStatuses[0].containerID}')"
-echo "before=${before}"
+echo "== [2] 컨테이너 재시작 (같은 Pod 유지) =="
+force_container_restart emptydir-demo emptydir-demo || exit 1
 
-echo "== [3] PID 1 kill -> 컨테이너 재시작 유도 =="
-kubectl exec deploy/emptydir-demo -- sh -c 'kill 1' || true
-sleep 3
-kubectl wait --for=condition=Ready pod -l app=emptydir-demo --timeout=60s >/dev/null
-
-echo "== [4] 재시작 후 containerID =="
-after="$(kubectl get pod -l app=emptydir-demo -o jsonpath='{.items[0].status.containerStatuses[0].containerID}')"
-echo "after=${after}"
-
-echo "== [5] 파일 확인 (남아 있어야 정상) =="
+echo "== [3] 파일 확인 (남아 있어야 정상) =="
 kubectl exec deploy/emptydir-demo -- cat /emptydir/marker.txt
 echo "OK: marker.txt 유지됨 (emptyDir는 같은 Pod에서 유지)."
-

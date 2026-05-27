@@ -237,6 +237,7 @@ wait_ready() {
 
 start_port_forward() {
   kill "${PF_PID}" 2>/dev/null || true
+  sleep 0.5
   kubectl port-forward "svc/${SVC_NAME}" 8080:80 >/dev/null 2>&1 &
   PF_PID=$!
   for _ in $(seq 1 30); do
@@ -249,20 +250,39 @@ start_port_forward() {
   exit 1
 }
 
+# Pod 삭제·재생성 후 기존 port-forward는 끊김 → 반드시 다시 연결
+ensure_backend_ready() {
+  wait_ready
+  start_port_forward
+}
+
 curl_cache() {
   local label="$1"
   local expect_hit="${2:-}"
-  local headers
+  local headers actual attempt
+
   echo "--- ${label} ---"
-  headers=$(curl -s -D- "http://127.0.0.1:8080/compute?n=${N}" -o /dev/null \
-    | grep -E '^(HTTP/|X-Cache-Hit|X-Elapsed-Sec)' || true)
+  for attempt in 1 2 3 4 5; do
+    headers=$(curl -s -D- "http://127.0.0.1:8080/compute?n=${N}" -o /dev/null 2>/dev/null \
+      | grep -E '^(HTTP/|X-Cache-Hit|X-Elapsed-Sec)' || true)
+    if echo "${headers}" | grep -q '^X-Cache-Hit:'; then
+      break
+    fi
+    if [[ "${attempt}" -lt 5 ]]; then
+      echo "   (retry ${attempt}/5: backend not ready, restarting port-forward...)"
+      ensure_backend_ready
+      sleep 1
+    fi
+  done
   echo "${headers}"
 
   if [[ -n "${expect_hit}" ]]; then
-    local actual
     actual=$(echo "${headers}" | awk -F': ' '/^X-Cache-Hit:/ {print $2}' | tr -d '\r')
     if [[ "${actual}" != "${expect_hit}" ]]; then
       echo "ASSERT FAIL: expected X-Cache-Hit=${expect_hit}, got '${actual}' (${label})" >&2
+      if [[ -z "${actual}" ]]; then
+        echo "  hint: Pod 삭제 후 port-forward가 끊겼을 수 있습니다. ensure_backend_ready 확인." >&2
+      fi
       exit 1
     fi
     echo "OK: X-Cache-Hit=${actual}"
@@ -274,7 +294,7 @@ delete_pod() {
   pod=$(kubectl get pod -l "app=${APP_LABEL}" -o jsonpath='{.items[0].metadata.name}')
   echo "Deleting pod: ${pod}"
   kubectl delete pod "${pod}" --wait=true
-  wait_ready
+  ensure_backend_ready
 }
 
 clear_pod_cache() {
@@ -323,6 +343,7 @@ curl_cache "hostPath — 1회차 (캐시 미스, 느림)" "false"
 curl_cache "hostPath — 2회차 (캐시 히트, 빠름)" "true"
 
 delete_pod
+# delete_pod 내부에서 ensure_backend_ready 호출됨
 curl_cache "hostPath — Pod 삭제 후 1회차 (캐시 히트 유지, 빠름)" "true"
 
 echo "Pod /cache after delete (hostPath — 파일 유지 기대):"
