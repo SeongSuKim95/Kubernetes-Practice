@@ -1,0 +1,29 @@
+# kube-prometheus-stack Helm values (LoadTestLab)
+# Prometheus TSDB / Grafana 모두 gp3(EBS) PVC 사용.
+grafana:
+  adminPassword: "loadtest-admin"   # 실습용. 운영에선 Secret 으로 관리.
+  persistence:
+    enabled: true
+    storageClassName: gp3
+    size: 5Gi
+  service:
+    type: ClusterIP                 # private. 접근은 kubectl port-forward 로.
+
+prometheus:
+  prometheusSpec:
+    retention: 6h
+    # loadtest 네임스페이스의 ServiceMonitor 도 잡도록 셀렉터 제한 해제
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp3
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+
+# 단일 노드/소규모 실습이라 일부 컴포넌트는 가볍게.
+alertmanager:
+  enabled: false

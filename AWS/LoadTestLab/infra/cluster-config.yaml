@@ -1,0 +1,37 @@
+# eksctl ClusterConfig — LoadTestLab
+# private 워커 노드 + NAT(Single) + OIDC(IRSA용).
+# create-eks-cluster.sh 가 envsubst 로 ${...} 를 채운 뒤 eksctl 에 넘깁니다.
+#
+# 노드 스펙은 "의도적으로 빈약"하게 잡았습니다(실습 목표: 가까스로 버티는 환경).
+# 50k RPS 를 제대로 버티려면 실습 중 manifest(replicas/resources/HPA)를 강화해야 합니다.
+# 노드 수/타입은 실측 후 조정하세요(아래 값은 시작점일 뿐입니다).
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: ${CLUSTER_NAME}
+  region: ${AWS_REGION}
+  version: "1.29"
+
+iam:
+  withOIDC: true            # ALB Controller / EBS CSI 의 IRSA 에 필요
+
+vpc:
+  nat:
+    gateway: Single         # private 노드의 아웃바운드(이미지 pull, ArgoCD git fetch)용
+
+managedNodeGroups:
+  - name: ng-workload
+    instanceType: ${NODE_INSTANCE_TYPE}
+    desiredCapacity: ${NODE_COUNT}
+    minSize: ${NODE_COUNT}
+    maxSize: ${NODE_COUNT}
+    privateNetworking: true # 노드를 private subnet 에 배치
+    volumeSize: 30
+    ssh:
+      allow: false
+    labels:
+      role: workload
+
+# vpc-cni / coredns / kube-proxy 는 EKS 기본 설치.
+# aws-ebs-csi-driver 는 IRSA 가 필요하므로 install-addons.sh 에서 별도 설치합니다.

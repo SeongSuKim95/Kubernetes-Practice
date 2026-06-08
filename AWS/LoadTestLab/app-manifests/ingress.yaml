@@ -1,0 +1,33 @@
+# ALB Ingress. 외부 HTTPS(443)는 ALB 에서 ACM 인증서로 종료, 백엔드(Pod)는 HTTP 80.
+#
+# 인증서: certificate-arn 을 명시하지 않으면 AWS Load Balancer Controller 가
+#   Ingress host(loadtest.k8s-study.club) 와 일치하는 ACM 인증서를 자동 탐색합니다.
+#   (운영자가 사전에 ACM 1회 발급 → Issued 상태이면 됨)
+#   고정하고 싶으면 아래 certificate-arn 주석을 풀어 ARN 을 넣으세요.
+#
+# host 를 본인 도메인으로 바꾸면 됩니다(기본: loadtest.k8s-study.club).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: echo-cpu
+  namespace: loadtest
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-northeast-2:<ACCOUNT>:certificate/<UUID>
+spec:
+  ingressClassName: alb
+  rules:
+    - host: loadtest.k8s-study.club
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: echo-cpu
+                port:
+                  number: 80

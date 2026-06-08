@@ -1,0 +1,22 @@
+# kube-prometheus-stack Prometheus 가 fluentd 메트릭을 주기적으로 수집.
+# values-kube-prometheus.yaml 에서 serviceMonitorSelectorNilUsesHelmValues: false 로
+# 클러스터 전체 ServiceMonitor 를 수집하도록 설정되어 있습니다.
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: echo-cpu-fluentd
+  namespace: loadtest
+  labels:
+    app: echo-cpu
+spec:
+  namespaceSelector:
+    matchNames:
+      - loadtest
+  selector:
+    matchLabels:
+      app: echo-cpu
+      metrics: fluentd
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 15s

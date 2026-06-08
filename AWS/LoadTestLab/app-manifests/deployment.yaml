@@ -1,0 +1,74 @@
+# [초기 지급 manifest] 일부러 빈약하게 설정되어 있습니다.
+#   - replicas: 1
+#   - 낮은 requests/limits
+# 실습 목표: 트래픽을 100→1k→10k→50k 로 올리며 5xx 가 나면
+#   replicas / resources / hpa.yaml 을 강화해 200 100% 를 유지하도록 직접 수정합니다.
+#   (Git 커밋 → ArgoCD 가 자동 sync)
+#
+# 메인 컨테이너: registry.k8s.io/hpa-example
+#   - 요청마다 CPU 를 쓰는 php-apache (200 OK 반환). RPS↑ → CPU↑ → HPA 스케일.
+#   - apache access 로그를 emptyDir(/var/log/apache2)에 파일로 남기고,
+#     fluentd 사이드카가 그걸 읽어 200/500 만 기록하고,
+#     Prometheus 메트릭(http_responses_total{code="200|500"})도 노출합니다.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo-cpu
+  namespace: loadtest
+  labels:
+    app: echo-cpu
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: echo-cpu
+  template:
+    metadata:
+      labels:
+        app: echo-cpu
+    spec:
+      containers:
+        # ── 메인: 200 OK + 요청당 CPU ───────────────────────────────
+        - name: app
+          image: registry.k8s.io/hpa-example
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "100m"        # HPA Utilization 계산 기준
+              memory: "64Mi"
+            limits:
+              cpu: "200m"        # 의도적 제한 (실습 중 상향)
+              memory: "128Mi"
+          volumeMounts:
+            - name: apache-logs
+              mountPath: /var/log/apache2   # 공식 php-apache 의 로그 경로(=stdout 심볼릭링크)를
+                                            # emptyDir 로 덮어 실제 파일로 기록되게 함
+        # ── 사이드카: 로그 수집기 + Prometheus 메트릭(200/500) ───────
+        # debian-prometheus 이미지: fluent-plugin-prometheus 포함
+        - name: fluentd
+          image: fluent/fluentd-kubernetes-daemonset:v1.16.5-debian-prometheus-1.2
+          ports:
+            - name: metrics
+              containerPort: 24231
+          securityContext:
+            runAsUser: 0          # apache(root) 가 쓴 로그 파일 읽기용
+          resources:
+            requests:
+              cpu: "20m"
+              memory: "64Mi"
+            limits:
+              cpu: "100m"
+              memory: "128Mi"
+          volumeMounts:
+            - name: apache-logs
+              mountPath: /var/log/apache2
+              readOnly: true
+            - name: fluentd-config
+              mountPath: /fluentd/etc
+      volumes:
+        - name: apache-logs
+          emptyDir: {}
+        - name: fluentd-config
+          configMap:
+            name: fluentd-config

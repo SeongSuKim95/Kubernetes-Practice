@@ -1,0 +1,23 @@
+# Argo CD Application: app-manifests/ 디렉터리를 loadtest 네임스페이스에 동기화.
+# 실습자는 app-manifests/ 의 deployment.yaml / hpa.yaml 등을 수정→git push 하면
+# Argo CD 가 자동(prune+selfHeal)으로 클러스터에 반영합니다.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loadtest-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/SeongSuKim95/Kubernetes-Practice.git
+    targetRevision: main
+    path: AWS/LoadTestLab/app-manifests
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: loadtest
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

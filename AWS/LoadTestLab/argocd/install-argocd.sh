@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Argo CD 설치 + LoadTestLab Application 등록(app-manifests/ 를 GitOps 로 동기화).
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+NS="argocd"
+
+command -v kubectl >/dev/null 2>&1 || { echo "kubectl 없음" >&2; exit 1; }
+
+echo "=== Argo CD 설치 ==="
+kubectl create namespace "${NS}" 2>/dev/null || true
+kubectl apply -n "${NS}" -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+echo "=== argocd-server 기동 대기 ==="
+kubectl -n "${NS}" rollout status deploy/argocd-server --timeout=300s
+
+echo "=== LoadTestLab Application 등록 ==="
+kubectl apply -f "${SCRIPT_DIR}/application.yaml"
+
+echo ""
+echo "=== 초기 admin 비밀번호 ==="
+kubectl -n "${NS}" get secret argocd-initial-admin-secret \
+  -o jsonpath='{.data.password}' 2>/dev/null | base64 -d || echo "(secret 없음 - 이미 변경됨?)"
+echo ""
+
+cat <<EOF
+
+=== Argo CD UI 접속 (private → 포트포워드) ===
+  kubectl -n ${NS} port-forward svc/argocd-server 8080:443
+  브라우저: https://localhost:8080  (admin / 위 비밀번호)
+
+이후 app-manifests/ 의 파일을 수정→git push 하면 Argo CD 가 자동 sync 합니다.
+EOF
