@@ -18,7 +18,7 @@ metadata:
   labels:
     app: echo-cpu
 spec:
-  replicas: 3
+  replicas: 5
   selector:
     matchLabels:
       app: echo-cpu
@@ -41,10 +41,10 @@ spec:
             - containerPort: 80
           resources:
             requests:
-              cpu: "500m"        # HPA Utilization 계산 기준
+              cpu: "400m"        # HPA Utilization 계산 기준
               memory: "64Mi"
             limits:
-              cpu: "1k"        # 의도적 제한 (실습 중 상향)
+              cpu: "1200m"        # 의도적 제한 (실습 중 상향)
               memory: "128Mi"
           volumeMounts:
             - name: apache-logs
