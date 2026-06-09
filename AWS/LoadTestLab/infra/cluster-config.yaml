@@ -11,7 +11,7 @@ kind: ClusterConfig
 metadata:
   name: ${CLUSTER_NAME}
   region: ${AWS_REGION}
-  version: "1.29"
+  version: "${K8S_VERSION}"
 
 iam:
   withOIDC: true            # ALB Controller / EBS CSI 의 IRSA 에 필요
