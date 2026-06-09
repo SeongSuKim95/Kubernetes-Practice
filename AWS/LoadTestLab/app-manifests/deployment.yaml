@@ -18,7 +18,7 @@ metadata:
   labels:
     app: echo-cpu
 spec:
-  replicas: 5
+  replicas: 10
   selector:
     matchLabels:
       app: echo-cpu
@@ -41,11 +41,11 @@ spec:
             - containerPort: 80
           resources:
             requests:
-              cpu: "400m"        # HPA Utilization 계산 기준
-              memory: "64Mi"
-            limits:
-              cpu: "3000m"        # 의도적 제한 (실습 중 상향)
+              cpu: "500m"        # HPA Utilization 계산 기준
               memory: "128Mi"
+            limits:
+              cpu: "3500m"       # 1k RPS 목표 (c5.2xlarge×5, Pod당 처리량↑)
+              memory: "256Mi"
           volumeMounts:
             - name: apache-logs
               mountPath: /var/log/apache2   # 공식 php-apache 의 로그 경로(=stdout 심볼릭링크)를
@@ -63,7 +63,7 @@ spec:
               cpu: "20m"
               memory: "64Mi"
             limits:
-              cpu: "100m"
+              cpu: "150m"
               memory: "128Mi"
           volumeMounts:
             - name: apache-logs

@@ -1,3 +1,5 @@
+# 1,000 RPS 목표 (c5.2xlarge×5 노드 기준, 겨우 버티는 수준).
+# min 10 으로 warm Pod 확보, max 20, scale-up 공격적 / scale-down 완만.
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -8,15 +10,29 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: echo-cpu
-  minReplicas: 5
-  maxReplicas: 5          
+  minReplicas: 10
+  maxReplicas: 20
   metrics:
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 50
+          averageUtilization: 60
   behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+        - type: Pods
+          value: 5
+          periodSeconds: 15
+        - type: Percent
+          value: 100
+          periodSeconds: 15
+      selectPolicy: Max
     scaleDown:
-      stabilizationWindowSeconds: 60
+      stabilizationWindowSeconds: 300
+      policies:
+        - type: Percent
+          value: 10
+          periodSeconds: 60
