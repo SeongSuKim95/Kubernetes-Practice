@@ -1,6 +1,6 @@
 # Fluentd 사이드카 설정.
-# apache access 로그를 tail → 상태코드 200/500 만 남김 → stdout 으로 기록.
-# (fluent-plugin-prometheus 포함 이미지는 Docker Hub 에 없어 stdout 로그 방식 사용)
+# apache access 로그 → 200/500 필터 → Prometheus 카운터 + stdout 로그.
+# fluent/fluentd-aggregator 이미지에 fluent-plugin-prometheus 가 포함되어 있습니다.
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -8,6 +8,13 @@ metadata:
   namespace: loadtest
 data:
   fluent.conf: |
+    <source>
+      @type prometheus
+      bind 0.0.0.0
+      port 24231
+      metrics_path /metrics
+    </source>
+
     <source>
       @type tail
       path /var/log/apache2/access.log
@@ -25,6 +32,19 @@ data:
         key code
         pattern /^(200|500)$/
       </regexp>
+    </filter>
+
+    <filter app.access>
+      @type prometheus
+      <metric>
+        name http_responses_total
+        type counter
+        desc HTTP responses by status code (200/500)
+        <labels>
+          code ${code}
+          namespace loadtest
+        </labels>
+      </metric>
     </filter>
 
     <filter app.access>

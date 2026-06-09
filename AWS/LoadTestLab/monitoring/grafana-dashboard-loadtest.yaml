@@ -1,0 +1,201 @@
+# Grafana 대시보드 — fluentd http_responses_total (200/500)
+# kube-prometheus-stack sidecar 가 grafana_dashboard 라벨 ConfigMap 을 자동 로드합니다.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: loadtest-http-dashboard
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  loadtest-http.json: |
+    {
+      "annotations": { "list": [] },
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 1,
+      "id": null,
+      "links": [],
+      "panels": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "max": 100,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "red", "value": null },
+                  { "color": "orange", "value": 90 },
+                  { "color": "green", "value": 99 }
+                ]
+              },
+              "unit": "percent"
+            }
+          },
+          "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
+          "id": 1,
+          "options": {
+            "minVizHeight": 75,
+            "minVizWidth": 75,
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "targets": [
+            {
+              "expr": "100 * sum(rate(http_responses_total{namespace=\"loadtest\",code=\"200\"}[1m])) / clamp_min(sum(rate(http_responses_total{namespace=\"loadtest\",code=~\"200|500\"}[1m])), 0.001)",
+              "legendFormat": "200 성공률",
+              "refId": "A"
+            }
+          ],
+          "title": "200 성공률 (%)",
+          "type": "gauge"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "fixedColor": "green", "mode": "fixed" },
+              "unit": "reqps"
+            }
+          },
+          "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
+          "id": 2,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "expr": "sum(rate(http_responses_total{namespace=\"loadtest\",code=\"200\"}[1m]))",
+              "legendFormat": "200 RPS",
+              "refId": "A"
+            }
+          ],
+          "title": "200 응답 (RPS)",
+          "type": "stat"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "fixedColor": "red", "mode": "fixed" },
+              "unit": "reqps"
+            }
+          },
+          "gridPos": { "h": 6, "w": 6, "x": 12, "y": 0 },
+          "id": 3,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "expr": "sum(rate(http_responses_total{namespace=\"loadtest\",code=\"500\"}[1m]))",
+              "legendFormat": "500 RPS",
+              "refId": "A"
+            }
+          ],
+          "title": "500 응답 (RPS)",
+          "type": "stat"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "drawStyle": "line",
+                "fillOpacity": 25,
+                "lineWidth": 2,
+                "showPoints": "never",
+                "stacking": { "group": "A", "mode": "normal" }
+              },
+              "unit": "reqps"
+            },
+            "overrides": [
+              {
+                "matcher": { "id": "byName", "options": "200" },
+                "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }]
+              },
+              {
+                "matcher": { "id": "byName", "options": "500" },
+                "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }]
+              }
+            ]
+          },
+          "gridPos": { "h": 10, "w": 24, "x": 0, "y": 6 },
+          "id": 4,
+          "options": {
+            "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom" },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "expr": "sum(rate(http_responses_total{namespace=\"loadtest\",code=\"200\"}[1m]))",
+              "legendFormat": "200",
+              "refId": "A"
+            },
+            {
+              "expr": "sum(rate(http_responses_total{namespace=\"loadtest\",code=\"500\"}[1m]))",
+              "legendFormat": "500",
+              "refId": "B"
+            }
+          ],
+          "title": "200 / 500 응답 추이 (RPS)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "lineWidth": 2,
+                "showPoints": "never"
+              },
+              "unit": "percent"
+            }
+          },
+          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 16 },
+          "id": 5,
+          "options": {
+            "legend": { "calcs": ["mean", "min"], "displayMode": "table", "placement": "bottom" },
+            "tooltip": { "mode": "single" }
+          },
+          "targets": [
+            {
+              "expr": "100 * sum(rate(http_responses_total{namespace=\"loadtest\",code=\"200\"}[1m])) / clamp_min(sum(rate(http_responses_total{namespace=\"loadtest\",code=~\"200|500\"}[1m])), 0.001)",
+              "legendFormat": "200 성공률 %",
+              "refId": "A"
+            }
+          ],
+          "title": "200 성공률 추이 (%)",
+          "type": "timeseries"
+        }
+      ],
+      "refresh": "5s",
+      "schemaVersion": 39,
+      "tags": ["loadtest", "http"],
+      "templating": { "list": [] },
+      "time": { "from": "now-15m", "to": "now" },
+      "timepicker": {},
+      "timezone": "browser",
+      "title": "LoadTest — HTTP 200/500",
+      "uid": "loadtest-http-200-500",
+      "version": 1
+    }

@@ -31,6 +31,12 @@ spec:
         # ── 메인: 200 OK + 요청당 CPU ───────────────────────────────
         - name: app
           image: registry.k8s.io/hpa-example
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              sed -i 's|CustomLog /proc/self/fd/1 combined|CustomLog /var/log/apache2/access.log combined|' /etc/apache2/apache2.conf
+              touch /var/log/apache2/access.log
+              exec apache2-foreground
           ports:
             - containerPort: 80
           resources:
@@ -44,11 +50,14 @@ spec:
             - name: apache-logs
               mountPath: /var/log/apache2   # 공식 php-apache 의 로그 경로(=stdout 심볼릭링크)를
                                             # emptyDir 로 덮어 실제 파일로 기록되게 함
-        # ── 사이드카: 로그 수집기 (200/500만 stdout 기록) ───────────
+        # ── 사이드카: 로그 + Prometheus 메트릭 (:24231/metrics) ───
         - name: fluentd
-          image: fluent/fluentd:v1.16-1
+          image: fluent/fluentd-aggregator:debian
           securityContext:
             runAsUser: 0          # apache(root) 가 쓴 로그 파일 읽기용
+          ports:
+            - name: metrics
+              containerPort: 24231
           resources:
             requests:
               cpu: "20m"

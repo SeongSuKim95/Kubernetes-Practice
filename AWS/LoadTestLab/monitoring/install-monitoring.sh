@@ -26,6 +26,8 @@ helm upgrade --install kube-prometheus-stack \
   --version "${CHART_VERSION}" \
   -f "${VALUES}"
 
+kubectl apply -f "${SCRIPT_DIR}/grafana-dashboard-loadtest.yaml"
+
 echo ""
 echo "=== 검증 ==="
 kubectl -n "${NS}" rollout status deploy/kube-prometheus-stack-grafana --timeout=300s || true
@@ -38,6 +40,7 @@ cat <<EOF
   브라우저: http://localhost:3000  (admin / loadtest-admin)
 
 추천 대시보드:
+  - "LoadTest — HTTP 200/500"  → fluentd http_responses_total (부하 실습 핵심)
   - "Kubernetes / Compute Resources / Namespace (Pods)"  → loadtest 네임스페이스 CPU
   - kube-state-metrics 기반 replica 수 변화로 HPA 스케일 관찰
 EOF
