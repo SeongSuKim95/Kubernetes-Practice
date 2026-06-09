@@ -9,7 +9,9 @@ command -v kubectl >/dev/null 2>&1 || { echo "kubectl 없음" >&2; exit 1; }
 
 echo "=== Argo CD 설치 ==="
 kubectl create namespace "${NS}" 2>/dev/null || true
-kubectl apply -n "${NS}" -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+# server-side apply: ApplicationSet CRD 가 커서 client-side apply 시 annotation 256KB 초과 방지
+kubectl apply --server-side --force-conflicts -n "${NS}" \
+  -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 echo "=== argocd-server 기동 대기 ==="
 kubectl -n "${NS}" rollout status deploy/argocd-server --timeout=300s

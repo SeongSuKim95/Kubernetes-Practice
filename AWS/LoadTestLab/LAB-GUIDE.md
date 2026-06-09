@@ -36,23 +36,61 @@ flowchart TB
   POD -.->|egress| NAT
 ```
 
-| 구간 | 프로토콜 | 비고 |
-|------|----------|------|
-| LoadTest EC2 → ALB | HTTPS(443) | ACM 인증서로 TLS 종료 |
-| ALB → Pod | HTTP(80) | VPC 내부 평문 |
-| 워커 노드 → 인터넷 | NAT 경유 | 이미지 pull, Argo CD git fetch |
+
+
+
+| 구간                 | 프로토콜       | 비고                          |
+| ------------------ | ---------- | --------------------------- |
+| LoadTest EC2 → ALB | HTTPS(443) | ACM 인증서로 TLS 종료             |
+| ALB → Pod          | HTTP(80)   | VPC 내부 평문                   |
+| 워커 노드 → 인터넷        | NAT 경유     | 이미지 pull, Argo CD git fetch |
+
 
 ---
 
 ## 2. 사전 작업 (운영자, 실습 전 1회)
 
-| # | 작업 | 비고 |
-|---|------|------|
-| 1 | 로컬에 `aws` CLI v2, `eksctl`, `kubectl`, `helm`, `envsubst` 설치 | |
-| 2 | `aws configure` 자격 증명 | |
-| 3 | 해당 리전 **EC2 키페어** 준비 | LoadTest EC2 SSH 용 |
-| 4 | **ACM 인증서 1회 발급** (아래 §2.1) | `loadtest.k8s-study.club`, EKS 와 **동일 리전** |
-| 5 | (클러스터·Ingress 기동 후) **Route53 A(ALIAS): `loadtest` → ALB** (§2.3) | ALB 생성된 뒤 |
+
+| #   | 작업                                                                | 비고                                         |
+| --- | ----------------------------------------------------------------- | ------------------------------------------ |
+| 1   | 로컬 사전 도구 설치·검증 (`infra/install-prerequisites.sh`)               | aws/eksctl/kubectl/helm/envsubst/curl      |
+| 2   | `aws configure` 자격 증명 (스크립트가 STS 로 검증)                          |                                            |
+| 3   | 해당 리전 **EC2 키페어** 준비                                              | LoadTest EC2 SSH 용                         |
+| 4   | **ACM 인증서 1회 발급** (아래 §2.1)                                       | `loadtest.k8s-study.club`, EKS 와 **동일 리전** |
+| 5   | (클러스터·Ingress 기동 후) **Route53 A(ALIAS): `loadtest` → ALB** (§2.3) | ALB 생성된 뒤                                  |
+
+### 2.0 로컬 사전 도구 설치·검증 (`install-prerequisites.sh`)
+
+```bash
+cd AWS/LoadTestLab/infra
+./install-prerequisites.sh              # 없는 도구 설치 + 전체 검증
+./install-prerequisites.sh --check-only   # 설치 없이 검증만
+```
+
+**설치 대상:** `aws` CLI v2, `eksctl`, `kubectl`, `helm`, `envsubst`(gettext), `curl`
+
+| OS | 설치 방식 |
+|----|----------|
+| macOS | Homebrew (`brew install awscli eksctl kubectl helm gettext curl`) |
+| Linux (Debian/Ubuntu) | `apt` + eksctl/helm/kubectl 공식 바이너리 |
+| Linux (RHEL/Amazon Linux) | `dnf`/`yum` + 공식 바이너리 |
+
+**검증 항목 (스크립트가 자동 수행):**
+
+| 검증 | 내용 |
+|------|------|
+| PATH | 각 명령이 실행 가능한지 |
+| `aws` | **CLI v2** 여부 (`aws-cli/2`) |
+| `eksctl` / `kubectl` / `helm` | 버전 출력 |
+| `envsubst` | 치환 동작 + `cluster-config.yaml` 템플릿 렌더 테스트 |
+| `aws configure` | `aws sts get-caller-identity` 성공 여부 |
+
+모두 ✓ 이면 다음 단계로 진행합니다. `aws configure` 가 실패하면 키/리전을 설정한 뒤 `--check-only` 로 재검증하세요.
+
+```bash
+aws configure   # region: ap-northeast-2 권장
+./install-prerequisites.sh --check-only
+```
 
 ### 2.1 ACM 인증서 발급 (1회, DNS 검증)
 
@@ -63,12 +101,14 @@ flowchart TB
 
 #### 도메인 선택
 
-| 방식 | 도메인 예 | 용도 |
-|------|-----------|------|
-| **서브도메인 1개** (권장) | `loadtest.k8s-study.club` | 이 실습 단일 진입점 |
-| 와일드카드 | `*.k8s-study.club` | 여러 서브도메인 재사용 시 |
 
-이 실습의 `APP_HOST` / Ingress host 는 **`loadtest.k8s-study.club`** 입니다.
+| 방식                | 도메인 예                     | 용도             |
+| ----------------- | ------------------------- | -------------- |
+| **서브도메인 1개** (권장) | `loadtest.k8s-study.club` | 이 실습 단일 진입점    |
+| 와일드카드             | `*.k8s-study.club`        | 여러 서브도메인 재사용 시 |
+
+
+이 실습의 `APP_HOST` / Ingress host 는 `**loadtest.k8s-study.club`** 입니다.
 
 #### 방법 A — AWS 콘솔 (가장 직관적)
 
@@ -79,7 +119,7 @@ flowchart TB
 5. **Key algorithm:** RSA 2048 (기본값)
 6. **Request** 클릭
 7. 생성된 인증서 상세 → **Domains** → **Create records in Route53** 클릭
-   - Hosted Zone 이 같은 계정에 있으면 검증용 **CNAME 이 자동 생성**됩니다.
+  - Hosted Zone 이 같은 계정에 있으면 검증용 **CNAME 이 자동 생성**됩니다.
 8. 1~5분 후 상태가 **Pending validation** → **Issued** 로 변경
 9. 인증서 상세에서 **ARN** 복사 (기록해 두기, 선택 사항)
 
@@ -158,15 +198,17 @@ aws acm describe-certificate \
 - **인증서는 운영자가 1회만 발급**합니다. 실습 중 manifest 를 바꿔도 재발급하지 않습니다.
 - `app-manifests/ingress.yaml` 의 host(`loadtest.k8s-study.club`)와 ACM 도메인이 **일치**해야 합니다.
 - AWS Load Balancer Controller 는 Ingress host 와 일치하는 ACM 인증서를 **자동 탐색**합니다.
-  → 매니페스트에 ARN 을 넣지 않아도 동작합니다.
+→ 매니페스트에 ARN 을 넣지 않아도 동작합니다.
 - ARN 을 고정하고 싶으면 `ingress.yaml` 의 `certificate-arn` 주석을 해제해 넣으세요.
 
 ### 2.2 ACM vs Route53 A 레코드 (헷갈리기 쉬운 부분)
 
-| 작업 | 목적 | 시점 |
-|------|------|------|
-| **ACM DNS 검증 CNAME** | “이 도메인 소유자” 증명 → **인증서 발급** | 클러스터 구축 **전** |
+
+| 작업                         | 목적                                         | 시점                     |
+| -------------------------- | ------------------------------------------ | ---------------------- |
+| **ACM DNS 검증 CNAME**       | “이 도메인 소유자” 증명 → **인증서 발급**                | 클러스터 구축 **전**          |
 | **Route53 A(ALIAS) → ALB** | `loadtest.k8s-study.club` 이 **ALB IP로 연결** | Ingress 로 ALB 생성 **후** |
+
 
 ACM 은 HTTPS **인증서**만 발급합니다. 도메인이 ALB 로 가려면 **A(ALIAS) 레코드**가 별도로 필요합니다.
 
@@ -181,12 +223,14 @@ kubectl -n loadtest get ingress echo-cpu
 
 Route53 Hosted Zone `k8s-study.club` 에 레코드 추가:
 
-| 항목 | 값 |
-|------|-----|
-| Record name | `loadtest` |
-| Type | **A** (Alias) |
-| Alias target | 위 ALB DNS (`dualstack.xxx.elb.amazonaws.com`) |
-| Evaluate target health | Yes (권장) |
+
+| 항목                     | 값                                             |
+| ---------------------- | --------------------------------------------- |
+| Record name            | `loadtest`                                    |
+| Type                   | **A** (Alias)                                 |
+| Alias target           | 위 ALB DNS (`dualstack.xxx.elb.amazonaws.com`) |
+| Evaluate target health | Yes (권장)                                      |
+
 
 **ap-northeast-2 ALB Hosted Zone ID:** `ZWKZPGTI48KDX` (리전별 고정값)
 
@@ -243,6 +287,8 @@ flowchart TD
   J --> I
 ```
 
+
+
 ### ② EKS 클러스터 (private 노드 + NAT)
 
 ```bash
@@ -259,8 +305,13 @@ export AWS_REGION=ap-northeast-2
 
 ```bash
 ./install-addons.sh
-# 검증: kubectl -n kube-system get deploy aws-load-balancer-controller / kubectl get sc
+# 검증:
+#   kubectl -n kube-system get deploy aws-load-balancer-controller
+#   kubectl get sc
+#   kubectl top nodes   # metrics API 동작 확인 (HPA CPU 메트릭 필수)
 ```
+
+`metrics-server`는 `eksctl create cluster` 시 EKS 애드온으로 이미 설치됩니다. 스크립트는 upstream manifest 재적용을 **건너뛰고**, Service selector가 Pod 라벨과 맞는지 자동 점검·수정합니다. (과거에 manifest를 덮어쓰면 `k8s-app` selector가 남아 `kubectl top` → `Metrics API not available` 이 발생할 수 있음)
 
 ### ④ 모니터링 (Prometheus + Grafana)
 
@@ -269,6 +320,7 @@ cd ../monitoring
 ./install-monitoring.sh
 # Grafana: kubectl -n monitoring port-forward svc/kube-prometheus-stack-grafana 3000:80
 #          http://localhost:3000  (admin / loadtest-admin)
+# 대시보드: "LoadTest — HTTP 200/500"  (200/500 RPS·성공률 실시간)
 ```
 
 ### ⑤ Argo CD + 앱 배포
@@ -303,10 +355,12 @@ export KEY_NAME=<키페어 이름>
 
 `app-manifests/` 는 **일부러 빈약**합니다.
 
-| 파일 | 초기값 | 강화 포인트 |
-|------|--------|-------------|
-| `deployment.yaml` | replicas=1, cpu limit 200m | replicas↑, requests/limits 조정 |
-| `hpa.yaml` | maxReplicas=3, CPU 50% | maxReplicas↑, target/behavior 조정 |
+
+| 파일                | 초기값                        | 강화 포인트                           |
+| ----------------- | -------------------------- | -------------------------------- |
+| `deployment.yaml` | replicas=1, cpu limit 200m | replicas↑, requests/limits 조정    |
+| `hpa.yaml`        | maxReplicas=3, CPU 50%     | maxReplicas↑, target/behavior 조정 |
+
 
 ### 루프
 
@@ -321,6 +375,8 @@ flowchart LR
   UP --> L
 ```
 
+
+
 ### 부하 실행 (LoadTest EC2 에서)
 
 ```bash
@@ -333,18 +389,24 @@ APP_HOST=loadtest.k8s-study.club ./run-loadtest.sh
 
 ### 검증 지표
 
-| 무엇 | 어디서 |
-|------|--------|
-| 200 비율 / 실패율 | **k6 출력** (`http_req_failed`, checks) |
-| 200/500 로그 | `kubectl -n loadtest logs <pod> -c fluentd` |
-| **200/500 누적 건수 (메트릭)** | **Grafana / Prometheus** (`http_responses_total`) |
-| CPU / replica 수 | **Grafana** (HPA 스케일 관찰) |
-| HPA 상태 | `kubectl -n loadtest get hpa -w` |
+
+| 무엇                      | 어디서                                               |
+| ----------------------- | ------------------------------------------------- |
+| 200 비율 / 실패율            | **k6 출력** (`http_req_failed`, checks)             |
+| **200/500 RPS·성공률 (직관)** | **Grafana** 대시보드 `LoadTest — HTTP 200/500`      |
+| 200/500 로그              | `kubectl -n loadtest logs <pod> -c fluentd`       |
+| 200/500 누적 건수 (메트릭)   | **Prometheus** (`http_responses_total`)           |
+| CPU / replica 수         | **Grafana** (HPA 스케일 관찰)                          |
+| HPA 상태                  | `kubectl -n loadtest get hpa -w`                  |
+
 
 #### Grafana — 200/500 메트릭 (fluentd → Prometheus)
 
-fluentd 사이드카가 `http_responses_total{code="200"}` / `{code="500"}` 카운터를 `:24231/metrics` 에 노출합니다.
-`ServiceMonitor` 가 Prometheus 에 수집하고 Grafana 에서 조회합니다.
+fluentd 사이드카(`fluent/fluentd-aggregator:debian`)가 apache access 로그를 읽어
+`http_responses_total{code="200"}` / `{code="500"}` 카운터를 `:24231/metrics` 에 노출합니다.
+`ServiceMonitor` → Prometheus 수집 → Grafana 대시보드 **`LoadTest — HTTP 200/500`** 에서 확인합니다.
+
+대시보드 패널: **200 성공률(%)**, **200 RPS**, **500 RPS**, 시계열 그래프.
 
 **Prometheus 쿼리 예:**
 
@@ -383,13 +445,15 @@ curl -s localhost:24231/metrics | grep http_responses_total
 AWS/LoadTestLab/
 ├── LAB-GUIDE.md
 ├── infra/
+│   ├── install-prerequisites.sh     # 로컬 도구 설치 + 검증
 │   ├── cluster-config.yaml          # eksctl: private 노드 + NAT(Single) + OIDC
 │   ├── create-eks-cluster.sh
 │   ├── install-addons.sh            # ALB Controller + metrics-server + gp3(EBS CSI)
 │   └── create-loadtest-ec2.sh       # k6 설치 + TCP 튜닝
 ├── monitoring/
 │   ├── install-monitoring.sh        # kube-prometheus-stack
-│   └── values-kube-prometheus.yaml  # gp3 PVC
+│   ├── values-kube-prometheus.yaml  # gp3 PVC
+│   └── grafana-dashboard-loadtest.yaml  # HTTP 200/500 대시보드
 ├── argocd/
 │   ├── install-argocd.sh
 │   └── application.yaml             # app-manifests/ 동기화
@@ -413,17 +477,19 @@ AWS/LoadTestLab/
 ## 6. 설계 메모 / 주의
 
 - **앱이 CPU 를 쓰는 이유:** `registry.k8s.io/hpa-example` 는 요청당 연산을 해서 RPS↑ → CPU↑.
-  순수 200-only 앱이면 CPU 가 안 올라 HPA 가 동작하지 않습니다.
+순수 200-only 앱이면 CPU 가 안 올라 HPA 가 동작하지 않습니다.
 - **사이드카 로그·메트릭:** 공식 php-apache 는 로그를 stdout 으로 보내므로, `/var/log/apache2` 를
-  emptyDir 로 덮어 **실제 파일**로 기록되게 한 뒤 fluentd 가 읽습니다. fluentd 는 200/500 만
-  stdout 에 남기고, 동시에 `http_responses_total{code}` Prometheus 카운터를 노출합니다.
-  이미지는 `fluent-plugin-prometheus` 가 포함된 `debian-prometheus` 변형을 사용합니다.
+emptyDir 로 덮어 **실제 파일**로 기록되게 한 뒤 fluentd 가 읽습니다. fluentd 는 200/500 만
+stdout 에 남기고, 동시에 `http_responses_total{code}` Prometheus 카운터를 노출합니다.
+fluentd 이미지는 `fluent-plugin-prometheus` 가 포함된 `fluent/fluentd-aggregator:debian` 을 사용합니다.
+Grafana 대시보드 `LoadTest — HTTP 200/500` 은 `monitoring/grafana-dashboard-loadtest.yaml` 로 등록됩니다.
+앱 컨테이너는 시작 시 apache `CustomLog` 를 `/var/log/apache2/access.log` 파일로 리다이렉트합니다.
 - **TLS 종료는 ALB**, 백엔드는 HTTP — Pod 에 인증서가 필요 없습니다.
 - **노드 수/스펙은 시작점**입니다. "50k 를 가까스로 버티는" 정확한 스펙은 실측으로 보정하세요.
 - **50k RPS** 는 keep-alive 기반에서 단일 EC2(c5.2xlarge~c5.4xlarge)로 가능합니다. 새 커넥션을
-  매번 열면 임시 포트 고갈로 ~1k/s 가 한계라, k6 의 커넥션 재사용을 유지하세요.
+매번 열면 임시 포트 고갈로 ~1k/s 가 한계라, k6 의 커넥션 재사용을 유지하세요.
 - **NAT 비용**: private 노드라 NAT 가 필요합니다(이미지 pull + Argo CD git fetch). 실습 후
-  `eksctl delete cluster --name loadtest-lab` 로 정리하세요.
+`eksctl delete cluster --name loadtest-lab` 로 정리하세요.
 
 ---
 
@@ -435,3 +501,4 @@ aws ec2 terminate-instances --region ap-northeast-2 --instance-ids <id>
 # EKS 삭제 (NAT/EIP/노드 포함 정리)
 eksctl delete cluster --name loadtest-lab --region ap-northeast-2
 ```
+

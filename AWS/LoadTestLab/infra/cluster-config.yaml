@@ -2,9 +2,10 @@
 # private 워커 노드 + NAT(Single) + OIDC(IRSA용).
 # create-eks-cluster.sh 가 envsubst 로 ${...} 를 채운 뒤 eksctl 에 넘깁니다.
 #
-# 노드 스펙은 "의도적으로 빈약"하게 잡았습니다(실습 목표: 가까스로 버티는 환경).
-# 50k RPS 를 제대로 버티려면 실습 중 manifest(replicas/resources/HPA)를 강화해야 합니다.
-# 노드 수/타입은 실측 후 조정하세요(아래 값은 시작점일 뿐입니다).
+# 노드 스펙 (실측 기준):
+#   t3.medium×3  → ~100 RPS 상한 (1000 RPS 부하 시 ~9% 처리)
+#   c5.2xlarge×5 → 1,000 RPS 를 겨우 버티는 수준(약 10× CPU, burst 없는 compute 최적화)
+# 10k/50k RPS 는 manifest(replicas/resources/HPA) 추가 강화가 필요합니다.
 apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
@@ -24,8 +25,8 @@ managedNodeGroups:
   - name: ng-workload
     instanceType: ${NODE_INSTANCE_TYPE}
     desiredCapacity: ${NODE_COUNT}
-    minSize: ${NODE_COUNT}
-    maxSize: ${NODE_COUNT}
+    minSize: ${NODE_MIN_SIZE}
+    maxSize: ${NODE_MAX_SIZE}
     privateNetworking: true # 노드를 private subnet 에 배치
     volumeSize: 30
     ssh:
