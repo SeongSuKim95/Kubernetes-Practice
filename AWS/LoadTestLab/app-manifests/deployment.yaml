@@ -44,7 +44,7 @@ spec:
               cpu: "400m"        # HPA Utilization 계산 기준
               memory: "64Mi"
             limits:
-              cpu: "2000m"        # 의도적 제한 (실습 중 상향)
+              cpu: "3000m"        # 의도적 제한 (실습 중 상향)
               memory: "128Mi"
           volumeMounts:
             - name: apache-logs
