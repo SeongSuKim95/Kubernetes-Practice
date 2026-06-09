@@ -44,13 +44,9 @@ spec:
             - name: apache-logs
               mountPath: /var/log/apache2   # 공식 php-apache 의 로그 경로(=stdout 심볼릭링크)를
                                             # emptyDir 로 덮어 실제 파일로 기록되게 함
-        # ── 사이드카: 로그 수집기 + Prometheus 메트릭(200/500) ───────
-        # debian-prometheus 이미지: fluent-plugin-prometheus 포함
+        # ── 사이드카: 로그 수집기 (200/500만 stdout 기록) ───────────
         - name: fluentd
-          image: fluent/fluentd-kubernetes-daemonset:v1.16.5-debian-prometheus-1.2
-          ports:
-            - name: metrics
-              containerPort: 24231
+          image: fluent/fluentd:v1.16-1
           securityContext:
             runAsUser: 0          # apache(root) 가 쓴 로그 파일 읽기용
           resources:

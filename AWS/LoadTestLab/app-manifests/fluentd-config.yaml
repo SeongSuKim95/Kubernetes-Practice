@@ -1,7 +1,6 @@
 # Fluentd 사이드카 설정.
-# apache access 로그를 tail → 상태코드 200/500 만 남김
-#   → stdout (kubectl logs 로 확인)
-#   → Prometheus 카운터 (Grafana 에서 code 라벨별 관찰)
+# apache access 로그를 tail → 상태코드 200/500 만 남김 → stdout 으로 기록.
+# (fluent-plugin-prometheus 포함 이미지는 Docker Hub 에 없어 stdout 로그 방식 사용)
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,7 +8,6 @@ metadata:
   namespace: loadtest
 data:
   fluent.conf: |
-    # 메인(apache) 컨테이너가 emptyDir(/var/log/apache2)에 쓴 access.log 를 읽음
     <source>
       @type tail
       path /var/log/apache2/access.log
@@ -21,7 +19,6 @@ data:
       </parse>
     </source>
 
-    # 200 또는 500 인 레코드만 통과 (그 외 코드는 버림)
     <filter app.access>
       @type grep
       <regexp>
@@ -30,33 +27,12 @@ data:
       </regexp>
     </filter>
 
-    # 레코드를 상태코드만 남기도록 축소
     <filter app.access>
       @type record_transformer
       renew_record true
       keep_keys code
     </filter>
 
-    # Prometheus 카운터: code 라벨(200/500)별 누적 건수
-    <filter app.access>
-      @type prometheus
-      <metric>
-        name http_responses_total
-        type counter
-        desc Total HTTP responses by status code (200 or 500 only)
-        key code
-      </metric>
-    </filter>
-
-    # /metrics 엔드포인트 노출 (Prometheus / ServiceMonitor 가 스크랩)
-    <source>
-      @type prometheus
-      bind 0.0.0.0
-      port 24231
-      metrics_path /metrics
-    </source>
-
-    # stdout 으로 출력 → 컨테이너 로그( kubectl logs -c fluentd )로 확인
     <match app.access>
       @type stdout
     </match>
