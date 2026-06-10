@@ -18,7 +18,7 @@ metadata:
   labels:
     app: echo-cpu
 spec:
-  replicas: 10
+  replicas: 3
   revisionHistoryLimit: 2
   selector:
     matchLabels:
@@ -28,6 +28,14 @@ spec:
       labels:
         app: echo-cpu
     spec:
+      # 노드(hostname)별 Pod 수 편차를 maxSkew 이내로 — 5대 워커 vCPU 고르게 사용
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app: echo-cpu
       containers:
         # ── 메인: 200 OK + 요청당 CPU ───────────────────────────────
         - name: app
@@ -43,10 +51,10 @@ spec:
             - containerPort: 80
           resources:
             requests:
-              cpu: "500m"        # HPA Utilization 계산 기준
+              cpu: "200m"        # HPA Utilization 계산 기준
               memory: "128Mi"
             limits:
-              cpu: "4000m"       # 1k RPS 목표 (c5.2xlarge×5, Pod당 처리량↑)
+              cpu: "700m"       # 1k RPS 목표 (c5.2xlarge×5, Pod당 처리량↑)
               memory: "256Mi"
           volumeMounts:
             - name: apache-logs
