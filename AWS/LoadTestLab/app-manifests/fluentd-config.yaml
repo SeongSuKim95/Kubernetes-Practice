@@ -22,7 +22,10 @@ data:
       tag app.access
       read_from_head true
       <parse>
-        @type apache2
+        @type regexp
+        expression /^(?<host>\S+) \S+ \S+ \[(?<time>[^\]]+)\] "(?<method>\S+) (?<path>\S+) \S+" (?<code>\d{3}) (?<size>\S+) (?<response_us>\d+)$/
+        time_key time
+        time_format %d/%b/%Y:%H:%M:%S %z
       </parse>
     </source>
 
@@ -35,11 +38,30 @@ data:
     </filter>
 
     <filter app.access>
+      @type record_transformer
+      enable_ruby true
+      <record>
+        response_sec ${record["response_us"].to_f / 1_000_000.0}
+      </record>
+    </filter>
+
+    <filter app.access>
       @type prometheus
       <metric>
         name http_responses_total
         type counter
         desc HTTP responses by status code (200/500)
+        <labels>
+          code ${code}
+          namespace loadtest
+        </labels>
+      </metric>
+      <metric>
+        name http_request_duration_seconds
+        type histogram
+        desc HTTP request duration in seconds
+        key response_sec
+        buckets 0.01, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10, 30
         <labels>
           code ${code}
           namespace loadtest

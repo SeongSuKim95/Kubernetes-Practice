@@ -1,4 +1,4 @@
-# Grafana 대시보드 — fluentd http_responses_total (200/500)
+# Grafana 대시보드 — fluentd http_responses_total + http_request_duration_seconds (p95)
 # kube-prometheus-stack sidecar 가 grafana_dashboard 라벨 ConfigMap 을 자동 로드합니다.
 apiVersion: v1
 kind: ConfigMap
@@ -87,8 +87,16 @@ data:
           "datasource": { "type": "prometheus", "uid": "prometheus" },
           "fieldConfig": {
             "defaults": {
-              "color": { "fixedColor": "red", "mode": "fixed" },
-              "unit": "reqps"
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "orange", "value": 1 },
+                  { "color": "red", "value": 3 }
+                ]
+              },
+              "unit": "s"
             }
           },
           "gridPos": { "h": 6, "w": 6, "x": 12, "y": 0 },
@@ -103,38 +111,27 @@ data:
           },
           "targets": [
             {
-              "expr": "sum(rate(http_responses_total{namespace=\"loadtest\",code=\"500\"}[1m]))",
-              "legendFormat": "500 RPS",
+              "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{namespace=\"loadtest\",code=\"200\"}[1m])) by (le))",
+              "legendFormat": "p95",
               "refId": "A"
             }
           ],
-          "title": "500 응답 (RPS)",
+          "title": "응답 시간 p95",
           "type": "stat"
         },
         {
           "datasource": { "type": "prometheus", "uid": "prometheus" },
           "fieldConfig": {
             "defaults": {
-              "color": { "mode": "palette-classic" },
+              "color": { "fixedColor": "green", "mode": "fixed" },
               "custom": {
                 "drawStyle": "line",
                 "fillOpacity": 25,
                 "lineWidth": 2,
-                "showPoints": "never",
-                "stacking": { "group": "A", "mode": "normal" }
+                "showPoints": "never"
               },
               "unit": "reqps"
-            },
-            "overrides": [
-              {
-                "matcher": { "id": "byName", "options": "200" },
-                "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }]
-              },
-              {
-                "matcher": { "id": "byName", "options": "500" },
-                "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }]
-              }
-            ]
+            }
           },
           "gridPos": { "h": 10, "w": 24, "x": 0, "y": 6 },
           "id": 4,
@@ -147,14 +144,39 @@ data:
               "expr": "sum(rate(http_responses_total{namespace=\"loadtest\",code=\"200\"}[1m]))",
               "legendFormat": "200",
               "refId": "A"
-            },
-            {
-              "expr": "sum(rate(http_responses_total{namespace=\"loadtest\",code=\"500\"}[1m]))",
-              "legendFormat": "500",
-              "refId": "B"
             }
           ],
-          "title": "200 / 500 응답 추이 (RPS)",
+          "title": "200 응답 추이 (RPS)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "fixedColor": "orange", "mode": "fixed" },
+              "custom": {
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "lineWidth": 2,
+                "showPoints": "never"
+              },
+              "unit": "s"
+            }
+          },
+          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 16 },
+          "id": 6,
+          "options": {
+            "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom" },
+            "tooltip": { "mode": "single" }
+          },
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{namespace=\"loadtest\",code=\"200\"}[1m])) by (le))",
+              "legendFormat": "p95",
+              "refId": "A"
+            }
+          ],
+          "title": "응답 시간 p95 추이",
           "type": "timeseries"
         },
         {
@@ -171,7 +193,7 @@ data:
               "unit": "percent"
             }
           },
-          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 16 },
+          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 24 },
           "id": 5,
           "options": {
             "legend": { "calcs": ["mean", "min"], "displayMode": "table", "placement": "bottom" },

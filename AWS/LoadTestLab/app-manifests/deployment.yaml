@@ -35,7 +35,8 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
-              sed -i 's|CustomLog /proc/self/fd/1 combined|CustomLog /var/log/apache2/access.log combined|' /etc/apache2/apache2.conf
+              echo 'LogFormat "%h %l %u %t \"%r\" %>s %b %D" loadtest_combined' >> /etc/apache2/apache2.conf
+              sed -i 's|CustomLog /proc/self/fd/1 combined|CustomLog /var/log/apache2/access.log loadtest_combined|' /etc/apache2/apache2.conf
               touch /var/log/apache2/access.log
               exec apache2-foreground
           ports:
