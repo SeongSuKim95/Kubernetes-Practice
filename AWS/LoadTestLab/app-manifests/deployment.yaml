@@ -19,6 +19,7 @@ metadata:
     app: echo-cpu
 spec:
   replicas: 10
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: echo-cpu
@@ -44,7 +45,7 @@ spec:
               cpu: "500m"        # HPA Utilization 계산 기준
               memory: "128Mi"
             limits:
-              cpu: "3500m"       # 1k RPS 목표 (c5.2xlarge×5, Pod당 처리량↑)
+              cpu: "4000m"       # 1k RPS 목표 (c5.2xlarge×5, Pod당 처리량↑)
               memory: "256Mi"
           volumeMounts:
             - name: apache-logs
