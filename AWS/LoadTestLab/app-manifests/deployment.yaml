@@ -51,10 +51,10 @@ spec:
             - containerPort: 80
           resources:
             requests:
-              cpu: "500m"        # HPA Utilization 계산 기준
+              cpu: "1000m"        # HPA Utilization 계산 기준
               memory: "128Mi"
             limits:
-              cpu: "2000m"       # 1k RPS 목표 (c5.2xlarge×5, Pod당 처리량↑)
+              cpu: "3500m"       # 1k RPS 목표 (c5.2xlarge×5, Pod당 처리량↑)
               memory: "256Mi"
           volumeMounts:
             - name: apache-logs
