@@ -18,7 +18,7 @@ metadata:
   labels:
     app: echo-cpu
 spec:
-  replicas: 5
+  replicas: 10
   revisionHistoryLimit: 2
   selector:
     matchLabels:
