@@ -1,0 +1,32 @@
+# 시나리오 3 — PriorityClass (높은 우선순위: 결제 처리)
+# general 노드가 batch-low Pod 로 가득 찬 상태에서 배포되면,
+# 스케줄러가 batch-low Pod 를 선점(preempt)하고 이 Pod 를 먼저 띄운다.
+#   - priorityClassName: payments-critical
+#   - nodeSelector general : nightly-settlement 과 동일 노드에서 경쟁
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-processor
+  namespace: payments
+  labels:
+    app: payment-processor
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: payment-processor
+  template:
+    metadata:
+      labels:
+        app: payment-processor
+    spec:
+      priorityClassName: payments-critical
+      nodeSelector:
+        payflow.io/pool: general
+      containers:
+        - name: processor
+          image: registry.k8s.io/pause:3.9
+          resources:
+            requests:
+              cpu: "150m"
+              memory: "600Mi"

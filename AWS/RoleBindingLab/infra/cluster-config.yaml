@@ -1,0 +1,46 @@
+# eksctl ClusterConfig — RoleBindingLab (PayFlow)
+# 노드 2개를 "노드그룹 2개"로 분리합니다.
+#   - ng-general  : 일반 워크로드 (시나리오 3 preemption 무대)
+#   - ng-payments : 결제 전용 노드 (시나리오 2에서 학습자가 직접 taint)
+# create-eks-cluster.sh 가 envsubst 로 ${...} 를 채운 뒤 eksctl 에 넘깁니다.
+#
+# 의도적으로 작은 노드(t3.medium)를 씁니다. 시나리오 3에서 자원을 일부러
+# 채워 preemption(선점)을 관측하기 쉽게 하기 위함입니다.
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: ${CLUSTER_NAME}
+  region: ${AWS_REGION}
+  version: "${K8S_VERSION}"
+
+iam:
+  withOIDC: true            # 필수는 아니지만 관례상 활성(추후 IRSA 확장 대비)
+
+managedNodeGroups:
+  # ── 일반 워크로드 노드 ────────────────────────────────────────
+  - name: ng-general
+    instanceType: ${NODE_INSTANCE_TYPE}
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 1
+    volumeSize: 20
+    ssh:
+      allow: false
+    labels:
+      payflow.io/pool: general
+
+  # ── 결제 전용 노드 (시나리오 2: kubectl taint 대상) ───────────
+  - name: ng-payments
+    instanceType: ${NODE_INSTANCE_TYPE}
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 1
+    volumeSize: 20
+    ssh:
+      allow: false
+    labels:
+      payflow.io/pool: payments
+
+# vpc-cni / coredns / kube-proxy 는 EKS 기본 설치.
+# metrics-server 는 install-addons.sh 에서 별도 설치(시나리오 3 kubectl top 관측용).

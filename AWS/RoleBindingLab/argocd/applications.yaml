@@ -1,0 +1,103 @@
+# Argo CD Applications — PayFlow RoleBindingLab
+# 시나리오별로 Application 을 나눠 sync/health 를 따로 관측합니다.
+#
+# 주의: 모두 GitHub main 을 동기화합니다. app-manifests/ 수정은 git push 후 반영됩니다.
+#       payflow-bootstrap 이 네임스페이스를 먼저 만들며, 나머지 앱은
+#       네임스페이스가 생길 때까지 자동 retry 합니다(automated sync).
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payflow-bootstrap
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/SeongSuKim95/Kubernetes-Practice.git
+    targetRevision: main
+    path: AWS/RoleBindingLab/app-manifests/bootstrap
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 10s
+        maxDuration: 1m
+        factor: 2
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payflow-rbac
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/SeongSuKim95/Kubernetes-Practice.git
+    targetRevision: main
+    path: AWS/RoleBindingLab/app-manifests/scenario1-rbac
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: payments
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 10s
+        maxDuration: 1m
+        factor: 2
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payflow-taint
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/SeongSuKim95/Kubernetes-Practice.git
+    targetRevision: main
+    path: AWS/RoleBindingLab/app-manifests/scenario2-taint
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 10s
+        maxDuration: 1m
+        factor: 2
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payflow-priority
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/SeongSuKim95/Kubernetes-Practice.git
+    targetRevision: main
+    path: AWS/RoleBindingLab/app-manifests/scenario3-priority
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 10s
+        maxDuration: 1m
+        factor: 2

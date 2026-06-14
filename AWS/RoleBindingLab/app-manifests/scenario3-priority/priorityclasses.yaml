@@ -1,0 +1,18 @@
+# 시나리오 3 — PriorityClass (cluster-scoped)
+#   payments-critical : 결제 처리 — 최우선 (자원 부족 시 다른 Pod 를 선점)
+#   batch-low         : 야간 정산 배치 — 밀려나도 됨 (선점 대상)
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: payments-critical
+value: 100000
+globalDefault: false
+description: "PayFlow 결제 처리 - 최우선 워크로드"
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: batch-low
+value: 100
+globalDefault: false
+description: "PayFlow 야간 정산 배치 - 선점되어도 무방"

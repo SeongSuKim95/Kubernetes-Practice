@@ -1,0 +1,36 @@
+# 시나리오 2 — Taint / Toleration  (정산 배치)
+# 정산 배치는 payments 노드를 "노린다"(nodeSelector)지만 toleration 이 없다.
+#   - taint 가 걸리기 전 : payments 노드에 정상 Running
+#   - taint 가 걸린 후   : Pending (FailedScheduling — taint 로 거부됨)
+# => taint on/off 토글로 Running <-> Pending 변화를 관측한다.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytics-batch
+  namespace: analytics
+  labels:
+    app: analytics-batch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: analytics-batch
+  template:
+    metadata:
+      labels:
+        app: analytics-batch
+    spec:
+      nodeSelector:
+        payflow.io/pool: payments     # 일부러 payments 노드를 노림 (toleration 없음)
+      # tolerations: 없음 → taint 가 있으면 스케줄 불가
+      containers:
+        - name: batch
+          image: busybox:1.36
+          command: ["sh", "-c", "while true; do echo 'settling batch...'; sleep 10; done"]
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "100m"
+              memory: "128Mi"

@@ -1,0 +1,16 @@
+# 시나리오 1 — RBAC
+# payments-oncall 에게만 payments-pod-reader Role 을 바인딩.
+# analytics-intern 은 일부러 바인딩하지 않음 → 동일 API 호출이 Forbidden.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: payments-oncall-reader
+  namespace: payments
+subjects:
+  - kind: ServiceAccount
+    name: payments-oncall
+    namespace: payments
+roleRef:
+  kind: Role
+  name: payments-pod-reader
+  apiGroup: rbac.authorization.k8s.io

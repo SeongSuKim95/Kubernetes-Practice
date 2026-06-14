@@ -1,0 +1,12 @@
+# 시나리오 1 — RBAC
+# payments 네임스페이스의 Pod 를 "조회"만 할 수 있는 Role.
+# (create/delete 없음 — 읽기 전용 온콜 권한)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: payments-pod-reader
+  namespace: payments
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log"]
+    verbs: ["get", "list", "watch"]

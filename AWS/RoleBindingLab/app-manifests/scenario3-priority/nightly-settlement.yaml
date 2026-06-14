@@ -1,0 +1,36 @@
+# 시나리오 3 — PriorityClass (낮은 우선순위: 야간 정산 배치)
+# general 노드 한 대를 메모리 요청으로 가득 채워 자원 압박 상황을 만든다.
+#   - priorityClassName: batch-low
+#   - nodeSelector general : preemption 무대를 general 노드로 한정
+# 이후 payment-processor(high)가 배포되면 이 Pod 들이 선점(evict)된다.
+#
+# 주의: replicas/메모리 요청값은 t3.medium 기준 시작점입니다.
+#       'kubectl describe node <general>' 로 allocatable 을 보고 조정하세요.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nightly-settlement
+  namespace: analytics
+  labels:
+    app: nightly-settlement
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: nightly-settlement
+  template:
+    metadata:
+      labels:
+        app: nightly-settlement
+    spec:
+      priorityClassName: batch-low
+      nodeSelector:
+        payflow.io/pool: general
+      terminationGracePeriodSeconds: 0   # 선점 시 빠르게 비워져 관측이 쉬움
+      containers:
+        - name: settlement
+          image: registry.k8s.io/pause:3.9
+          resources:
+            requests:
+              cpu: "150m"
+              memory: "600Mi"

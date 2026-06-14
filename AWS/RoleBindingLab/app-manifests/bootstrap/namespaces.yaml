@@ -1,0 +1,24 @@
+# PayFlow 네임스페이스 (payflow-bootstrap Application 이 동기화)
+#   payments  : 결제 처리 (critical)
+#   analytics : 정산·배치 (best-effort)
+#   platform  : 공용/운영
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: payments
+  labels:
+    payflow.io/team: payments
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: analytics
+  labels:
+    payflow.io/team: analytics
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: platform
+  labels:
+    payflow.io/team: platform

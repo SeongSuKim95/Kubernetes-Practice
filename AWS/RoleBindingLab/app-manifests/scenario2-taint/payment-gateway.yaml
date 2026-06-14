@@ -1,0 +1,41 @@
+# 시나리오 2 — Taint / Toleration  (결제 게이트웨이)
+# 결제 게이트웨이는 PCI 전용 노드(payflow.io/pool=payments)에만 배치되어야 한다.
+#   - nodeSelector : payments 노드 지정
+#   - toleration   : payments 노드의 taint(workload=payments:NoSchedule)를 허용
+# => 학습자가 taint 를 걸어도 이 Pod 는 payments 노드에서 정상 Running.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-gateway
+  namespace: payments
+  labels:
+    app: payment-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-gateway
+  template:
+    metadata:
+      labels:
+        app: payment-gateway
+    spec:
+      nodeSelector:
+        payflow.io/pool: payments
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: payments
+          effect: NoSchedule
+      containers:
+        - name: gateway
+          image: nginxinc/nginx-unprivileged:stable
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "100m"
+              memory: "128Mi"
