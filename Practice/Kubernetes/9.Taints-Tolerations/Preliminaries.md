@@ -109,6 +109,29 @@ kubectl describe node node01 | grep -i Taint
 # Taints: PERMISSION=granted:NoSchedule
 ```
 
+### 예시 — 라벨로 여러 노드에 한 번에 taint (RoleBindingLab 연계)
+
+노드 이름(`node01`) 대신 **라벨 셀렉터(`-l`)** 로 같은 그룹의 노드 여러 대에 한 번에 걸 수 있습니다.
+RoleBindingLab 시나리오 2는 `payflow.io/pool=payments` 라벨이 붙은 노드그룹에 taint를 겁니다.
+
+```bash
+# 라벨이 payflow.io/pool=payments 인 노드 전부에 taint
+kubectl taint nodes -l payflow.io/pool=payments \
+  workload=payments:NoSchedule --overwrite
+
+# 풀기 (끝에 -)
+kubectl taint nodes -l payflow.io/pool=payments \
+  workload=payments:NoSchedule-
+```
+
+| 옵션 | 의미 |
+|------|------|
+| `-l <label>=<value>` | 노드 이름 대신 **라벨로 대상 노드 선택** (여러 대 동시) |
+| `--overwrite` | 이미 같은 key 의 taint 가 있으면 **값/effect 덮어쓰기** (재실행해도 에러 안 남) |
+
+> **NoSchedule 은 새 Pod 만 막습니다.** taint 를 거는 시점에 **이미 Running 중인 Pod 는 그대로 유지**됩니다.
+> (실행 중 Pod 까지 퇴출하려면 `NoExecute` 가 필요합니다.)
+
 ---
 
 ## Toleration (Pod spec)
@@ -187,6 +210,39 @@ spec:
 ```
 
 `metadata` 나 Deployment 최상위 `spec` 에 넣으면 **적용되지 않습니다**.
+
+---
+
+## nodeSelector vs taint/toleration (RoleBindingLab 연계)
+
+두 메커니즘은 **방향이 반대**입니다. RoleBindingLab 시나리오 2를 이해하려면 둘의 차이를 알아야 합니다.
+
+| | nodeSelector / nodeAffinity | taint / toleration |
+|--|------------------------------|--------------------|
+| 누가 거는가 | **Pod** 가 지정 | **Node** 에 taint, **Pod** 에 toleration |
+| 방향 | “이 라벨 노드로 **가고 싶다**” (끌어당김) | “이 노드에는 **못 온다**” (밀어냄) |
+| toleration 없는 Pod | (무관) | taint 걸린 노드에 **스케줄 불가** |
+
+```yaml
+spec:
+  nodeSelector:                 # 이 라벨 노드로 가고 싶다 (끌어당김)
+    payflow.io/pool: payments
+  tolerations:                  # 그 노드의 taint 도 견딜 수 있다 (밀어냄 면역)
+    - key: workload
+      operator: Equal
+      value: payments
+      effect: NoSchedule
+```
+
+RoleBindingLab 시나리오 2는 **두 Pod 모두 같은 노드(`nodeSelector: payments`)를 노리되, toleration 만 다릅니다.**
+
+```text
+payments 노드 + taint(workload=payments:NoSchedule)
+  ├─ payment-gateway   nodeSelector ✓ + toleration ✓ → Running
+  └─ analytics-batch   nodeSelector ✓ + toleration ✗ → Pending (FailedScheduling)
+```
+
+> nodeSelector 로 **같은 노드를 노리는데도** toleration 유무 하나로 Running vs Pending 이 갈리는 것이 핵심입니다.
 
 ---
 

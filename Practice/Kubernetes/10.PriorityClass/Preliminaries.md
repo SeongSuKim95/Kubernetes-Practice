@@ -164,6 +164,77 @@ general 노드 (메모리 거의 가득)
 
 ---
 
+## 선점(preemption) 관측 (RoleBindingLab 연계)
+
+이 과제는 **PC 생성 + patch** 까지지만, **RoleBindingLab 시나리오 3** 은 한 걸음 더 나아가
+**선점이 실제로 일어나는 것을 관측**합니다. 그때 필요한 추가 지식만 정리합니다.
+
+### 선점이 일어나려면 — 자원 압박이 전제
+
+priority 차이만으로는 선점이 일어나지 않습니다. **노드 자원(주로 메모리)이 부족**해서
+높은 우선순위 Pod 가 들어갈 자리가 없을 때 비로소 낮은 우선순위 Pod 를 쫓아냅니다.
+
+```text
+1. general 노드 allocatable 메모리가 batch-low Pod 로 거의 찬 상태
+2. payments-critical(높은 우선순위) Pod 스케줄 요청 → 자리 없음
+3. 스케줄러: preemption 시도 → batch-low Pod 일부 Evicted
+4. 높은 우선순위 Pod Running, evict 된 Pod 는 자리 없으면 Pending
+```
+
+그래서 RoleBindingLab 매니페스트는 일부러 **`resources.requests.memory` 를 크게(예: 600Mi)** 잡고
+**replicas 를 늘려** 노드를 가득 채웁니다.
+
+```yaml
+spec:
+  template:
+    spec:
+      priorityClassName: batch-low      # 낮은 우선순위 = 선점 대상
+      terminationGracePeriodSeconds: 0  # 선점 시 빠르게 비워져 관측이 쉬움
+      containers:
+        - name: settlement
+          image: registry.k8s.io/pause:3.9
+          resources:
+            requests:
+              memory: "600Mi"           # 노드를 채워 자원 압박을 만듦
+```
+
+### 관측 명령
+
+```bash
+# 노드가 얼마나 찼는지 (Allocated resources)
+kubectl describe node -l payflow.io/pool=general | grep -A5 Allocated
+
+# 높은 우선순위는 Running, 낮은 우선순위는 일부 Pending
+kubectl get pods -A -l 'app in (payment-processor,nightly-settlement)' -o wide
+
+# 선점/스케줄 실패 이벤트
+kubectl get events -A --sort-by=.lastTimestamp | grep -iE 'preempt|FailedScheduling'
+
+# 실시간 자원 사용 (metrics-server 필요)
+kubectl top nodes
+```
+
+| 신호 | 의미 |
+|------|------|
+| Pod `Evicted` | 선점되어 쫓겨남 |
+| Pod `Pending` + `FailedScheduling` | 자리가 없어 못 뜸 |
+| 이벤트에 `preempt` | 스케줄러가 선점을 수행함 |
+
+### Taint 로 인한 Pending 과 헷갈리지 말 것
+
+둘 다 `Pending` 으로 보이지만 **원인이 다릅니다.**
+
+| | Taint / Toleration | Preemption |
+|--|--------------------|------------|
+| 원인 | 노드 taint vs Pod toleration 불일치 | 노드 **자원 부족** + priority 차이 |
+| 실패 신호 | `untolerated taint` | `Insufficient memory`, `preempt` 이벤트, Evicted |
+| 해결 | toleration 추가 / taint 제거 | 자원 확보, replicas·priority 조정 |
+
+> RoleBindingLab 의 `requests.memory`·replicas 는 t3.medium 기준 **시작점**입니다.
+> `kubectl describe node` 의 Allocatable 을 보고 값을 조정하면 선점을 더 확실히 재현할 수 있습니다.
+
+---
+
 ## 과제와의 대응
 
 | 과제 | 할 일 |
