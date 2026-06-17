@@ -435,3 +435,155 @@ AWS/RoleBindingLab/
 | **RBAC** | `Forbidden` | `kubectl auth can-i ... --as=...` |
 | **Taint** | `Pending` (untolerated taint) | `kubectl taint` + `get pods -o wide` |
 | **Priority** | `Pending`/`Evicted` + preempt 이벤트 | `get events | grep preempt`, `top nodes` |
+
+---
+
+## 9. 설계 철학 — RBAC / Taint / Toleration / Affinity 가 왜 이렇게 나뉘었는가
+
+이 LAB에서 다룬 메커니즘은 각각 **다른 문제**를 풀기 위해 설계되었습니다.
+하나의 거대한 "정책 엔진"에 몰아넣지 않고, **작은 원시(primitive)를 조합**하는 것이 Kubernetes의 기본 방향입니다.
+
+```text
+                    Kubernetes API
+                          │
+         ┌────────────────┼────────────────┐
+         ▼                ▼                ▼
+    [API Server]    [kube-scheduler]   [Controllers]
+         │                │                │
+       RBAC          Taint/Toleration      ...
+       (권한)         Affinity             ...
+                    PriorityClass
+                    (배치·우선순위)
+```
+
+### 공통 철학 — 선언적(Declarative) + 관심사 분리
+
+| 철학 | 의미 | 이 LAB에서의 예 |
+|------|------|-----------------|
+| **선언적 설정** | "어떻게"가 아니라 **"원하는 최종 상태"** 를 YAML로 선언 | ArgoCD가 manifest를 sync → 클러스터가 맞춤 |
+| **관심사 분리** | 권한·배치·우선순위를 **서로 다른 컴포넌트**가 담당 | RBAC=API Server, Taint/Affinity/Priority=스케줄러 |
+| **Label 기반 통일** | 노드·Pod 식별에 **Label/Selector** 패턴을 공통 사용 | `payflow.io/pool=payments`, taint key/value |
+| **조합 가능한 원시** | 하나의 거대 규칙 대신 **작은 블록을 이어 붙임** | taint + toleration + nodeSelector |
+
+---
+
+### RBAC — "기본 거부, 필요한 만큼만 허용"
+
+**철학: Least Privilege(최소 권한) + 명시적 부여**
+
+Kubernetes API는 기본적으로 **거부(deny-by-default)** 입니다.
+누군가 API를 호출하려면 **인증(누구인가)** 후 **인가(허용되나)** 를 통과해야 하며,
+RBAC은 그 인가 단계를 **Role(무엇을) + Binding(누구에게)** 으로 선언합니다.
+
+```text
+ServiceAccount  →  "이 워크로드의 신원"
+Role            →  "이 네임스페이스에서 pods get/list/watch 만"
+RoleBinding     →  "payments-oncall 에게만 위 Role 부여"
+```
+
+- **Namespace 범위 기본** — `Role`은 네임스페이스 안에서만 유효. 실수로 클러스터 전체에 권한이 퍼지지 않음.
+- **사람과 워크로드 분리** — 사람은 kubeconfig, Pod는 ServiceAccount. 팀·서비스별로 권한을 쪼갤 수 있음.
+- **Binding이 없으면 권한 없음** — `analytics-intern`처럼 SA만 있고 Binding이 없으면 Forbidden. "실수로 권한 상속"을 막음.
+
+---
+
+### Taint / Toleration — "노드가 문을 닫고, Pod가 들어올 자격을 증명"
+
+**철학: Node-centric opt-out (노드 중심 거부)**
+
+스케줄러는 기본적으로 **어느 노드에든 Pod를 배치**하려 합니다.
+Taint는 노드가 **"나는 특별하다 — 아무나 오지 마"** 라고 선언하는 메커니즘입니다.
+Toleration은 Pod가 **"나는 그 조건을 견딜 수 있다"** 고 응답합니다.
+
+```text
+Node (taint)     "workload=payments:NoSchedule"  →  일반 Pod 거부
+Pod (toleration) "workload=payments 견딤"          →  이 노드에 갈 수 있음
+```
+
+- **플랫폼 팀이 노드를 보호** — GPU·결제 전용 노드를 운영자가 taint로 잠그고, 앱 팀은 toleration을 명시적으로 넣어야만 진입.
+- **기본 개방, 필요 시 격리** — taint가 없는 노드는 누구나 스케줄 가능. 전용 노드만 "문을 닫는" 비대칭 설계.
+- **Toleration만으로는 강제 배치 안 됨** — "들어갈 **자격**"만 주고, "반드시 그 노드로"는 Affinity가 담당 → 역할 분리.
+
+---
+
+### Node Affinity — "Pod가 원하는 노드를 선언"
+
+**철학: Pod-centric opt-in (Pod 중심 선택)**
+
+Affinity(와 `nodeSelector`)는 **Pod가** "이 Label 노드로 가고 싶다"고 선언합니다.
+Taint가 **밀어내기**라면, Affinity는 **끌어당기기**입니다.
+
+```text
+required nodeAffinity   →  disk=ssd 노드에만 (못 맞추면 Pending)
+preferred nodeAffinity  →  zone-a 선호 (없으면 다른 노드도 OK)
+```
+
+- **앱 팀이 배치 요구사항을 선언** — DB는 SSD, ML은 GPU 등 워크로드 특성을 Pod manifest에 적음.
+- **required vs preferred** — 강제와 선호를 분리. 운영 유연성(soft)과 규정 준수(hard)를 같은 API로 표현.
+- **Label과 동일한 언어** — Service selector, NetworkPolicy, Affinity가 모두 Label. 학습·도구·GitOps가 일관됨.
+
+---
+
+### Taint + Affinity가 함께 쓰이는 이유 — 상호 보완
+
+두 메커니즘은 **방향이 반대**이기 때문에 함께 쓰일 때 완전한 격리가 됩니다.
+
+```text
+         Taint/Toleration              Node Affinity
+         ────────────────              ─────────────
+방향     Node → Pod 거부               Pod → Node 선택
+질문     "이 노드에 올 자격 있나?"      "이 노드로 가고 싶은가?"
+단독     toleration만 → 다른 노드도 감   affinity만 → taint에 막힐 수 있음
+조합     일반 Pod 차단 + 전용 Pod만 전용 노드로 강제 배치
+```
+
+RoleBindingLab 시나리오 2가 바로 이 조합입니다.
+`payment-gateway`는 `nodeSelector`(끌어당김) + `toleration`(면역)으로 payments 전용 노드에만 뜨고,
+`analytics-batch`는 같은 노드를 노리지만 toleration이 없어 taint에 막힙니다.
+
+---
+
+### PriorityClass — "자원이 부족할 때 무엇을 살릴 것인가"
+
+**철학: Graceful degradation under scarcity (부족 시 우선순위)**
+
+노드 자원이 한정일 때 **모든 Pod를 동등하게** 두면, 중요한 서비스와 배치가 같은 확률로 밀려납니다.
+PriorityClass는 **"부족할 때 누가 먼저"** 를 숫자로 선언합니다.
+
+```text
+payments-critical (100000)  →  자리 없으면 batch-low 를 쫓아냄 (preemption)
+batch-low (100)             →  밀려나도 되는 워크로드
+```
+
+RBAC·Taint·Affinity와 달리 Priority는 **"어디에"가 아니라 "살아남을 순서"** 문제입니다.
+그래서 별도 원시로 분리되어 있습니다.
+
+---
+
+### 이런 설계의 장점
+
+| 장점 | 설명 |
+|------|------|
+| **명확한 실패 신호** | 권한=`Forbidden`, taint=`untolerated taint`, affinity=`didn't match`, 자원=`Insufficient memory` — 원인별로 다른 메시지 |
+| **팀 역할 분리** | 플랫폼: 노드 Label·Taint / 보안: RBAC / 앱: toleration·affinity·priority — 각자 manifest 영역이 분명 |
+| **GitOps 친화** | 모든 설정이 YAML → ArgoCD·CI로 버전 관리·리뷰·롤백 가능 |
+| **최소 권한·최소 격리** | RBAC은 Namespace 단위, taint는 필요한 노드만 — 과도한 전역 잠금 없이 점진적 강화 |
+| **조합으로 복잡한 정책 표현** | 커스텀 스케줄러 플러그인 없이도 전용 노드·AZ 선호·PCI 격리·우선순위를 manifest 조합만으로 구현 |
+| **확장성** | Label·RBAC 규칙·Priority 값만 추가하면 새 풀·팀·워크로드 등급을 기존 패턴으로 확장 |
+| **다중 테넌시 기반** | Namespace(RBAC 경계) + 노드 풀(taint/label) + priority로 한 클러스터에 여러 팀·등급 공존 |
+
+---
+
+### PayFlow LAB이 보여 주는 설계 한 장면
+
+```text
+시나리오 1  RBAC        "결제팀 온콜만 API 조회"     →  최소 권한
+시나리오 2  Taint+Affinity "결제 게이트웨이만 전용 노드" →  노드 격리 + 앱 선언
+시나리오 3  Priority    "결제 처리가 배치보다 우선"   →  부족 시 생존 순서
+```
+
+세 시나리오를 합치면 Kubernetes가 추구하는 운영 그림이 됩니다.
+
+**"많은 팀이 한 클러스터를 공유하되, 권한은 좁게·배치는 선언적으로·중요한 것은 먼저 살린다."**
+
+이것이 RBAC, Taint/Toleration, Affinity, PriorityClass가 **각각 따로 존재하면서도 함께 동작**하도록 설계된 이유입니다.
