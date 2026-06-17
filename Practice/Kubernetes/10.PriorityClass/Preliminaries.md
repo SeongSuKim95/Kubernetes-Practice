@@ -10,6 +10,24 @@
 
 ---
 
+## 이 Lab이 다루는 범위 — 우선순위
+
+Kubernetes 스케줄링·권한 개념 중 이 Lab은 **우선순위(PriorityClass)** 를 다룹니다.
+
+### Pending 원인 구분 (트러블슈팅 핵심)
+
+Pod가 안 뜰 때 `Pending` 은 같아 보여도 **원인이 다릅니다.** 원인을 먼저 가려야 올바른 조치를 합니다.
+
+| 원인 | 실패 신호 (events) | 해결 |
+|------|--------------------|------|
+| Taint / Toleration 불일치 | `untolerated taint` | toleration 추가 또는 taint 제거 |
+| Node Affinity 불일치 | `didn't match node affinity/selector` | 노드 Label 또는 affinity 조건 수정 |
+| **우선순위 / 자원 부족** | `Insufficient memory`, `preempt` 이벤트, **Evicted** | replicas·requests 조정, priority 변경 |
+
+> 같은 `Pending` 이라도 **Taint는 "노드가 안 받아줌"**, **Priority는 "자원이 없어 밀려남"** 입니다.
+
+---
+
 ## PriorityClass란
 
 **PriorityClass** 는 Pod에 줄 **우선순위 값(정수)** 을 이름으로 정의하는 **클러스터 범위** 리소스입니다. Pod는 `spec.priorityClassName` 으로 연결하고, value가 **클수록** 더 높은 우선순위입니다.
@@ -67,20 +85,6 @@ value: 999
 globalDefault: false
 description: "high priority"
 ```
-
-### 예시 — “최고 user-defined value − 1”
-
-과제 문장: *value should be exactly one less than the highest existing user-defined priority class*
-
-```text
-1. kubectl get pc --sort-by=.value
-2. system-* 제외 → user-critical value = 1000 이 최고
-3. 새 high-priority value = 1000 - 1 = 999
-```
-
-value를 **1000** 으로 만들면 “1 작게” 조건에 맞지 않고, **1001** 로 만들면 “기존 user-defined 최고값보다 작게” 조건에 맞지 않습니다.
-
----
 
 ## Deployment에 연결
 
@@ -161,93 +165,4 @@ general 노드 (메모리 거의 가득)
 ```
 
 과제 풀이 자체에는 선점까지 재현할 필요는 없고, **`priorityClassName` 과 `value` 를 올바르게 연결**하면 됩니다.
-
 ---
-
-## 선점(preemption) 관측 (RoleBindingLab 연계)
-
-이 과제는 **PC 생성 + patch** 까지지만, **RoleBindingLab 시나리오 3** 은 한 걸음 더 나아가
-**선점이 실제로 일어나는 것을 관측**합니다. 그때 필요한 추가 지식만 정리합니다.
-
-### 선점이 일어나려면 — 자원 압박이 전제
-
-priority 차이만으로는 선점이 일어나지 않습니다. **노드 자원(주로 메모리)이 부족**해서
-높은 우선순위 Pod 가 들어갈 자리가 없을 때 비로소 낮은 우선순위 Pod 를 쫓아냅니다.
-
-```text
-1. general 노드 allocatable 메모리가 batch-low Pod 로 거의 찬 상태
-2. payments-critical(높은 우선순위) Pod 스케줄 요청 → 자리 없음
-3. 스케줄러: preemption 시도 → batch-low Pod 일부 Evicted
-4. 높은 우선순위 Pod Running, evict 된 Pod 는 자리 없으면 Pending
-```
-
-그래서 RoleBindingLab 매니페스트는 일부러 **`resources.requests.memory` 를 크게(예: 600Mi)** 잡고
-**replicas 를 늘려** 노드를 가득 채웁니다.
-
-```yaml
-spec:
-  template:
-    spec:
-      priorityClassName: batch-low      # 낮은 우선순위 = 선점 대상
-      terminationGracePeriodSeconds: 0  # 선점 시 빠르게 비워져 관측이 쉬움
-      containers:
-        - name: settlement
-          image: registry.k8s.io/pause:3.9
-          resources:
-            requests:
-              memory: "600Mi"           # 노드를 채워 자원 압박을 만듦
-```
-
-### 관측 명령
-
-```bash
-# 노드가 얼마나 찼는지 (Allocated resources)
-kubectl describe node -l payflow.io/pool=general | grep -A5 Allocated
-
-# 높은 우선순위는 Running, 낮은 우선순위는 일부 Pending
-kubectl get pods -A -l 'app in (payment-processor,nightly-settlement)' -o wide
-
-# 선점/스케줄 실패 이벤트
-kubectl get events -A --sort-by=.lastTimestamp | grep -iE 'preempt|FailedScheduling'
-
-# 실시간 자원 사용 (metrics-server 필요)
-kubectl top nodes
-```
-
-| 신호 | 의미 |
-|------|------|
-| Pod `Evicted` | 선점되어 쫓겨남 |
-| Pod `Pending` + `FailedScheduling` | 자리가 없어 못 뜸 |
-| 이벤트에 `preempt` | 스케줄러가 선점을 수행함 |
-
-### Taint 로 인한 Pending 과 헷갈리지 말 것
-
-둘 다 `Pending` 으로 보이지만 **원인이 다릅니다.**
-
-| | Taint / Toleration | Preemption |
-|--|--------------------|------------|
-| 원인 | 노드 taint vs Pod toleration 불일치 | 노드 **자원 부족** + priority 차이 |
-| 실패 신호 | `untolerated taint` | `Insufficient memory`, `preempt` 이벤트, Evicted |
-| 해결 | toleration 추가 / taint 제거 | 자원 확보, replicas·priority 조정 |
-
-> RoleBindingLab 의 `requests.memory`·replicas 는 t3.medium 기준 **시작점**입니다.
-> `kubectl describe node` 의 Allocatable 을 보고 값을 조정하면 선점을 더 확실히 재현할 수 있습니다.
-
----
-
-## 과제와의 대응
-
-| 과제 | 할 일 |
-|------|--------|
-| `high-priority` 생성 | `kubectl create priorityclass high-priority --value=999 --description="high priority"` |
-| value 조건 | user-defined 최고(1000) **− 1 = 999** |
-| Deployment patch | `spec.template.spec.priorityClassName: high-priority` |
-| 확인 | 새 Pod의 `PC=high-priority`, `PRI=999` |
-
-전체 흐름:
-
-```text
-LabSetUp  →  user-critical (1000), busybox-logger (priority 없음)
-Task 1    →  high-priority (999) 생성
-Task 2    →  deployment patch → 롤아웃 → Pod priority 999
-```

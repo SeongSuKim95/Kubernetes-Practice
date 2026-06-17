@@ -6,6 +6,31 @@
 | --- | --- |
 | `Questions.bash` | node01 taint + toleration Pod 배포 |
 | `SolutionNotes.bash` | `kubectl taint`, Pod YAML 예시 |
+| `nodegroup-examples.yaml` | EKS eksctl 노드그룹 — label·taint 선언 예시 |
+
+---
+
+## 이 Lab이 다루는 범위 — 스케줄링 3종
+
+Kubernetes에서 **Pod가 어느 노드에 배치되는가**를 제어하는 개념은 세 가지이며, 모두
+**kube-scheduler** 영역입니다. 
+
+```text
+         Node 쪽                         Pod 쪽
+         ───────                         ──────
+Taint        "아무나 오지 마"     ←──→   Toleration   "나는 들어갈 자격 있어"
+Node Label   (예: disk=ssd)       ←───   Node Affinity "나는 저 Label 노드로 가고 싶어"
+```
+
+| | Taint / Toleration | Node Affinity / nodeSelector |
+|--|--------------------|------------------------------|
+| **누가 조건을 거는가** | Node(taint) + Pod(toleration) | **Pod** (affinity) |
+| **방향** | "이 노드엔 못 온다" — **밀어냄** | "이 Label 노드로 가고 싶다" — **끌어당김** |
+| **toleration만 있으면** | taint 노드에 **갈 수는** 있음 (강제 아님) | — |
+| **affinity만 있으면** | — | 조건 노드로 **가려고** 함 (taint는 별개로 막을 수 있음) |
+
+> 핵심: **Taint/Toleration은 "받아줄지"**, **Node Affinity는 "선택"** 입니다.
+> 전용 노드를 **강제**하려면 보통 둘을 **함께** 씁니다(아래 "조합" 섹션).
 
 ---
 
@@ -109,28 +134,146 @@ kubectl describe node node01 | grep -i Taint
 # Taints: PERMISSION=granted:NoSchedule
 ```
 
-### 예시 — 라벨로 여러 노드에 한 번에 taint (RoleBindingLab 연계)
+---
 
-노드 이름(`node01`) 대신 **라벨 셀렉터(`-l`)** 로 같은 그룹의 노드 여러 대에 한 번에 걸 수 있습니다.
-RoleBindingLab 시나리오 2는 `payflow.io/pool=payments` 라벨이 붙은 노드그룹에 taint를 겁니다.
+## 노드그룹 매니페스트 (EKS / eksctl)
 
-```bash
-# 라벨이 payflow.io/pool=payments 인 노드 전부에 taint
-kubectl taint nodes -l payflow.io/pool=payments \
-  workload=payments:NoSchedule --overwrite
+이 과제(KillerCoda 등)는 **이미 떠 있는 노드 `node01`** 에 `kubectl taint` 로 taint 를 겁니다.
+실무·EKS 에서는 **노드그룹(node group)** 단위로 label·taint 를 **생성 시점에 선언**하는 경우가 많습니다.
+노드그룹에 속한 모든 노드가 동일한 label·taint 를 자동으로 받습니다.
 
-# 풀기 (끝에 -)
-kubectl taint nodes -l payflow.io/pool=payments \
-  workload=payments:NoSchedule-
+```text
+kubectl taint (Lab)     →  기존 노드 1대에 수동으로 taint 부착
+노드그룹 manifest (EKS) →  새 노드가 뜰 때마다 label·taint 가 자동 부착
 ```
 
-| 옵션 | 의미 |
-|------|------|
-| `-l <label>=<value>` | 노드 이름 대신 **라벨로 대상 노드 선택** (여러 대 동시) |
-| `--overwrite` | 이미 같은 key 의 taint 가 있으면 **값/effect 덮어쓰기** (재실행해도 에러 안 남) |
+### eksctl ClusterConfig — 노드그룹 2개 예시
 
-> **NoSchedule 은 새 Pod 만 막습니다.** taint 를 거는 시점에 **이미 Running 중인 Pod 는 그대로 유지**됩니다.
-> (실행 중 Pod 까지 퇴출하려면 `NoExecute` 가 필요합니다.)
+`nodegroup-examples.yaml` 전체 내용입니다. 일반 풀과 결제 전용 풀을 나눕니다.
+
+```yaml
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: payflow-lab
+  region: ap-northeast-2
+  version: "1.33"
+
+managedNodeGroups:
+  # 일반 워크로드 — label 만, taint 없음
+  - name: ng-general
+    instanceType: t3.medium
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 1
+    labels:
+      payflow.io/pool: general
+
+  # 결제 전용 — label + taint (노드 생성 시 자동 적용)
+  - name: ng-payments
+    instanceType: t3.medium
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 1
+    labels:
+      payflow.io/pool: payments
+    taints:
+      - key: workload
+        value: payments
+        effect: NoSchedule
+```
+
+| 필드 | 역할 |
+|------|------|
+| `labels` | 노드에 붙는 Label → Pod의 `nodeSelector` / `nodeAffinity` 가 참조 |
+| `taints` | 노드에 붙는 Taint → Pod에 맞는 `tolerations` 가 없으면 스케줄 불가 |
+| `name` | 노드그룹 이름 (노드 이름과는 별개) |
+
+노드그룹으로 taint 를 선언하면, RoleBindingLab 시나리오 2에서 수동으로 실행하던 아래와 **동일한 효과**가 납니다.
+
+```bash
+# 수동 (Lab 학습용) — 라벨 셀렉터로 payments 풀 전체에 taint
+kubectl taint nodes -l payflow.io/pool=payments \
+  workload=payments:NoSchedule --overwrite
+```
+
+### 노드그룹 taint 와 짝이 맞는 Pod
+
+`ng-payments` 노드그룹의 taint `workload=payments:NoSchedule` 에 맞춘 Pod 예시입니다.
+
+**toleration 있음 → Running**
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-gateway
+  namespace: payments
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-gateway
+  template:
+    metadata:
+      labels:
+        app: payment-gateway
+    spec:
+      nodeSelector:
+        payflow.io/pool: payments
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: payments
+          effect: NoSchedule
+      containers:
+        - name: gateway
+          image: nginx
+```
+
+**nodeSelector 는 같지만 toleration 없음 → Pending**
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytics-batch
+  namespace: analytics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: analytics-batch
+  template:
+    metadata:
+      labels:
+        app: analytics-batch
+    spec:
+      nodeSelector:
+        payflow.io/pool: payments
+      # tolerations 없음 → ng-payments taint 에 막힘
+      containers:
+        - name: batch
+          image: busybox
+```
+
+```text
+ng-payments 노드그룹 (label + taint 자동 부착)
+  ├─ payment-gateway   nodeSelector ✓ + toleration ✓ → Running
+  └─ analytics-batch   nodeSelector ✓ + toleration ✗ → Pending
+```
+
+### Lab 과제(node01) vs 노드그룹 — 대응표
+
+| | 이 Lab (`Questions.bash`) | EKS 노드그룹 (`nodegroup-examples.yaml`) |
+|--|---------------------------|------------------------------------------|
+| taint 대상 | `node01` (노드 이름) | `ng-payments` 그룹의 모든 노드 |
+| taint 선언 | `kubectl taint nodes node01 ...` | `managedNodeGroups[].taints` |
+| taint 값 | `PERMISSION=granted:NoSchedule` | `workload=payments:NoSchedule` |
+| Pod toleration | `key: PERMISSION, value: granted` | `key: workload, value: payments` |
+
+> 키·값 문자열은 환경마다 다를 수 있습니다. **노드 taint 와 Pod toleration 의 key·value·effect 가 짝이 맞는지**가 핵심입니다.
 
 ---
 
@@ -215,7 +358,7 @@ spec:
 
 ## nodeSelector vs taint/toleration (RoleBindingLab 연계)
 
-두 메커니즘은 **방향이 반대**입니다. RoleBindingLab 시나리오 2를 이해하려면 둘의 차이를 알아야 합니다.
+두 메커니즘은 **방향이 반대**입니다.
 
 | | nodeSelector / nodeAffinity | taint / toleration |
 |--|------------------------------|--------------------|

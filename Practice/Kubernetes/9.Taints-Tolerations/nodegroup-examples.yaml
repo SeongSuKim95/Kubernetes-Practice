@@ -1,0 +1,88 @@
+# 노드그룹 매니페스트 예시 — eksctl ClusterConfig (EKS)
+#
+# Taint/Toleration Lab에서 kubectl 로 node01 에 taint 를 거는 것과 달리,
+# EKS 에서는 노드그룹 생성 시점에 label·taint 를 선언해 두는 방식이 흔합니다.
+# RoleBindingLab(AWS/RoleBindingLab/infra/cluster-config.yaml) 과 같은 패턴입니다.
+#
+# 사용 (참고):
+#   export CLUSTER_NAME=payflow-lab AWS_REGION=ap-northeast-2
+#   envsubst < nodegroup-examples.yaml | eksctl create cluster -f -
+#
+# 이미 클러스터가 있으면 노드그룹만 추가:
+#   eksctl create nodegroup -f nodegroup-examples.yaml --include ng-payments
+#
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: payflow-lab
+  region: ap-northeast-2
+  version: "1.33"
+
+managedNodeGroups:
+  # ── 일반 워크로드 노드그룹 ─────────────────────────────────────
+  # label 만 붙임. taint 없음 → 어떤 Pod 도 스케줄 가능.
+  - name: ng-general
+    instanceType: t3.medium
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 1
+    volumeSize: 20
+    labels:
+      payflow.io/pool: general
+    # taints: 없음
+
+  # ── 결제 전용 노드그룹 ─────────────────────────────────────────
+  # label(끌어당김 대상) + taint(밀어냄) 를 노드그룹에 함께 선언.
+  # 이 그룹에서 뜨는 모든 노드는 아래 label·taint 를 자동으로 가집니다.
+  - name: ng-payments
+    instanceType: t3.medium
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 1
+    volumeSize: 20
+    labels:
+      payflow.io/pool: payments
+    taints:
+      - key: workload
+        value: payments
+        effect: NoSchedule
+
+# ── 이 노드그룹과 짝이 맞는 Pod 예시 (별도 apply) ─────────────────
+# payment-gateway: nodeSelector 로 payments 노드를 노리고, toleration 으로 taint 견딤
+#
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: payment-gateway
+#   namespace: payments
+# spec:
+#   template:
+#     spec:
+#       nodeSelector:
+#         payflow.io/pool: payments
+#       tolerations:
+#         - key: workload
+#           operator: Equal
+#           value: payments
+#           effect: NoSchedule
+#       containers:
+#         - name: gateway
+#           image: nginx
+#
+# analytics-batch: nodeSelector 는 같지만 toleration 없음 → Pending
+#
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: analytics-batch
+#   namespace: analytics
+# spec:
+#   template:
+#     spec:
+#       nodeSelector:
+#         payflow.io/pool: payments
+#       # tolerations 없음
+#       containers:
+#         - name: batch
+#           image: busybox

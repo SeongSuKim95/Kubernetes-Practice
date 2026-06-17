@@ -9,8 +9,6 @@ EKS 위에 가상의 핀테크 결제 플랫폼 **PayFlow** 를 올리고, **Arg
 | **2** | PCI 규제 대상 결제 게이트웨이는 **전용 노드**에만 배치 | **Taint / Toleration** |
 | **3** | 자원 부족 시 **결제 처리**가 **야간 정산 배치**보다 먼저 뜸 | **PriorityClass / preemption** |
 
-> 개념 정리는 `Practice/Kubernetes/9.Taints-Tolerations/` 학습 노트를 함께 참고하세요.
-
 ---
 
 ## 1. 아키텍처
