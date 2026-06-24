@@ -1,0 +1,17 @@
+# 진입점(Gateway) — 인프라/플랫폼 역할. NGINX Gateway Fabric 의 'nginx' 클래스 사용.
+# HTTP:80 listener, 같은 NS(gateway-demo)의 HTTPRoute 허용. 호스트는 HTTPRoute 에서 지정.
+# TLS 는 LAB-GUIDE 의 선택 단계(4-5)에서 확장.
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: web-gateway
+  namespace: gateway-demo
+spec:
+  gatewayClassName: nginx
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: Same

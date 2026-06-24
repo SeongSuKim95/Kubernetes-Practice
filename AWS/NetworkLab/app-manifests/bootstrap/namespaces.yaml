@@ -1,0 +1,33 @@
+# NetworkLab 네임스페이스 (netlab-bootstrap Application 이 동기화)
+#   frontend     : 백엔드 호출이 허용될 클라이언트 (시나리오 1)
+#   backend      : 보호 대상 워크로드 (시나리오 1)
+#   client       : 허용되지 않은 출처 (시나리오 1, 차단 관측용)
+#   gateway-demo : Gateway API 라우팅 대상 (시나리오 2)
+# (kubernetes.io/metadata.name 라벨은 자동 부여되어 NetworkPolicy namespaceSelector 에 사용)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: frontend
+  labels:
+    netlab.io/role: client-allowed
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: backend
+  labels:
+    netlab.io/role: protected
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: client
+  labels:
+    netlab.io/role: client-denied
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gateway-demo
+  labels:
+    netlab.io/role: gateway

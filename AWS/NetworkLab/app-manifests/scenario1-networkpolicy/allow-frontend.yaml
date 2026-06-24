@@ -1,0 +1,22 @@
+# (2) 최소 권한: frontend NS 의 트래픽만 backend:80 으로 허용.
+#     default-deny 와 누적(additive)되어, frontend NS → backend:80 만 통과.
+#     client NS 는 출처가 아니므로 계속 차단.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-to-backend
+  namespace: backend
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: frontend
+      ports:
+        - protocol: TCP
+          port: 80

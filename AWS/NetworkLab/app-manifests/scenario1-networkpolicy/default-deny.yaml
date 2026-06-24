@@ -1,0 +1,12 @@
+# (1) backend NS 모든 Pod 의 Ingress 를 기본 차단.
+#     podSelector: {} → NS 내 전체 Pod 선택 → 화이트리스트 모드.
+#     ingress 규칙이 없으므로 들어오는 모든 트래픽 차단.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: backend
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress

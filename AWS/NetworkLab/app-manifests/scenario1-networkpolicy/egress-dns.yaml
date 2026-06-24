@@ -1,0 +1,31 @@
+# (3) Egress 최소 권한 + DNS 예외(실무 필수 함정).
+#     frontend Pod 는 backend:80 과 DNS(53) 로만 나갈 수 있다.
+#     DNS 를 열지 않으면 Service 이름 해석이 실패한다(11번 §5.4-c).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: frontend-egress
+  namespace: frontend
+spec:
+  podSelector:
+    matchLabels:
+      app: frontend
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: backend
+      ports:
+        - protocol: TCP
+          port: 80
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53

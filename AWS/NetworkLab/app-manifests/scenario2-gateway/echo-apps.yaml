@@ -1,0 +1,95 @@
+# 라우팅 대상 4개 (hashicorp/http-echo — 응답 본문으로 어느 백엔드인지 식별).
+# path 라우팅용: echo-foo / echo-bar
+# 트래픽 분할용: echo-v1 / echo-v2
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: echo-foo, namespace: gateway-demo, labels: { app: echo-foo } }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: echo-foo } }
+  template:
+    metadata: { labels: { app: echo-foo } }
+    spec:
+      containers:
+        - name: echo
+          image: hashicorp/http-echo:1.0
+          args: ["-text=foo backend", "-listen=:5678"]
+          ports: [{ containerPort: 5678 }]
+          resources: { requests: { cpu: 10m, memory: 16Mi }, limits: { cpu: 50m, memory: 32Mi } }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: echo-foo, namespace: gateway-demo }
+spec:
+  selector: { app: echo-foo }
+  ports: [{ name: http, port: 80, targetPort: 5678 }]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: echo-bar, namespace: gateway-demo, labels: { app: echo-bar } }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: echo-bar } }
+  template:
+    metadata: { labels: { app: echo-bar } }
+    spec:
+      containers:
+        - name: echo
+          image: hashicorp/http-echo:1.0
+          args: ["-text=bar backend", "-listen=:5678"]
+          ports: [{ containerPort: 5678 }]
+          resources: { requests: { cpu: 10m, memory: 16Mi }, limits: { cpu: 50m, memory: 32Mi } }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: echo-bar, namespace: gateway-demo }
+spec:
+  selector: { app: echo-bar }
+  ports: [{ name: http, port: 80, targetPort: 5678 }]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: echo-v1, namespace: gateway-demo, labels: { app: echo-v1 } }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: echo-v1 } }
+  template:
+    metadata: { labels: { app: echo-v1 } }
+    spec:
+      containers:
+        - name: echo
+          image: hashicorp/http-echo:1.0
+          args: ["-text=version v1", "-listen=:5678"]
+          ports: [{ containerPort: 5678 }]
+          resources: { requests: { cpu: 10m, memory: 16Mi }, limits: { cpu: 50m, memory: 32Mi } }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: echo-v1, namespace: gateway-demo }
+spec:
+  selector: { app: echo-v1 }
+  ports: [{ name: http, port: 80, targetPort: 5678 }]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: echo-v2, namespace: gateway-demo, labels: { app: echo-v2 } }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: echo-v2 } }
+  template:
+    metadata: { labels: { app: echo-v2 } }
+    spec:
+      containers:
+        - name: echo
+          image: hashicorp/http-echo:1.0
+          args: ["-text=version v2", "-listen=:5678"]
+          ports: [{ containerPort: 5678 }]
+          resources: { requests: { cpu: 10m, memory: 16Mi }, limits: { cpu: 50m, memory: 32Mi } }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: echo-v2, namespace: gateway-demo }
+spec:
+  selector: { app: echo-v2 }
+  ports: [{ name: http, port: 80, targetPort: 5678 }]
