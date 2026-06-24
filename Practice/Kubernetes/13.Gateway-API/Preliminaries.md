@@ -3,6 +3,8 @@
 `Questions.bash` / `SolutionNotes.bash` 를 풀 때 필요한 개념을 정리합니다.
 이 문서는 **(1) 네트워크 계층에서 Gateway의 위치 → (2) Ingress의 한계 → (3) Gateway API 리소스 모델 → (4) Ingress→Gateway 매핑 → (5) 이 Lab 풀이** 순서로 읽으면 됩니다.
 
+> **실습 확장:** EKS에서 host/path·**가중치 라우팅**까지 직접 curl 로 검증하려면 **[AWS/NetworkLab/LAB-GUIDE.md](../../AWS/NetworkLab/LAB-GUIDE.md)** 시나리오 2를 참고하세요.
+
 
 | 파일                   | 역할                                                                                    |
 | -------------------- | ------------------------------------------------------------------------------------- |
@@ -286,9 +288,66 @@ spec:
 | `hostnames`           | 처리할 호스트 (Gateway listener hostname과 일치/포함)       |
 | `rules[].matches`     | path/header/method 등 매칭 조건                       |
 | `rules[].backendRefs` | 매칭 시 보낼 **Service + port** (Ingress의 backend)    |
+| `backendRefs[].weight` | (선택) **가중치** — 같은 rule 안 여러 backend 비율 분배 (§3.5) |
 
 
 > **연결 관계:** `Gateway` 가 진입점을 열고, `HTTPRoute.parentRefs` 가 그 Gateway에 자신을 붙입니다. `backendRefs` 로 최종 Service를 가리킵니다.
+
+### 3.5 HTTPRoute — 가중치 트래픽 분할 (weight routing)
+
+§2에서 본 Ingress 한계 중 **"트래픽 분할(가중치)은 표준에 없음"** 을 Gateway API는 **`backendRefs[].weight`** 표준 필드로 해결합니다. path 가 다르면 rule 을 나누고(§3.4), **같은 host·같은 path** 로 여러 버전에 비율만 나누고 싶을 때 weight 를 씁니다.
+
+**용도:** 카나리/블루그린 배포 — 안정 버전 90% + 신규 버전 10%처럼 점진 롤아웃.
+
+**NetworkLab 예시** (`AWS/NetworkLab/app-manifests/scenario2-gateway/httproute-canary.yaml`):
+
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: canary-route
+  namespace: gateway-demo
+spec:
+  parentRefs:
+    - name: web-gateway
+  hostnames:
+    - "canary.example.com"
+  rules:
+    - backendRefs:              # matches 없음 = host 일치 시 이 rule 적용
+        - name: echo-v1
+          port: 80
+          weight: 90            # 90% → echo-v1
+        - name: echo-v2
+          port: 80
+          weight: 10            # 10% → echo-v2
+```
+
+| 패턴 | HTTPRoute 구조 | NetworkLab 예 |
+| --- | --- | --- |
+| **host + path 분기** | `rules` 여러 개, 각각 `matches.path` | `app-route`: `/foo`→echo-foo, `/bar`→echo-bar |
+| **가중치 분할** | `rules` 하나, `backendRefs` 여러 개 + `weight` | `canary-route`: v1 90 / v2 10 |
+
+```text
+[Ingress]  카나리 10% → nginx.ingress.kubernetes.io/canary-weight 등 annotation (컨트롤러 종속)
+[Gateway]  카나리 10% → backendRefs[].weight: 10 (표준 필드)
+```
+
+**NetworkLab에서 검증 (EKS + NGINX Gateway Fabric):**
+
+Gateway 가 `PROGRAMMED` 되면 진입점 DNS(ELB)가 `.status.addresses` 에 붙습니다.
+
+```bash
+GW_HOST=$(kubectl -n gateway-demo get gateway web-gateway \
+  -o jsonpath='{.status.addresses[0].value}')
+
+# 20회 요청 → 응답 본문(version v1 / v2) 비율 확인
+for i in $(seq 1 20); do
+  curl -s -H "Host: canary.example.com" "http://${GW_HOST}/"
+done | sort | uniq -c
+# version v1 다수, version v2 소수 (약 90:10)
+```
+
+> path 분기(4-3)는 **Ingress 와 동등**, weight 분할(4-4)은 **Gateway API 가 Ingress 대비 갖는 추가 표현력**입니다. 자세한 절차는 [NetworkLab LAB-GUIDE §4](../../AWS/NetworkLab/LAB-GUIDE.md#4-시나리오-2--gateway-api) 참고.
 
 ```text
 GatewayClass ──(gatewayClassName)── Gateway ──(parentRefs)── HTTPRoute ──(backendRefs)── Service ── Pod
@@ -420,6 +479,7 @@ kubectl get httproute web-route -o jsonpath='{.spec.parentRefs[*].name}{"\n"}'
 | `certificateRefs` 에 뭘?             | `kind: Secret` 의 **TLS Secret**(LabSetUp의 `web-tls`)                                 |
 | Ingress와 동시에 둬도 되나?                | 가능. 보통 마이그레이션 중 병행 후 Ingress 제거                                                      |
 | HTTPRoute는 Gateway와 같은 NS여야?       | 다른 NS도 가능(`parentRefs` 에 namespace 지정 + Gateway가 ReferenceGrant/allowedRoutes로 허용 시) |
+| Ingress 에 카나리(가중치) 배포 가능?          | 컨트롤러 **annotation** 에 의존(비표준). Gateway API 는 `backendRefs[].weight` **표준 필드** (§3.5, NetworkLab 4-4) |
 
 
 ---
