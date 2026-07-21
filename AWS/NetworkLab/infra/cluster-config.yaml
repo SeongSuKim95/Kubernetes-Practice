@@ -1,0 +1,40 @@
+# eksctl ClusterConfig — NetworkLab
+# 두 가지 개념(11번 NetworkPolicy, 13번 Gateway API)을 EKS 에서 실습합니다.
+# create-eks-cluster.sh 가 envsubst 로 ${...} 를 채운 뒤 eksctl 에 넘깁니다.
+#
+# 핵심: vpc-cni 애드온에 enableNetworkPolicy=true 를 주어
+#   Amazon VPC CNI 가 NetworkPolicy 를 "집행"하도록 합니다(Calico 불필요).
+#   이게 없으면 NetworkPolicy 를 apply 해도 트래픽이 막히지 않습니다(선언 ≠ 집행).
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: ${CLUSTER_NAME}
+  region: ${AWS_REGION}
+  version: "${K8S_VERSION}"
+
+iam:
+  withOIDC: true            # 관례상 활성(추후 IRSA 확장 대비)
+
+# EKS 기본 애드온을 명시 관리. vpc-cni 에 NetworkPolicy 집행을 켠다.
+addons:
+  - name: vpc-cni
+    configurationValues: |-
+      enableNetworkPolicy: "true"
+  - name: coredns
+  - name: kube-proxy
+
+managedNodeGroups:
+  - name: ng-net
+    instanceType: ${NODE_INSTANCE_TYPE}
+    desiredCapacity: 2
+    minSize: 2
+    maxSize: 2
+    volumeSize: 20
+    ssh:
+      allow: false
+    labels:
+      netlab.io/pool: general
+
+# metrics-server / ALB Controller 는 이 랩에 불필요.
+# Gateway API CRD + NGINX Gateway Fabric 컨트롤러는 install-addons.sh 에서 설치.

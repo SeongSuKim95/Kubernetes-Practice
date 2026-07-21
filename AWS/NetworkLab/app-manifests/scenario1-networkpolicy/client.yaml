@@ -1,0 +1,25 @@
+# 허용되지 않은 출처: client (frontend 가 아닌 NS — 차단 관측용)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client
+  namespace: client
+  labels:
+    app: client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      containers:
+        - name: netshoot
+          image: nicolaka/netshoot:latest
+          command: ["sleep", "infinity"]
+          resources:
+            requests: { cpu: 25m, memory: 32Mi }
+            limits:   { cpu: 100m, memory: 64Mi }
