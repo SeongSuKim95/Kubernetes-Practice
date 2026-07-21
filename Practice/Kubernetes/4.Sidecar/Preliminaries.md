@@ -14,12 +14,13 @@
 
 1. [선행 개념 요약](#1-선행-개념-요약)
 2. [Sidecar 패턴 — 컨테이너 간 Volume 공유](#2-sidecar-패턴--컨테이너-간-volume-공유)
-3. [LabSetUp.bash — 초기 상태](#3-labsetupbash--초기-상태)
-4. [Questions.bash — 과제](#4-questionsbash--과제)
-5. [해결 구조 (SolutionNotes.bash)](#5-해결-구조-solutionnotesbash)
-6. [적용·확인](#6-적용확인)
-7. [흔한 실수](#7-흔한-실수)
-8. [이후 실습과의 연결](#8-이후-실습과의-연결)
+3. [보강 — ConfigMap과 Secret으로 설정 주입](#3-보강--configmap과-secret으로-설정-주입)
+4. [LabSetUp.bash — 초기 상태](#4-labsetupbash--초기-상태)
+5. [Questions.bash — 과제](#5-questionsbash--과제)
+6. [해결 구조 (SolutionNotes.bash)](#6-해결-구조-solutionnotesbash)
+7. [적용·확인](#7-적용확인)
+8. [흔한 실수](#8-흔한-실수)
+9. [이후 실습과의 연결](#9-이후-실습과의-연결)
 
 ---
 
@@ -72,7 +73,101 @@ Pod
 
 ---
 
-## 3. LabSetUp.bash — 초기 상태
+## 3. 보강 — ConfigMap과 Secret으로 설정 주입
+
+Sidecar 패턴에서 “로그를 공유한다”는 Volume이라면, **설정을 주입한다**는 대표 수단이 **ConfigMap**과 **Secret**입니다.
+같은 Pod(메인 + Sidecar)에 설정 파일을 붙일 때도 Volume + `volumeMounts` 패턴이 그대로입니다.
+
+| 리소스 | 용도 | 예 |
+|--------|------|-----|
+| **ConfigMap** | 비밀이 아닌 설정 (env, 설정 파일, 플래그) | nginx.conf, feature flag, 로그 경로 |
+| **Secret** | 민감 정보 (비밀번호, TLS 키, 토큰) | DB password, `tls.crt` / `tls.key` |
+
+> Secret도 etcd에 기본적으로 base64로만 저장됩니다(암호화는 별도 설정). “안 보이면 안전”이 아닙니다. Git에는 Secret 원문을 올리지 않는 것이 원칙입니다.
+
+### Pod에 붙이는 세 가지 방식
+
+**(1) 환경 변수**
+
+```yaml
+env:
+- name: LOG_PATH
+  valueFrom:
+    configMapKeyRef:
+      name: app-config
+      key: log_path
+- name: DB_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: app-secret
+      key: password
+```
+
+**(2) Volume으로 파일 마운트** (Sidecar와 가장 잘 맞는 방식)
+
+```yaml
+volumes:
+- name: config
+  configMap:
+    name: app-config
+- name: tls
+  secret:
+    secretName: web-tls
+containers:
+- name: wordpress
+  volumeMounts:
+  - name: config
+    mountPath: /etc/app
+    readOnly: true
+- name: sidecar
+  volumeMounts:
+  - name: config
+    mountPath: /etc/app
+    readOnly: true   # 메인과 같은 ConfigMap을 Sidecar도 읽음
+```
+
+**(3) `envFrom`으로 키 전부 주입**
+
+```yaml
+envFrom:
+- configMapRef:
+    name: app-config
+- secretRef:
+    name: app-secret
+```
+
+### emptyDir vs ConfigMap/Secret Volume
+
+| | emptyDir | ConfigMap / Secret Volume |
+|--|----------|---------------------------|
+| 데이터 출처 | Pod가 런타임에 씀 | API에 선언된 객체 |
+| Pod 삭제 시 | 사라짐 | 객체는 남음 (마운트만 끊김) |
+| 주 용도 | 캐시·로그 버퍼 공유 | **설정·인증서 주입** |
+| Sidecar와의 관계 | 메인↔Sidecar **쓰기/읽기 공유** | 보통 **읽기 전용**으로 양쪽이 동일 설정 참조 |
+
+이 Lab 과제(로그 emptyDir)와 설정 주입을 한 Pod에 같이 쓸 수 있습니다.
+
+```text
+Pod
+├── volumes: emptyDir(log) + configMap(app-config)
+├── wordpress  → mount log(쓰기) + config(읽기)
+└── sidecar    → mount log(읽기) + config(읽기)
+```
+
+### 최소 생성 명령
+
+```bash
+kubectl create configmap app-config --from-literal=log_path=/var/log/wordpress.log
+kubectl create secret generic app-secret --from-literal=password='s3cr3t'
+kubectl get configmap,secret
+kubectl describe configmap app-config
+```
+
+TLS용 Secret(`kubernetes.io/tls`)은 **7.TLS-Config** 에서 이어서 다룹니다.
+
+---
+
+## 4. LabSetUp.bash — 초기 상태
 
 ```bash
 ./LabSetUp.bash
@@ -98,7 +193,7 @@ containers:
 
 ---
 
-## 4. Questions.bash — 과제
+## 5. Questions.bash — 과제
 
 1. 기존 `wordpress` Deployment에 **sidecar** 컨테이너 추가  
    - 이름: `sidecar`  
@@ -108,7 +203,7 @@ containers:
 
 ---
 
-## 5. 해결 구조 (SolutionNotes.bash)
+## 6. 해결 구조 (SolutionNotes.bash)
 
 **핵심**: `volumes`에 **emptyDir** 하나, **두 컨테이너**가 같은 `name: log`로 `/var/log` 마운트.
 
@@ -146,7 +241,7 @@ spec:
 
 ---
 
-## 6. 적용·확인
+## 7. 적용·확인
 
 ```bash
 # LabSetUp.bash 실행 후
@@ -166,7 +261,7 @@ kubectl exec deploy/wordpress -c wordpress -- ls -l /var/log/wordpress.log
 
 ---
 
-## 7. 흔한 실수
+## 8. 흔한 실수
 
 1. **Sidecar만 추가**하고 `volumes` / `volumeMounts` 누락  
 2. **한쪽만** `volumeMounts` (wordpress만 또는 sidecar만)  
@@ -176,16 +271,18 @@ kubectl exec deploy/wordpress -c wordpress -- ls -l /var/log/wordpress.log
 
 ---
 
-## 8. 이후 실습과의 연결
+## 9. 이후 실습과의 연결
 
 | 순서 | 실습 | 내용 |
 | --- | --- | --- |
-| **4.Sidecar** (이 실습) | emptyDir + **Pod 내 공유** (휘발, 로그 tail) |
+| **4.Sidecar** (이 실습) | emptyDir + **Pod 내 공유** (휘발, 로그 tail) + ConfigMap/Secret 주입 개념 |
 | **[cache-demo](../1.Persistent-Volume/cache-demo.md)** | emptyDir 캐시 소실 → hostPath 비교 ([예비지식 6.1](../1.Persistent-Volume/Preliminaries-Volume-StorageClass.md#61-hostpath--노드-디스크에-붙이기)) |
 | **1.Persistent-Volume** | PV/PVC로 **Pod 밖** 영구 스토리지 |
 | **2.Storage-Class** | StorageClass로 볼륨 **동적 생성** |
+| **7.TLS-Config** | ConfigMap(TLS 정책) + Secret(인증서)로 HTTPS 검증 |
 
 Sidecar로 “**왜 Volume API가 Pod 스펙에 있는지**”를 체감한 뒤, [`1.Persistent-Volume/cache-demo`](../1.Persistent-Volume/cache-demo.md)·PV 실습으로 “**왜 emptyDir만으로는 부족한지**”로 이어집니다.
+설정 주입은 **7.TLS-Config** 에서 TLS ConfigMap/Secret으로 이어집니다.
 
 ---
 

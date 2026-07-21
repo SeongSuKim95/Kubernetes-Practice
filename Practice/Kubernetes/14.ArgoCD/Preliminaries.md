@@ -14,6 +14,7 @@
 
 ## 목차
 
+0. [선행 보강 — RBAC (ServiceAccount · Role · RoleBinding)](#0-선행-보강--rbac-serviceaccount--role--rolebinding)
 1. [Argo CD란 무엇인가](#1-argo-cd란-무엇인가)
 2. [GitOps — Argo CD가 지키는 원칙](#2-gitops--argo-cd가-지키는-원칙)
 3. [핵심 개념 한눈에](#3-핵심-개념-한눈에)
@@ -25,6 +26,137 @@
 9. [UI·CLI로 확인하기](#9-uicli로-확인하기)
 10. [흔한 실수와 주의점](#10-흔한-실수와-주의점)
 11. [이 실습·LoadTestLab과의 연결](#11-이-실습loadtestlab과의-연결)
+
+---
+
+## 0. 선행 보강 — RBAC (ServiceAccount · Role · RoleBinding)
+
+Argo CD는 클러스터 **안에서** Kubernetes API를 호출해 Deployment·Service 등을 sync합니다.
+그 호출이 허용되는지는 **인증(누구인가)** 다음 단계인 **인가(RBAC, 무엇을 해도 되나)** 가 결정합니다.
+GitOps를 이해하기 전에, API 권한의 최소 단위를 알아 둡니다.
+
+> 심화·실습: [AWS/RoleBindingLab/RBAC.md](../../../AWS/RoleBindingLab/RBAC.md) · [LAB-GUIDE 시나리오 1](../../../AWS/RoleBindingLab/LAB-GUIDE.md)
+
+### 인증 vs 인가
+
+```text
+요청 → [인증] 너는 누구인가? → [인가(RBAC)] 이 동작이 허용되나? → 실행 / Forbidden
+```
+
+| | 담당 | 예 |
+|--|------|-----|
+| **인증 (Authentication)** | 신원 확인 | kubeconfig 사용자, ServiceAccount 토큰 |
+| **인가 (Authorization / RBAC)** | 권한 검사 | Role에 `list pods` 가 있는가 |
+
+### 핵심 리소스 네 가지
+
+| 리소스 | 범위 | 역할 |
+|--------|------|------|
+| **Role** | Namespace | 그 NS 안에서 허용할 API (`verbs` + `resources`) |
+| **ClusterRole** | 클러스터 | 클러스터 범위 권한 (또는 여러 NS에 재사용) |
+| **RoleBinding** | Namespace | Role ↔ subject(사용자·그룹·**ServiceAccount**) 연결 |
+| **ClusterRoleBinding** | 클러스터 | ClusterRole ↔ subject 연결 |
+
+```text
+Role (권한 묶음) + RoleBinding (누구에게) = 실제 사용 가능 권한
+Role만 있고 Binding이 없으면 → 아무도 그 권한을 못 씀
+```
+
+### ServiceAccount (SA)
+
+**ServiceAccount** 는 Pod·컨트롤러가 API를 호출할 때 쓰는 **클러스터 내부 주체**입니다.
+사람 사용자와 달리, Argo CD application-controller 같은 워크로드는 보통 SA로 동작합니다.
+
+```text
+system:serviceaccount:<namespace>:<serviceaccount-name>
+# 예: system:serviceaccount:argocd:argocd-application-controller
+```
+
+```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: deploy-bot
+  namespace: demo
+```
+
+### Role — 무엇을 할 수 있나
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: app-deployer
+  namespace: demo
+rules:
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "watch", "create", "update", "patch"]
+- apiGroups: [""]
+  resources: ["services", "configmaps"]
+  verbs: ["get", "list", "watch", "create", "update", "patch"]
+```
+
+| 필드 | 의미 |
+|------|------|
+| `apiGroups: [""]` | core 그룹 (pods, services, configmaps…) |
+| `apiGroups: ["apps"]` | deployments, replicasets… |
+| `verbs` | `get`/`list`/`watch`/`create`/`update`/`patch`/`delete` |
+
+### RoleBinding — 누구에게 주나
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: deploy-bot-binding
+  namespace: demo
+subjects:
+- kind: ServiceAccount
+  name: deploy-bot
+  namespace: demo
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: app-deployer
+```
+
+### 권한 확인 (실습·디버깅)
+
+```bash
+# 이 SA가 demo NS에서 deployment를 만들 수 있나?
+kubectl auth can-i create deployments -n demo \
+  --as=system:serviceaccount:demo:deploy-bot
+
+# Argo CD controller가 대상 NS에 sync할 권한이 있나? (설치 후)
+kubectl auth can-i create deployments -n loadtest \
+  --as=system:serviceaccount:argocd:argocd-application-controller
+```
+
+| 결과 | 의미 |
+|------|------|
+| `yes` | RoleBinding이 연결되어 허용 |
+| `no` | Role 없음 / Binding 없음 / 다른 NS / verb 부족 → Sync 실패·Forbidden |
+
+### Argo CD와의 연결
+
+```text
+Git (desired YAML)
+  → Argo CD application-controller (ServiceAccount)
+  → API Server가 RBAC으로 인가 검사
+  → 허용되면 Destination NS에 Deployment/Service 생성·갱신
+```
+
+- Argo CD를 **설치**하면 `argocd` NS에 SA·ClusterRole·Binding이 함께 생깁니다.
+- Application이 **다른 NS**(예: `loadtest`)에 sync하려면, 그 컨트롤러 SA에 해당 NS(또는 클러스터) 권한이 있어야 합니다.
+- 권한이 없으면 UI/CLI에 **PermissionDenied / Forbidden** 이 나고 Git은 맞아도 클러스터에 반영되지 않습니다.
+
+한 줄 요약:
+
+```text
+SA = 주체, Role = 권한 목록, RoleBinding = 연결
+Argo CD sync = “컨트롤러 SA가 Destination NS에 대해 충분한 RBAC을 갖는가”
+```
 
 ---
 
@@ -376,6 +508,10 @@ argocd app history loadtest-app
 8. **Helm/Kustomize 혼동**  
    - `source.path`가 plain YAML이면 Helm 없이 apply. LoadTestLab `app-manifests/`는 **plain YAML**.
 
+9. **Sync 시 Forbidden / permission denied**  
+   - Git·Application 설정은 맞는데 리소스가 안 만들어지면 **RBAC** 을 의심합니다.  
+   - `kubectl auth can-i … --as=system:serviceaccount:argocd:…` 로 Destination NS 권한을 확인하세요. ([§0 RBAC](#0-선행-보강--rbac-serviceaccount--role--rolebinding))
+
 ---
 
 ## 11. 이 실습·LoadTestLab과의 연결
@@ -395,7 +531,7 @@ argocd app history loadtest-app
   Helm / CRD           →      echo-cpu + HPA + Ingress 실전
 ```
 
-**선행 권장:** [Deployment·리소스](../3.Resource-Allocation/Preliminaries.md) · [Ingress](../6.Ingress/) · [HPA](../8.HPA/) — Argo CD는 이 매니페스트들을 **Git에서 클러스터로 옮기는 배달 계층**입니다.
+**선행 권장:** [§0 RBAC](#0-선행-보강--rbac-serviceaccount--role--rolebinding) · [Deployment·리소스](../3.Resource-Allocation/Preliminaries.md) · [Ingress](../6.Ingress/) · [HPA](../8.HPA/) — Argo CD는 이 매니페스트들을 **Git에서 클러스터로 옮기는 배달 계층**이며, sync는 **컨트롤러 SA의 RBAC** 위에서 동작합니다.
 
 ---
 

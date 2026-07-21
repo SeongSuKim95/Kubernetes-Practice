@@ -275,10 +275,42 @@ kubectl get hpa -n autoscale
 
 ---
 
+## Probe와 HPA (보강)
+
+HPA가 replicas를 늘려도, **Ready가 아닌 Pod**는 Service Endpoints에 안 들어가고 트래픽을 못 받습니다.
+부하 테스트·오토스케일 실습에서는 Probe가 “늘어난 Pod가 실제로 요청을 받는지”를 좌우합니다.
+
+| Probe | HPA와의 관계 |
+|-------|----------------|
+| **readinessProbe** | 실패 → Endpoints 제외 → 그 Pod로 부하가 안 감 → CPU도 안 오를 수 있음 |
+| **livenessProbe** | 실패 → 재시작 → 순간적으로 Ready 끊김 → 스케일 관측이 요동칠 수 있음 |
+
+```text
+HPA: replicas 1 → 4
+  ├─ Pod A Ready=True  → Endpoints 포함 → 부하·CPU 메트릭 반영
+  ├─ Pod B Ready=True  → Endpoints 포함
+  └─ Pod C Ready=False (readiness 실패)
+        → Endpoints 제외 → 트래픽 없음 → “스케일만 되고 용량은 안 늘어난” 상태
+```
+
+기본 개념·YAML은 [`0.Basic-Practice/Preliminaries.md`](../0.Basic-Practice/Preliminaries.md) 를 참고하세요.
+
+```bash
+# 스케일 중 Ready / Endpoints 함께 보기
+kubectl get pods -n autoscale -o wide
+kubectl get endpoints -n autoscale
+kubectl describe pod -n autoscale -l app=apache | grep -A3 -i 'Ready\|Readiness\|Liveness'
+```
+
+> 실무 팁: 기동이 느린 앱은 **startupProbe**로 liveness를 보류하고, “트래픽 받을 준비”는 **readiness**에만 둡니다. readiness를 너무 빡세게 잡으면 스케일 아웃해도 Endpoints가 비어 HPA가 “효과가 없는” 것처럼 보입니다.
+
+---
+
 ## 선수 학습
 
 - `3.Resource-Allocation`: Pod의 **requests/limits** 개념
 - Deployment의 **replicas**와 `kubectl scale`의 차이 (HPA가 replicas를 덮어씀)
+- `0.Basic-Practice/Preliminaries.md`: **liveness / readiness Probe**
 
 ---
 
@@ -287,3 +319,4 @@ kubectl get hpa -n autoscale
 - CPU HPA 문제는 거의 항상 **(1) metrics-server (2) container.resources.requests (3) scaleTargetRef 이름/네임스페이스**를 먼저 확인합니다.
 - API는 **`autoscaling/v2`**를 사용하고, CPU 목표는 `metrics` → `resource` → `target.averageUtilization` 형태가 일반적입니다.
 - `kubectl explain hpa.spec --api-version=autoscaling/v2`로 필드명을 현장에서 확인할 수 있습니다.
+- replicas는 늘었는데 QPS가 안 오르면 **readiness / Endpoints** 를 함께 확인합니다.
