@@ -1,9 +1,3 @@
-<!--
-  게시용 복사본입니다. 이미지 경로를 GitHub raw URL로 바꿨습니다.
-  원본(로컬 미리보기용): 01-from-vm-to-kubernetes.md
-  이미지 저장소: https://github.com/SeongSuKim95/Kubernetes-Practice
--->
-
 # 1주차. 컨테이너는 왜 등장했고, 왜 Kubernetes까지 이어졌을까
 
 > 15주 연재의 첫 글입니다. 이번 주는 Kubernetes 명령을 외우기보다, 기술이 왜 이런 순서로 쌓여 왔는지를 잡아 둡니다. Docker를 처음 듣는 분도 따라올 수 있도록, 컨테이너가 무엇인지부터 풀어 씁니다.
