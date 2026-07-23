@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="280" viewBox="0 0 860 280">
+  <rect width="860" height="280" fill="#F7F9FC"/>
+  <rect x="40" y="30" width="340" height="170" rx="14" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
+  <text x="210" y="58" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#334155" font-weight="600">Host (내 컴퓨터)</text>
+  <rect x="80" y="80" width="260" height="90" rx="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
+  <text x="210" y="115" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#92400E" font-weight="600">포트 8080</text>
+  <text x="210" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B45309">브라우저가 두드리는 문</text>
+
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/>
+    </marker>
+  </defs>
+  <line x1="380" y1="125" x2="470" y2="125" stroke="#0D9488" stroke-width="2.5" marker-end="url(#arr)"/>
+  <text x="425" y="110" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E">-p 8080:80</text>
+
+  <rect x="480" y="30" width="340" height="170" rx="14" fill="#FFFFFF" stroke="#0D9488" stroke-width="2"/>
+  <text x="650" y="58" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">Container</text>
+  <rect x="520" y="80" width="260" height="90" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="650" y="115" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">포트 80</text>
+  <text x="650" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E">nginx가 듣는 문</text>
+
+  <line x1="40" y1="220" x2="820" y2="220" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="430" y="250" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 8. 포트 연결:</tspan>
+    <tspan> 호스트의 문과 상자 안 문의 연결</tspan>
+  </text>
+</svg>

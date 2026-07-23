@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="280" viewBox="0 0 860 280">
+  <rect width="860" height="280" fill="#F7F9FC"/>
+
+  <rect x="50" y="30" width="340" height="150" rx="14" fill="#FFFFFF" stroke="#D97706" stroke-width="2"/>
+  <text x="220" y="70" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#92400E" font-weight="600">컨테이너 STATUS</text>
+  <text x="220" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#0F766E" font-weight="600">Up</text>
+  <text x="220" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">docker ps는 정상처럼 보임</text>
+  <rect x="450" y="30" width="360" height="150" rx="14" fill="#FEF2F2" stroke="#DC2626" stroke-width="2"/>
+  <text x="630" y="70" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#DC2626" font-weight="600">안쪽 nginx 프로세스</text>
+  <text x="630" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#DC2626" font-weight="600">없음</text>
+  <text x="630" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">pkill 후 · 요청 실패</text>
+
+  <line x1="40" y1="230" x2="820" y2="230" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="430" y="260" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 23. 시나리오 7:</tspan>
+    <tspan> 컨테이너는 Up · 프로세스는 죽은 상태</tspan>
+  </text>
+</svg>

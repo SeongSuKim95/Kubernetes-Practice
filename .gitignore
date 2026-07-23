@@ -2,3 +2,5 @@
 /questions
 .DS_Store
 .env
+Textbook
+.cursor

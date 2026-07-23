@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="300" viewBox="0 0 720 300">
+  <rect width="720" height="300" fill="#F7F9FC"/>
+  <rect x="180" y="25" width="360" height="190" rx="14" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
+  <text x="360" y="55" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#64748B">물리 서버 (Hardware + OS)</text>
+  <rect x="230" y="80" width="260" height="70" rx="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
+  <text x="360" y="110" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#92400E" font-weight="600">Application</text>
+  <text x="360" y="133" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B45309">웹 서비스 하나</text>
+  <rect x="230" y="160" width="260" height="40" rx="8" fill="#F1F5F9" stroke="#CBD5E1"/>
+  <text x="360" y="185" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">남는 CPU / Memory …</text>
+  <line x1="40" y1="240" x2="680" y2="240" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="360" y="260" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 2. 물리 서버 한 대 · 앱 하나:</tspan>
+    <tspan> 단일 서버·단일 애플리케이션 구성</tspan>
+  </text>
+</svg>

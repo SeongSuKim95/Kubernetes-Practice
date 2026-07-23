@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300">
+  <rect width="900" height="300" fill="#F7F9FC"/>
+  <defs>
+    <marker id="a5" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+  </defs>
+
+  <rect x="40" y="30" width="220" height="150" rx="12" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
+  <text x="150" y="65" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#334155" font-weight="600">도면</text>
+  <text x="150" y="90" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">Desired State</text>
+  <text x="150" y="120" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E">바리스타 2명</text>
+  <text x="150" y="145" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">replicas: 2</text>
+
+  <line x1="270" y1="105" x2="330" y2="105" stroke="#2563EB" stroke-width="2.5" marker-end="url(#a5)"/>
+  <text x="300" y="90" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#2563EB">비교</text>
+
+  <rect x="340" y="30" width="200" height="150" rx="12" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="440" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#1D4ED8" font-weight="600">관리사무소</text>
+  <text x="440" y="108" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">차이 발견</text>
+  <text x="440" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">1명 부족</text>
+
+  <line x1="550" y1="105" x2="610" y2="105" stroke="#2563EB" stroke-width="2.5" marker-end="url(#a5)"/>
+  <text x="580" y="90" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#2563EB">채움</text>
+
+  <rect x="620" y="30" width="240" height="150" rx="12" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="740" y="65" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">현장</text>
+  <text x="740" y="90" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">실제 상태</text>
+  <text x="740" y="120" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E">다시 2명</text>
+  <text x="740" y="145" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">도면에 맞춤</text>
+
+  <line x1="40" y1="210" x2="860" y2="210" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="450" y="250" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 16. Desired State 비유:</tspan>
+    <tspan> 도면과 현장을 계속 맞추는 일</tspan>
+  </text>
+</svg>

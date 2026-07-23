@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="280" viewBox="0 0 860 280">
+  <rect width="860" height="280" fill="#F7F9FC"/>
+
+  <rect x="50" y="30" width="320" height="150" rx="14" fill="#FFFFFF" stroke="#DC2626" stroke-width="2"/>
+  <text x="210" y="65" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#DC2626" font-weight="600">memory=10m</text>
+  <text x="210" y="95" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">사용량 ↑↑</text>
+  <text x="210" y="125" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#DC2626">OOMKilled = true</text>
+  <text x="210" y="155" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">Exited (137)</text>
+  <rect x="430" y="30" width="380" height="150" rx="14" fill="#FFFFFF" stroke="#0D9488" stroke-width="2"/>
+  <text x="620" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">사람이 한도를 키움</text>
+  <text x="620" y="110" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">memory=100m 으로 다시 run</text>
+  <text x="620" y="145" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">자동 증설 · 이전 없음</text>
+
+  <line x1="40" y1="230" x2="820" y2="230" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="430" y="260" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 20. 시나리오 4:</tspan>
+    <tspan> 메모리 한도 초과와 OOM Kill</tspan>
+  </text>
+</svg>

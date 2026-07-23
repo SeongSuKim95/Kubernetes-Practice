@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="280" viewBox="0 0 900 280">
+  <rect width="900" height="280" fill="#F7F9FC"/>
+
+  <rect x="40" y="30" width="380" height="150" rx="14" fill="#FFFFFF" stroke="#DC2626" stroke-width="2"/>
+  <text x="230" y="65" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#DC2626" font-weight="600">볼륨 없음</text>
+  <text x="230" y="100" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">데이터가 상자 안에만</text>
+  <text x="230" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#DC2626">docker rm → 데이터 삭제</text>
+  <rect x="480" y="30" width="380" height="150" rx="14" fill="#FFFFFF" stroke="#0D9488" stroke-width="2"/>
+  <text x="670" y="65" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">볼륨 마운트</text>
+  <text x="670" y="100" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">db-data → /var/lib/mysql</text>
+  <text x="670" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E">상자 지워도 데이터 남음</text>
+
+  <line x1="40" y1="230" x2="860" y2="230" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="450" y="260" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 25. 시나리오 9:</tspan>
+    <tspan> 볼륨 유무에 따른 데이터 생존</tspan>
+  </text>
+</svg>

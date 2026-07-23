@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="340" viewBox="0 0 920 340">
+  <rect width="920" height="340" fill="#F7F9FC"/>
+  <text x="460" y="30" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#64748B">카페가 매장 세 곳으로 늘어난 상황</text>
+
+  <rect x="40" y="50" width="260" height="180" rx="12" fill="#FFFFFF" stroke="#0D9488" stroke-width="2"/>
+  <text x="170" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">매장 A</text>
+  <text x="170" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">바리스타(컨테이너)</text>
+  <rect x="70" y="125" width="90" height="50" rx="8" fill="#ECFDF5" stroke="#14B8A6"/>
+  <text x="115" y="155" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E">2명</text>
+  <rect x="180" y="125" width="90" height="50" rx="8" fill="#FEF3C7" stroke="#D97706"/>
+  <text x="225" y="155" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#92400E">손님</text>
+  <text x="170" y="205" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">서버 = 매장</text>
+
+  <rect x="330" y="50" width="260" height="180" rx="12" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="460" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#64748B" font-weight="600">매장 B</text>
+  <text x="460" y="110" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#DC2626">문 닫힘 · 장애</text>
+  <text x="460" y="145" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">손님을 어디로?</text>
+  <text x="460" y="175" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">빈자리 누가 채울까?</text>
+  <text x="460" y="205" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#94A3B8">전화로 맞추면 밤샘</text>
+
+  <rect x="620" y="50" width="260" height="180" rx="12" fill="#FFFFFF" stroke="#0D9488" stroke-width="2"/>
+  <text x="750" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">매장 C</text>
+  <text x="750" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">결제 창구(이름)</text>
+  <rect x="650" y="125" width="90" height="50" rx="8" fill="#ECFDF5" stroke="#14B8A6"/>
+  <text x="695" y="155" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E">3명</text>
+  <rect x="760" y="125" width="90" height="50" rx="8" fill="#EFF6FF" stroke="#60A5FA"/>
+  <text x="805" y="155" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8">손님</text>
+  <text x="750" y="205" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">IP 몰라도 찾아감</text>
+
+  <line x1="40" y1="255" x2="880" y2="255" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="460" y="295" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 10. 오케스트레이션이 필요한 이유:</tspan>
+    <tspan> 여러 매장의 배치 · 복구 · 안내</tspan>
+  </text>
+</svg>

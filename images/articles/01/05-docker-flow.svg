@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="230" viewBox="0 0 900 230">
+  <rect width="900" height="230" fill="#F7F9FC"/>
+  <defs>
+    <marker id="a2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/>
+    </marker>
+  </defs>
+  <g font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" text-anchor="middle">
+    <rect x="40" y="35" width="160" height="80" rx="12" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
+    <text x="120" y="70" font-size="14" fill="#334155" font-weight="600">Docker Client</text>
+    <text x="120" y="93" font-size="12" fill="#64748B">터미널 명령</text>
+
+    <rect x="260" y="35" width="160" height="80" rx="12" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+    <text x="340" y="70" font-size="14" fill="#0F766E" font-weight="600">Docker Daemon</text>
+    <text x="340" y="93" font-size="12" fill="#0F766E">백그라운드 관리</text>
+
+    <rect x="480" y="35" width="160" height="80" rx="12" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
+    <text x="560" y="70" font-size="14" fill="#334155" font-weight="600">Linux Kernel</text>
+    <text x="560" y="93" font-size="12" fill="#64748B">Namespace · Cgroups</text>
+
+    <rect x="700" y="35" width="160" height="80" rx="12" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
+    <text x="780" y="70" font-size="14" fill="#92400E" font-weight="600">Container</text>
+    <text x="780" y="93" font-size="12" fill="#B45309">실행 중인 프로세스</text>
+  </g>
+  <g stroke="#0D9488" stroke-width="2.5" fill="none" marker-end="url(#a2)">
+    <line x1="200" y1="75" x2="254" y2="75"/>
+    <line x1="420" y1="75" x2="474" y2="75"/>
+    <line x1="640" y1="75" x2="694" y2="75"/>
+  </g>
+  <line x1="40" y1="150" x2="860" y2="150" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="450" y="195" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 6. docker run 흐름:</tspan>
+    <tspan> Client · Daemon · Kernel · Container</tspan>
+  </text>
+</svg>
