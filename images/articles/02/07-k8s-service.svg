@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="540" viewBox="0 0 920 540">
+  <rect width="920" height="540" fill="#F7F9FC"/>
+  <defs>
+    <marker id="bb" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+    <marker id="bg" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/>
+    </marker>
+    <marker id="bp" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#DB2777"/>
+    </marker>
+  </defs>
+
+  <!-- cluster -->
+  <rect x="40" y="40" width="700" height="420" rx="16" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="70" y="75" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#1D4ED8" font-weight="600">kubernetes</text>
+
+  <!-- Ingress -->
+  <rect x="660" y="110" width="50" height="280" rx="10" fill="#FCE7F3" stroke="#DB2777" stroke-width="2"/>
+  <text x="685" y="155" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#9D174D" font-weight="600">I</text>
+  <text x="685" y="175" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#9D174D" font-weight="600">n</text>
+  <text x="685" y="195" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#9D174D" font-weight="600">g</text>
+  <text x="685" y="215" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#9D174D" font-weight="600">r</text>
+  <text x="685" y="235" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#9D174D" font-weight="600">e</text>
+  <text x="685" y="255" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#9D174D" font-weight="600">s</text>
+  <text x="685" y="275" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#9D174D" font-weight="600">s</text>
+
+  <!-- Internet -->
+  <circle cx="820" cy="250" r="42" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/>
+  <ellipse cx="820" cy="250" rx="18" ry="42" fill="none" stroke="#2563EB" stroke-width="1.5"/>
+  <line x1="778" y1="250" x2="862" y2="250" stroke="#2563EB" stroke-width="1.5"/>
+  <line x1="782" y1="230" x2="858" y2="230" stroke="#2563EB" stroke-width="1"/>
+  <line x1="782" y1="270" x2="858" y2="270" stroke="#2563EB" stroke-width="1"/>
+  <text x="820" y="310" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8" font-weight="600">Internet</text>
+
+  <!-- Internet <-> Ingress: single bidirectional corridor -->
+  <path d="M778 245 H720" fill="none" stroke="#DB2777" stroke-width="2" marker-end="url(#bp)"/>
+  <path d="M720 255 H778" fill="none" stroke="#DB2777" stroke-width="2" marker-end="url(#bp)"/>
+
+  <!-- Service -->
+  <rect x="180" y="110" width="400" height="50" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="380" y="142" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#0F766E" font-weight="600">Service</text>
+
+  <!-- Ingress <-> Service: horizontal only, no cross -->
+  <path d="M580 130 H660" fill="none" stroke="#2563EB" stroke-width="2" marker-end="url(#bb)"/>
+  <path d="M660 140 H580" fill="none" stroke="#2563EB" stroke-width="2" marker-end="url(#bb)"/>
+
+  <!-- Deployment -->
+  <rect x="70" y="220" width="520" height="200" rx="12" fill="#FFFFFF" stroke="#64748B" stroke-width="2" stroke-dasharray="8 5"/>
+  <text x="90" y="400" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#64748B" font-weight="600">Deployment</text>
+
+  <rect x="100" y="245" width="460" height="130" rx="10" fill="#F8FAFC" stroke="#94A3B8" stroke-width="2"/>
+  <text x="120" y="360" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#64748B" font-weight="600">ReplicaSet</text>
+
+  <!-- Pods with stacked containers -->
+  <rect x="130" y="260" width="110" height="80" rx="8" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="185" y="278" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8" font-weight="600">pod</text>
+  <rect x="142" y="286" width="86" height="14" rx="3" fill="#2563EB"/>
+  <text x="185" y="296" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="9" fill="#FFFFFF">container</text>
+  <rect x="142" y="304" width="86" height="14" rx="3" fill="#3B82F6"/>
+  <text x="185" y="314" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="9" fill="#FFFFFF">container</text>
+  <rect x="142" y="322" width="86" height="8" rx="2" fill="#93C5FD"/>
+
+  <rect x="275" y="260" width="110" height="80" rx="8" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="330" y="278" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8" font-weight="600">pod</text>
+  <rect x="287" y="286" width="86" height="14" rx="3" fill="#2563EB"/>
+  <text x="330" y="296" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="9" fill="#FFFFFF">container</text>
+  <rect x="287" y="304" width="86" height="14" rx="3" fill="#3B82F6"/>
+  <text x="330" y="314" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="9" fill="#FFFFFF">container</text>
+  <rect x="287" y="322" width="86" height="8" rx="2" fill="#93C5FD"/>
+
+  <rect x="420" y="260" width="110" height="80" rx="8" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="475" y="278" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8" font-weight="600">pod</text>
+  <rect x="432" y="286" width="86" height="14" rx="3" fill="#2563EB"/>
+  <text x="475" y="296" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="9" fill="#FFFFFF">container</text>
+  <rect x="432" y="304" width="86" height="14" rx="3" fill="#3B82F6"/>
+  <text x="475" y="314" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="9" fill="#FFFFFF">container</text>
+  <rect x="432" y="322" width="86" height="8" rx="2" fill="#93C5FD"/>
+
+  <!-- Service -> pods: vertical drops from distinct x positions, no diagonal cross -->
+  <path d="M250 160 V220 H185 V260" fill="none" stroke="#0D9488" stroke-width="2" marker-end="url(#bg)"/>
+  <path d="M380 160 V260" fill="none" stroke="#0D9488" stroke-width="2" marker-end="url(#bg)"/>
+  <path d="M510 160 V220 H475 V260" fill="none" stroke="#0D9488" stroke-width="2" marker-end="url(#bg)"/>
+
+  <line x1="40" y1="485" x2="880" y2="485" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="460" y="515" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 7. Service와 트래픽 경로:</tspan>
+    <tspan> Ingress → Service → Pod</tspan>
+  </text>
+</svg>

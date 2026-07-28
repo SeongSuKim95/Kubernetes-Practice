@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="620" viewBox="0 0 920 620">
+  <rect width="920" height="620" fill="#F7F9FC"/>
+  <defs>
+    <marker id="s" markerWidth="7" markerHeight="7" refX="5" refY="2.5" orient="auto">
+      <path d="M0,0 L5,2.5 L0,5 Z" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <rect x="40" y="50" width="480" height="500" rx="14" fill="#FFF7ED" stroke="#FDBA74" stroke-width="1.5"/>
+  <text x="280" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#C2410C" font-weight="600">Master / Control Plane</text>
+
+  <rect x="540" y="50" width="340" height="500" rx="14" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1.5"/>
+  <text x="710" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#6D28D9" font-weight="600">Node / Worker</text>
+
+  <rect x="70" y="100" width="100" height="40" rx="8" fill="#FEE2E2" stroke="#DC2626" stroke-width="2"/>
+  <text x="120" y="125" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B91C1C" font-weight="600">API Server</text>
+
+  <rect x="220" y="100" width="100" height="40" rx="8" fill="#FFEDD5" stroke="#EA580C" stroke-width="2"/>
+  <text x="270" y="125" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#C2410C" font-weight="600">Controller</text>
+
+  <rect x="370" y="100" width="100" height="40" rx="8" fill="#FFEDD5" stroke="#EA580C" stroke-width="2"/>
+  <text x="420" y="125" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#C2410C" font-weight="600">Scheduler</text>
+
+  <rect x="580" y="100" width="100" height="40" rx="8" fill="#EDE9FE" stroke="#7C3AED" stroke-width="2"/>
+  <text x="630" y="125" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#5B21B6" font-weight="600">Kubelet</text>
+
+  <rect x="730" y="100" width="110" height="40" rx="8" fill="#EDE9FE" stroke="#7C3AED" stroke-width="2"/>
+  <text x="785" y="125" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#5B21B6" font-weight="600">Runtime</text>
+
+  <line x1="120" y1="140" x2="120" y2="520" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <line x1="270" y1="140" x2="270" y2="520" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <line x1="420" y1="140" x2="420" y2="520" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <line x1="630" y1="140" x2="630" y2="520" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <line x1="785" y1="140" x2="785" y2="520" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4 4"/>
+
+  <rect x="20" y="165" width="55" height="36" rx="6" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+  <text x="47" y="188" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10" fill="#92400E" font-weight="600">kubectl</text>
+
+  <line x1="75" y1="183" x2="120" y2="183" stroke="#475569" stroke-width="1.5" marker-end="url(#s)"/>
+  <rect x="112" y="175" width="16" height="28" rx="2" fill="#DC2626"/>
+  <text x="195" y="172" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#334155">1. ReplicaSet 생성</text>
+
+  <line x1="128" y1="230" x2="270" y2="230" stroke="#475569" stroke-width="1.5" marker-end="url(#s)"/>
+  <rect x="262" y="222" width="16" height="80" rx="2" fill="#EA580C"/>
+  <text x="200" y="220" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#334155">2. 생성 요청 감시</text>
+
+  <line x1="262" y1="275" x2="128" y2="275" stroke="#475569" stroke-width="1.5" marker-end="url(#s)"/>
+  <text x="195" y="268" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#334155">3. Pod 생성 요청</text>
+
+  <line x1="128" y1="320" x2="420" y2="320" stroke="#475569" stroke-width="1.5" marker-end="url(#s)"/>
+  <rect x="412" y="312" width="16" height="70" rx="2" fill="#EA580C"/>
+  <text x="275" y="310" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#334155">4. Pod 생성 요청 감시</text>
+
+  <line x1="412" y1="360" x2="128" y2="360" stroke="#475569" stroke-width="1.5" marker-end="url(#s)"/>
+  <text x="270" y="352" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#334155">5. 노드에 Pod 할당</text>
+
+  <line x1="128" y1="410" x2="630" y2="410" stroke="#475569" stroke-width="1.5" marker-end="url(#s)"/>
+  <rect x="622" y="402" width="16" height="80" rx="2" fill="#7C3AED"/>
+  <text x="380" y="400" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#334155">6. Pod 할당 감시</text>
+
+  <line x1="638" y1="450" x2="785" y2="450" stroke="#475569" stroke-width="1.5" marker-end="url(#s)"/>
+  <rect x="777" y="442" width="16" height="28" rx="2" fill="#7C3AED"/>
+  <text x="710" y="442" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#334155">7. 컨테이너 생성</text>
+
+  <line x1="622" y1="495" x2="128" y2="495" stroke="#475569" stroke-width="1.5" marker-end="url(#s)"/>
+  <text x="380" y="488" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#334155">8. Pod 상태 업데이트</text>
+
+  <line x1="40" y1="570" x2="880" y2="570" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="460" y="598" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">Fig 9. Pod 생성 순서: API Server를 중심으로 한 Watch·할당·실행</text>
+</svg>
