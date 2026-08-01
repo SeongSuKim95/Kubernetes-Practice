@@ -1,58 +1,46 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="920" height="420" viewBox="0 0 920 420">
-  <rect width="920" height="420" fill="#F7F9FC"/>
-  <defs>
-    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L6,3 L0,6 Z" fill="#64748B"/>
-    </marker>
-  </defs>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="440" viewBox="0 0 900 440">
+  <rect width="900" height="440" fill="#F7F9FC"/>
 
-  <!-- LEFT: Bare Metal stack -->
-  <rect x="30" y="20" width="420" height="330" rx="14" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
-  <text x="240" y="50" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#334155" font-weight="700">Bare Metal 구조</text>
-  <text x="240" y="72" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">가상화 계층 없이 OS가 하드웨어 위에 바로</text>
+  <!-- left: stack -->
+  <rect x="50" y="30" width="320" height="310" rx="14" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
+  <rect x="80" y="55" width="260" height="75" rx="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
+  <text x="210" y="90" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#92400E" font-weight="600">Application</text>
+  <text x="210" y="112" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B45309">웹 서비스 하나</text>
+  <rect x="80" y="150" width="260" height="65" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="210" y="178" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#1D4ED8" font-weight="600">Host OS</text>
+  <text x="210" y="200" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">서버에 직접 설치한 운영체제</text>
+  <rect x="80" y="235" width="260" height="80" rx="10" fill="#E2E8F0" stroke="#64748B" stroke-width="2"/>
+  <text x="210" y="268" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#334155" font-weight="600">Hardware</text>
+  <text x="210" y="292" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">CPU, Memory, Disk</text>
 
-  <rect x="90" y="92" width="300" height="52" rx="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
-  <text x="240" y="114" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#92400E" font-weight="600">Application</text>
-  <text x="240" y="134" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#B45309">웹 서비스 하나</text>
+  <!-- right: unused capacity visual -->
+  <rect x="420" y="30" width="440" height="310" rx="14" fill="#FFF7ED" stroke="#EA580C" stroke-width="2"/>
+  <text x="640" y="65" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#C2410C" font-weight="600">남는 자원의 문제</text>
 
-  <line x1="240" y1="144" x2="240" y2="168" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" marker-end="url(#arr)"/>
+  <!-- capacity bar -->
+  <text x="450" y="100" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#9A3412" font-weight="600">서버 자원 사용량</text>
+  <rect x="450" y="115" width="380" height="36" rx="8" fill="#FFEDD5" stroke="#FDBA74"/>
+  <rect x="450" y="115" width="95" height="36" rx="8" fill="#FB923C"/>
+  <text x="497" y="138" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#FFFFFF" font-weight="600">앱 사용</text>
+  <text x="700" y="138" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#C2410C" font-weight="600">비어 있음 (못 씀)</text>
 
-  <rect x="90" y="172" width="300" height="52" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
-  <text x="240" y="194" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#1D4ED8" font-weight="600">Host OS</text>
-  <text x="240" y="214" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#3B82F6">서버에 직접 설치한 운영체제</text>
+  <text x="640" y="180" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#9A3412">같은 서버에 다른 앱을 올리기 어려운 이유</text>
 
-  <line x1="240" y1="224" x2="240" y2="248" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" marker-end="url(#arr)"/>
+  <rect x="450" y="200" width="110" height="100" rx="10" fill="#FFFFFF" stroke="#FDBA74"/>
+  <text x="505" y="240" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#C2410C" font-weight="600">포트</text>
+  <text x="505" y="265" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#EA580C">번호 충돌</text>
 
-  <rect x="90" y="252" width="300" height="56" rx="10" fill="#F1F5F9" stroke="#64748B" stroke-width="2"/>
-  <text x="240" y="276" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#334155" font-weight="600">Hardware</text>
-  <text x="240" y="296" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">CPU, Memory, Disk (물리 장비)</text>
+  <rect x="575" y="200" width="110" height="100" rx="10" fill="#FFFFFF" stroke="#FDBA74"/>
+  <text x="630" y="240" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#C2410C" font-weight="600">라이브러리</text>
+  <text x="630" y="265" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#EA580C">버전 충돌</text>
 
-  <text x="240" y="332" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#DC2626" font-weight="600">남는 CPU와 Memory는 쓰기 어렵다</text>
+  <rect x="700" y="200" width="130" height="100" rx="10" fill="#FFFFFF" stroke="#FDBA74"/>
+  <text x="765" y="240" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#C2410C" font-weight="600">장애</text>
+  <text x="765" y="265" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#EA580C">한 앱이 죽으면</text>
+  <text x="765" y="285" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#EA580C">같이 위험</text>
 
-  <!-- RIGHT: house metaphor -->
-  <rect x="470" y="20" width="420" height="330" rx="14" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
-  <text x="680" y="50" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#334155" font-weight="700">일상 비유</text>
-  <text x="680" y="72" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">독립 주택 한 채에 가게 하나</text>
-
-  <rect x="520" y="92" width="320" height="210" rx="12" fill="#FFF7ED" stroke="#F59E0B" stroke-width="2"/>
-  <text x="680" y="118" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#B45309" font-weight="600">독립 주택 = 물리 서버</text>
-
-  <rect x="555" y="140" width="250" height="70" rx="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
-  <text x="680" y="170" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#92400E" font-weight="600">가게 하나</text>
-  <text x="680" y="192" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#B45309">= Application 하나</text>
-
-  <rect x="555" y="224" width="115" height="56" rx="8" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5"/>
-  <text x="612" y="248" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#94A3B8">빈 방</text>
-  <text x="612" y="268" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#94A3B8">남는 자원</text>
-
-  <rect x="690" y="224" width="115" height="56" rx="8" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5"/>
-  <text x="747" y="248" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#94A3B8">빈 방</text>
-  <text x="747" y="268" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#94A3B8">쓰기 망설임</text>
-
-  <text x="680" y="332" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B45309" font-weight="600">방을 나누려면 다음 단계가 필요하다</text>
-
-  <line x1="40" y1="370" x2="880" y2="370" stroke="#E2E8F0" stroke-width="1"/>
-  <text x="460" y="398" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+  <line x1="40" y1="375" x2="860" y2="375" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="450" y="408" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
     <tspan font-weight="600">Fig 2. Bare Metal:</tspan>
     <tspan> 물리 서버 한 대에 애플리케이션 하나를 올리는 구성</tspan>
   </text>

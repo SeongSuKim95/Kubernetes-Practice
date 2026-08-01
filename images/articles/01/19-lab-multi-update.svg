@@ -1,27 +1,55 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="920" height="300" viewBox="0 0 920 300">
-  <rect width="920" height="300" fill="#F7F9FC"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="400" viewBox="0 0 940 400">
+  <rect width="940" height="400" fill="#F7F9FC"/>
+  <defs>
+    <marker id="r" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#DC2626"/>
+    </marker>
+    <marker id="g" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/>
+    </marker>
+  </defs>
+  <text x="230" y="45" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#475569" font-weight="600">업데이트 전, 같은 역할 4개</text>
+  <text x="700" y="45" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#475569" font-weight="600">한 대씩 수동 교체</text>
 
-  <rect x="40" y="25" width="120" height="70" rx="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
-  <text x="100" y="55" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#92400E" font-weight="600">:8080</text>
-  <text x="100" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#B45309">1.21로 교체</text>
-  <rect x="180" y="25" width="120" height="70" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
-  <text x="240" y="55" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">:8081</text>
-  <text x="240" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">latest</text>
-  <rect x="320" y="25" width="120" height="70" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
-  <text x="380" y="55" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">:8082</text>
-  <text x="380" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">latest</text>
-  <rect x="460" y="25" width="120" height="70" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
-  <text x="520" y="55" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">:8083</text>
-  <text x="520" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">latest</text>
-  <rect x="620" y="25" width="260" height="70" rx="10" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
-  <text x="750" y="55" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#334155" font-weight="600">수동 업데이트</text>
-  <text x="750" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">stop → rm → run</text>
-  <text x="460" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">같은 역할 4개 · 포트는 각자 · 교체는 컨테이너마다 반복</text>
-  <text x="460" y="175" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#DC2626">업데이트 중 일부 포트 끊김 · 되돌리기도 개별</text>
+  <rect x="40" y="70" width="90" height="100" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="85" y="110" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">:8080</text>
+  <text x="85" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">latest</text>
+  <rect x="145" y="70" width="90" height="100" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="190" y="110" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">:8081</text>
+  <text x="190" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">latest</text>
+  <rect x="250" y="70" width="90" height="100" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="295" y="110" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">:8082</text>
+  <text x="295" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">latest</text>
+  <rect x="355" y="70" width="90" height="100" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="400" y="110" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">:8083</text>
+  <text x="400" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">latest</text>
 
-  <line x1="40" y1="250" x2="880" y2="250" stroke="#E2E8F0" stroke-width="1"/>
-  <text x="460" y="280" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+  <path d="M470 120 H530" fill="none" stroke="#DC2626" stroke-width="2.5" marker-end="url(#r)"/>
+  <text x="500" y="100" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#DC2626">stop</text>
+  <text x="500" y="145" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#DC2626">rm</text>
+  <text x="500" y="165" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">run</text>
+
+  <rect x="540" y="70" width="100" height="100" rx="10" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/>
+  <text x="590" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8" font-weight="600">:8080</text>
+  <text x="590" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#2563EB">1.21로 교체</text>
+  <rect x="660" y="70" width="70" height="100" rx="10" fill="#FEE2E2" stroke="#DC2626" stroke-dasharray="5 3"/>
+  <text x="695" y="115" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#B91C1C">잠시</text>
+  <text x="695" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#B91C1C">끊김</text>
+  <rect x="750" y="70" width="70" height="100" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="785" y="115" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E">:8082</text>
+  <text x="785" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">대기</text>
+  <rect x="840" y="70" width="70" height="100" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="875" y="115" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E">:8083</text>
+  <text x="875" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">대기</text>
+
+  <rect x="80" y="220" width="780" height="90" rx="12" fill="#FFF7ED" stroke="#EA580C"/>
+  <text x="470" y="255" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#C2410C" font-weight="600">같은 작업을 컨테이너마다 반복</text>
+  <text x="470" y="285" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#EA580C">교체 중 일부 포트가 끊기고, 되돌리기도 개별 작업</text>
+
+  <line x1="40" y1="342" x2="900" y2="342" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="470" y="370" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
     <tspan font-weight="600">Fig 18. 시나리오 3:</tspan>
-    <tspan> 여러 웹 서버와 수동 이미지 교체</tspan>
+    <tspan> 여러 웹 컨테이너의 수동 이미지 교체</tspan>
   </text>
+
 </svg>

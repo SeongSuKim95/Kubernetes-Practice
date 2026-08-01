@@ -2,7 +2,7 @@
   <rect width="920" height="420" fill="#F7F9FC"/>
   <rect x="340" y="145" width="240" height="100" rx="16" fill="#EFF6FF" stroke="#326CE5" stroke-width="3"/>
   <text x="460" y="185" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#326CE5" font-weight="600">Kubernetes</text>
-  <text x="460" y="212" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8">도시 운영의 중심</text>
+  <text x="460" y="212" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8">클러스터 운영의 중심</text>
 
   <rect x="60" y="40" width="160" height="70" rx="12" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
   <text x="140" y="70" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#334155" font-weight="600">모니터링</text>

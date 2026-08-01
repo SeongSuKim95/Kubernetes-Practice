@@ -1,20 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="920" height="300" viewBox="0 0 920 300">
-  <rect width="920" height="300" fill="#F7F9FC"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="380" viewBox="0 0 920 380">
+  <rect width="920" height="380" fill="#F7F9FC"/>
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+    <marker id="r" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#DC2626"/>
+    </marker>
+  </defs>
+  <rect x="40" y="40" width="400" height="260" rx="14" fill="#FEF2F2" stroke="#DC2626" stroke-width="2"/>
+  <text x="240" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#B91C1C" font-weight="600">IP로 직접 연결</text>
+  <rect x="80" y="100" width="120" height="70" rx="10" fill="#FEE2E2" stroke="#DC2626"/>
+  <text x="140" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#B91C1C" font-weight="600">App</text>
+  <path d="M210 135 H270" fill="none" stroke="#DC2626" stroke-width="2" marker-end="url(#r)"/>
+  <rect x="280" y="100" width="130" height="70" rx="10" fill="#FEE2E2" stroke="#DC2626"/>
+  <text x="345" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B91C1C">172.17.0.5</text>
+  <text x="345" y="152" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#DC2626">DB</text>
+  <text x="240" y="210" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#B91C1C">컨테이너를 다시 만들면</text>
+  <text x="240" y="235" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#B91C1C">IP가 바뀌어 설정을 다시 고침</text>
 
-  <rect x="40" y="25" width="400" height="180" rx="14" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
-  <text x="240" y="55" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#334155" font-weight="600">IP로 직접 연결</text>
-  <text x="240" y="90" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">App → 172.17.0.x</text>
-  <text x="240" y="120" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#DC2626">재생성 시 IP 변경</text>
-  <text x="240" y="150" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">설정을 다시 고쳐야 함</text>
-  <rect x="480" y="25" width="400" height="180" rx="14" fill="#FFFFFF" stroke="#0D9488" stroke-width="2"/>
-  <text x="680" y="55" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">이름 기반 (같은 네트워크)</text>
-  <text x="680" y="90" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E">App → mysql-db</text>
-  <text x="680" y="120" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">app-network에 연결</text>
-  <text x="680" y="150" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">네트워크·연결은 사람이 관리</text>
+  <rect x="480" y="40" width="400" height="260" rx="14" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="680" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">이름으로 연결 (같은 네트워크)</text>
+  <rect x="520" y="100" width="120" height="70" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="580" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">App</text>
+  <path d="M650 135 H710" fill="none" stroke="#0D9488" stroke-width="2" marker-end="url(#a)"/>
+  <rect x="720" y="100" width="130" height="70" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="785" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E">mysql-db</text>
+  <text x="785" y="152" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">이름 고정</text>
+  <text x="680" y="210" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E">IP가 바뀌어도 이름은 그대로</text>
+  <text x="680" y="235" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0D9488">네트워크 연결은 사람이 준비</text>
 
-  <line x1="40" y1="250" x2="880" y2="250" stroke="#E2E8F0" stroke-width="1"/>
-  <text x="460" y="280" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+  <line x1="40" y1="322" x2="880" y2="322" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="460" y="350" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
     <tspan font-weight="600">Fig 23. 시나리오 8:</tspan>
     <tspan> IP 직접 지정과 이름 기반 연결</tspan>
   </text>
+
 </svg>

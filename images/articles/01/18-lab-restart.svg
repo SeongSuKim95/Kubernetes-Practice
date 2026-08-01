@@ -1,24 +1,43 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="880" height="260" viewBox="0 0 880 260">
-  <rect width="880" height="260" fill="#F7F9FC"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300">
+  <rect width="900" height="300" fill="#F7F9FC"/>
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+    <marker id="r" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#DC2626"/>
+    </marker>
+    <marker id="g" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/>
+    </marker>
+  </defs>
+  <rect x="40" y="60" width="180" height="120" rx="12" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/>
+  <text x="130" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">실행 중</text>
+  <text x="130" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">STATUS: Up</text>
 
-  <defs><marker id="b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#64748B"/></marker></defs>
-  <rect x="40" y="40" width="180" height="100" rx="12" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
-  <text x="130" y="85" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">Up</text>
-  <text x="130" y="110" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">실행 중</text>
-  <line x1="220" y1="90" x2="280" y2="90" stroke="#64748B" stroke-width="2.5" marker-end="url(#b)"/>
-  <text x="250" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">stop</text>
-  <rect x="290" y="40" width="180" height="100" rx="12" fill="#FEF2F2" stroke="#DC2626" stroke-width="2"/>
-  <text x="380" y="85" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#DC2626" font-weight="600">Exited</text>
-  <text x="380" y="110" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">curl → failed</text>
-  <line x1="470" y1="90" x2="530" y2="90" stroke="#64748B" stroke-width="2.5" marker-end="url(#b)"/>
-  <text x="500" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">start</text>
-  <rect x="540" y="40" width="280" height="100" rx="12" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
-  <text x="680" y="85" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">Up (수동 복구)</text>
-  <text x="680" y="110" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">사람이 docker start</text>
+  <path d="M230 120 H290" fill="none" stroke="#DC2626" stroke-width="2.5" marker-end="url(#r)"/>
+  <text x="260" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#DC2626">stop</text>
 
-  <line x1="40" y1="210" x2="840" y2="210" stroke="#E2E8F0" stroke-width="1"/>
-  <text x="440" y="240" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+  <rect x="300" y="60" width="180" height="120" rx="12" fill="#FEE2E2" stroke="#DC2626" stroke-width="2"/>
+  <text x="390" y="100" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#B91C1C" font-weight="600">종료됨</text>
+  <text x="390" y="125" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#DC2626">STATUS: Exited</text>
+  <text x="390" y="150" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">curl → 실패</text>
+
+  <path d="M490 120 H550" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#g)"/>
+  <text x="520" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">start</text>
+
+  <rect x="560" y="60" width="180" height="120" rx="12" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/>
+  <text x="650" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">다시 실행</text>
+  <text x="650" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">사람이 직접 start</text>
+
+  <rect x="760" y="80" width="110" height="80" rx="10" fill="#FEF3C7" stroke="#D97706"/>
+  <text x="815" y="115" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#92400E" font-weight="600">자동 복구</text>
+  <text x="815" y="138" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B45309">없음</text>
+
+  <line x1="40" y1="242" x2="860" y2="242" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="450" y="270" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
     <tspan font-weight="600">Fig 17. 시나리오 2:</tspan>
-    <tspan> 종료 후 수동으로 다시 살리는 흐름</tspan>
+    <tspan> 컨테이너 종료 후 수동 재기동 흐름</tspan>
   </text>
+
 </svg>

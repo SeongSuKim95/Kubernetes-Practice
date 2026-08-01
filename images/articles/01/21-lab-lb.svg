@@ -1,29 +1,41 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300">
-  <rect width="900" height="300" fill="#F7F9FC"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="380" viewBox="0 0 920 380">
+  <rect width="920" height="380" fill="#F7F9FC"/>
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+  </defs>
+  <circle cx="100" cy="160" r="45" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
+  <text x="100" y="155" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#92400E" font-weight="600">사용자</text>
+  <text x="100" y="175" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#B45309">한 주소</text>
 
-  <rect x="40" y="50" width="140" height="100" rx="12" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
-  <text x="110" y="95" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#92400E" font-weight="600">사용자</text>
-  <text x="110" y="120" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#B45309">한 주소로</text>
-  <defs><marker id="c" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/></marker></defs>
-  <line x1="180" y1="100" x2="240" y2="100" stroke="#2563EB" stroke-width="2.5" marker-end="url(#c)"/>
-  <rect x="250" y="40" width="180" height="120" rx="12" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
-  <text x="340" y="85" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#1D4ED8" font-weight="600">로드 밸런서</text>
-  <text x="340" y="110" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#3B82F6">upstream 목록</text>
-  <text x="340" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">사람이 유지</text>
-  <line x1="430" y1="70" x2="500" y2="50" stroke="#0D9488" stroke-width="2" marker-end="url(#c)"/>
-  <line x1="430" y1="90" x2="500" y2="90" stroke="#0D9488" stroke-width="2" marker-end="url(#c)"/>
-  <line x1="430" y1="110" x2="500" y2="130" stroke="#0D9488" stroke-width="2" marker-end="url(#c)"/>
-  <line x1="430" y1="130" x2="500" y2="170" stroke="#0D9488" stroke-width="2" marker-end="url(#c)"/>
-  <rect x="510" y="25" width="110" height="45" rx="8" fill="#ECFDF5" stroke="#0D9488"/><text x="565" y="52" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E">:8080</text>
-  <rect x="510" y="75" width="110" height="45" rx="8" fill="#ECFDF5" stroke="#0D9488"/><text x="565" y="102" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E">:8081</text>
-  <rect x="510" y="125" width="110" height="45" rx="8" fill="#ECFDF5" stroke="#0D9488"/><text x="565" y="152" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E">:8082</text>
-  <rect x="510" y="175" width="110" height="45" rx="8" fill="#ECFDF5" stroke="#0D9488"/><text x="565" y="202" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E">:8083</text>
-  <text x="750" y="110" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">추가·삭제 시</text>
-  <text x="750" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#DC2626">설정 파일 수정</text>
+  <path d="M150 160 H220" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#a)"/>
 
-  <line x1="40" y1="250" x2="860" y2="250" stroke="#E2E8F0" stroke-width="1"/>
-  <text x="450" y="280" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+  <rect x="230" y="90" width="200" height="140" rx="12" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="330" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#1D4ED8" font-weight="600">로드 밸런서</text>
+  <text x="330" y="160" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">보낼 대상 목록</text>
+  <text x="330" y="185" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">(사람이 직접 유지)</text>
+
+  <path d="M430 130 H500" fill="none" stroke="#0D9488" stroke-width="2" marker-end="url(#a)"/>
+  <path d="M430 160 H500" fill="none" stroke="#0D9488" stroke-width="2" marker-end="url(#a)"/>
+  <path d="M430 190 H500" fill="none" stroke="#0D9488" stroke-width="2" marker-end="url(#a)"/>
+
+  <rect x="510" y="50" width="140" height="70" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="580" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">웹 :8080</text>
+  <rect x="510" y="135" width="140" height="70" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="580" y="165" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">웹 :8081</text>
+  <rect x="510" y="220" width="140" height="70" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="580" y="250" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">웹 :8082</text>
+
+  <rect x="690" y="90" width="200" height="160" rx="12" fill="#FFF7ED" stroke="#EA580C" stroke-width="2"/>
+  <text x="790" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#C2410C" font-weight="600">컨테이너 추가, 삭제 시</text>
+  <text x="790" y="170" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#EA580C">목록 파일을</text>
+  <text x="790" y="195" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#EA580C">사람이 다시 수정</text>
+
+  <line x1="40" y1="322" x2="880" y2="322" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="460" y="350" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
     <tspan font-weight="600">Fig 20. 시나리오 5:</tspan>
-    <tspan> 포트가 갈라진 서버와 수동 로드 밸런싱</tspan>
+    <tspan> 포트가 갈라진 웹 컨테이너와 수동 로드 밸런싱</tspan>
   </text>
+
 </svg>

@@ -1,39 +1,38 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="920" height="320" viewBox="0 0 920 320">
-  <rect width="920" height="320" fill="#F7F9FC"/>
-  <rect x="40" y="25" width="400" height="210" rx="14" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
-  <text x="240" y="55" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#334155" font-weight="600">Docker Swarm</text>
-  <text x="240" y="78" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">단지 관리사무소</text>
-  <rect x="70" y="100" width="110" height="90" rx="8" fill="#F1F5F9" stroke="#94A3B8"/>
-  <text x="125" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#475569">건물 A</text>
-  <text x="125" y="160" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">상자</text>
-  <rect x="195" y="100" width="110" height="90" rx="8" fill="#F1F5F9" stroke="#94A3B8"/>
-  <text x="250" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#475569">건물 B</text>
-  <text x="250" y="160" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">상자</text>
-  <rect x="320" y="100" width="90" height="90" rx="8" fill="#FEF3C7" stroke="#D97706"/>
-  <text x="365" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#92400E">사무소</text>
-  <text x="365" y="160" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#B45309">배치·복구</text>
-  <text x="240" y="215" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">여러 건물을 한 단지로</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="420" viewBox="0 0 920 420">
+  <rect width="920" height="420" fill="#F7F9FC"/>
 
-  <rect x="480" y="25" width="400" height="210" rx="14" fill="#FFFFFF" stroke="#2563EB" stroke-width="2"/>
-  <text x="680" y="55" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#1D4ED8" font-weight="600">Kubernetes</text>
-  <text x="680" y="78" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">도시 운영 체계</text>
-  <rect x="510" y="100" width="80" height="70" rx="8" fill="#EFF6FF" stroke="#60A5FA"/>
-  <text x="550" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#1D4ED8">층별</text>
-  <text x="550" y="155" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#1D4ED8">규칙</text>
-  <rect x="605" y="100" width="80" height="70" rx="8" fill="#EFF6FF" stroke="#60A5FA"/>
-  <text x="645" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#1D4ED8">출입</text>
-  <text x="645" y="155" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#1D4ED8">권한</text>
-  <rect x="700" y="100" width="80" height="70" rx="8" fill="#EFF6FF" stroke="#60A5FA"/>
-  <text x="740" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#1D4ED8">창고</text>
-  <text x="740" y="155" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#1D4ED8">저장</text>
-  <rect x="795" y="100" width="60" height="70" rx="8" fill="#EFF6FF" stroke="#60A5FA"/>
-  <text x="825" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#1D4ED8">자동</text>
-  <text x="825" y="155" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#1D4ED8">확장</text>
-  <text x="680" y="200" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">운영 정책을 도면에 적어 강제</text>
+  <rect x="40" y="40" width="400" height="300" rx="14" fill="#EDE9FE" stroke="#7C3AED" stroke-width="2"/>
+  <text x="240" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#5B21B6" font-weight="600">Docker Swarm</text>
+  <text x="240" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#7C3AED">컨테이너 오케스트레이션</text>
+  <rect x="70" y="130" width="340" height="45" rx="8" fill="#FFFFFF" stroke="#C4B5FD"/>
+  <text x="240" y="158" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#5B21B6">여러 서버에 컨테이너 배치</text>
+  <rect x="70" y="190" width="340" height="45" rx="8" fill="#FFFFFF" stroke="#C4B5FD"/>
+  <text x="240" y="218" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#5B21B6">죽은 컨테이너 다시 기동</text>
+  <rect x="70" y="250" width="340" height="45" rx="8" fill="#FFFFFF" stroke="#C4B5FD"/>
+  <text x="240" y="278" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#5B21B6">기본 롤링 업데이트</text>
 
-  <line x1="40" y1="255" x2="880" y2="255" stroke="#E2E8F0" stroke-width="1"/>
-  <text x="460" y="290" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 15. Swarm과 Kubernetes 비유:</tspan>
-    <tspan> 단지 관리사무소와 도시 운영 체계</tspan>
+  <rect x="480" y="40" width="400" height="300" rx="14" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="680" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#1D4ED8" font-weight="600">Kubernetes</text>
+  <text x="680" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">같은 종류의 오케스트레이션 + 운영 정책</text>
+  <rect x="510" y="125" width="160" height="55" rx="8" fill="#FFFFFF" stroke="#93C5FD"/>
+  <text x="590" y="148" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8" font-weight="600">CPU, 메모리</text>
+  <text x="590" y="168" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">요청과 한도 선언</text>
+  <rect x="690" y="125" width="160" height="55" rx="8" fill="#FFFFFF" stroke="#93C5FD"/>
+  <text x="770" y="148" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8" font-weight="600">부하에 따른</text>
+  <text x="770" y="168" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">자동 확장</text>
+  <rect x="510" y="195" width="160" height="55" rx="8" fill="#FFFFFF" stroke="#93C5FD"/>
+  <text x="590" y="218" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8" font-weight="600">네트워크 규칙</text>
+  <text x="590" y="238" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">통신 범위 제한</text>
+  <rect x="690" y="195" width="160" height="55" rx="8" fill="#FFFFFF" stroke="#93C5FD"/>
+  <text x="770" y="218" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8" font-weight="600">권한과 저장소</text>
+  <text x="770" y="238" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">정책으로 강제</text>
+  <rect x="510" y="265" width="340" height="45" rx="8" fill="#DBEAFE" stroke="#2563EB"/>
+  <text x="680" y="293" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#1D4ED8">운영 정책을 선언하고 플랫폼이 강제</text>
+
+  <line x1="40" y1="362" x2="880" y2="362" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="460" y="390" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 15. Docker Swarm과 Kubernetes:</tspan>
+    <tspan> 기본 오케스트레이션과 운영 정책을 강제하는 오케스트레이션</tspan>
   </text>
+
 </svg>

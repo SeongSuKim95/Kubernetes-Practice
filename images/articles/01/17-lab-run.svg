@@ -1,27 +1,41 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="280" viewBox="0 0 900 280">
-  <rect width="900" height="280" fill="#F7F9FC"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="340" viewBox="0 0 920 340">
+  <rect width="920" height="340" fill="#F7F9FC"/>
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+  </defs>
+  <rect x="40" y="60" width="150" height="140" rx="12" fill="#F1F5F9" stroke="#64748B" stroke-width="2"/>
+  <text x="115" y="110" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#334155" font-weight="600">Registry</text>
+  <text x="115" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">nginx:latest</text>
 
-  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/></marker></defs>
-  <rect x="40" y="30" width="160" height="120" rx="12" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
-  <text x="120" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#334155" font-weight="600">Registry</text>
-  <text x="120" y="100" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">nginx:latest</text>
-  <line x1="200" y1="90" x2="250" y2="90" stroke="#0D9488" stroke-width="2.5" marker-end="url(#a)"/>
-  <text x="225" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E">pull</text>
-  <rect x="260" y="30" width="180" height="120" rx="12" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
-  <text x="350" y="70" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">Image</text>
-  <text x="350" y="95" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E">로컬 저장</text>
-  <text x="350" y="120" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">docker run -d</text>
-  <line x1="440" y1="90" x2="500" y2="90" stroke="#0D9488" stroke-width="2.5" marker-end="url(#a)"/>
-  <rect x="510" y="25" width="350" height="130" rx="12" fill="#FFFFFF" stroke="#0D9488" stroke-width="2"/>
-  <text x="685" y="55" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">web-server-1</text>
-  <text x="600" y="95" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#92400E">Host :8080</text>
-  <text x="700" y="95" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">→</text>
-  <text x="780" y="95" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E">Box :80</text>
-  <text x="685" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">curl localhost:8080 → 200</text>
+  <path d="M195 130 H245" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#a)"/>
+  <text x="220" y="115" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#2563EB">pull</text>
 
-  <line x1="40" y1="230" x2="860" y2="230" stroke="#E2E8F0" stroke-width="1"/>
-  <text x="450" y="260" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+  <rect x="250" y="60" width="150" height="140" rx="12" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="325" y="110" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#1D4ED8" font-weight="600">Image</text>
+  <text x="325" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">로컬에 저장</text>
+
+  <path d="M405 130 H455" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#a)"/>
+  <text x="430" y="115" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#2563EB">run -d</text>
+
+  <rect x="460" y="50" width="200" height="160" rx="12" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/>
+  <text x="560" y="90" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">Container</text>
+  <text x="560" y="115" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">web-server-1</text>
+  <text x="560" y="150" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E">컨테이너 포트 80</text>
+  <text x="560" y="180" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">호스트 포트 8080</text>
+
+  <path d="M665 130 H715" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <rect x="720" y="70" width="160" height="120" rx="12" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
+  <text x="800" y="115" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#92400E" font-weight="600">curl</text>
+  <text x="800" y="145" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B45309">localhost:8080</text>
+  <text x="800" y="170" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">→ 응답 200</text>
+
+  <line x1="40" y1="282" x2="880" y2="282" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="460" y="310" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
     <tspan font-weight="600">Fig 16. 시나리오 1:</tspan>
-    <tspan> 이미지 pull · 컨테이너 기동 · 포트 연결</tspan>
+    <tspan> 이미지 내려받기, 컨테이너 기동, 포트 연결</tspan>
   </text>
+
 </svg>

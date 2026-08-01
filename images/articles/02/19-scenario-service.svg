@@ -16,7 +16,7 @@
   <text x="245" y="42" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#B91C1C" font-weight="700">Docker</text>
   <text x="245" y="62" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#EF4444">포트 목록과 IP를 설정 파일에 직접 기입</text>
   <rect x="95" y="88" width="300" height="56" rx="10" fill="#FEF2F2" stroke="#DC2626" stroke-width="2"/>
-  <text x="245" y="112" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#991B1B" font-weight="600">upstream 목록</text>
+  <text x="245" y="112" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#991B1B" font-weight="600">앞단 서버 목록</text>
   <text x="245" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#DC2626">host:8080, host:8081 …</text>  <text x="245" y="158" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#DC2626">늘거나 줄 때마다 수정</text>
   <line x1="245" y1="164" x2="245" y2="180" stroke="#DC2626" stroke-width="2.2" stroke-linecap="round" marker-end="url(#r)"/>
   <rect x="79" y="180" width="100" height="52" rx="10" fill="#FEE2E2" stroke="#DC2626" stroke-width="2"/>
@@ -38,6 +38,6 @@
   <line x1="40" y1="392" x2="920" y2="392" stroke="#E2E8F0" stroke-width="1"/>
   <text x="480" y="418" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
     <tspan font-weight="600">Fig 15. 요청 부하 분산과 서비스 이름 찾기:</tspan>
-    <tspan> 수동 upstream 목록과 고정 Service 이름</tspan>
+    <tspan> 수동 앞단 서버 목록과 고정 Service 이름</tspan>
   </text>
 </svg>

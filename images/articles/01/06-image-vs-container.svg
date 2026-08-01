@@ -1,32 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="820" height="300" viewBox="0 0 820 300">
-  <rect width="820" height="300" fill="#F7F9FC"/>
-  <rect x="60" y="25" width="220" height="170" rx="14" fill="#FFFFFF" stroke="#64748B" stroke-width="2" stroke-dasharray="6 4"/>
-  <text x="170" y="65" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#334155" font-weight="600">Image</text>
-  <text x="170" y="95" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#64748B">실행되지 않음</text>
-  <text x="170" y="125" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#64748B">설계도 · 템플릿</text>
-  <text x="170" y="160" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E">예: nginx:latest</text>
-
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="360" viewBox="0 0 880 360">
+  <rect width="880" height="360" fill="#F7F9FC"/>
   <defs>
-    <marker id="a3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-      <path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
     </marker>
   </defs>
-  <line x1="290" y1="110" x2="360" y2="110" stroke="#0D9488" stroke-width="2.5" marker-end="url(#a3)"/>
-  <text x="325" y="95" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E">docker run</text>
+  <rect x="60" y="60" width="220" height="180" rx="14" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="170" y="100" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#1D4ED8" font-weight="600">Image</text>
+  <text x="170" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#3B82F6">실행되지 않는 설계도</text>
+  <text x="170" y="160" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#64748B">예: nginx:latest</text>
+  <text x="170" y="200" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#94A3B8">파일과 설정만 묶여 있음</text>
 
-  <rect x="380" y="25" width="160" height="170" rx="12" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
-  <text x="460" y="85" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">Container 1</text>
-  <text x="460" y="115" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E">실행 중</text>
-  <text x="460" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">:8080</text>
+  <path d="M290 150 H360" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#a)"/>
+  <text x="325" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#2563EB">docker run</text>
 
-  <rect x="560" y="25" width="160" height="170" rx="12" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
-  <text x="640" y="85" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">Container 2</text>
-  <text x="640" y="115" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E">실행 중</text>
-  <text x="640" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">:8081</text>
+  <rect x="370" y="50" width="200" height="100" rx="12" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/>
+  <text x="470" y="85" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">Container 1</text>
+  <text x="470" y="110" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">실행 중, 호스트 8080</text>
 
-  <line x1="40" y1="220" x2="780" y2="220" stroke="#E2E8F0" stroke-width="1"/>
-  <text x="410" y="260" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+  <rect x="370" y="170" width="200" height="100" rx="12" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/>
+  <text x="470" y="205" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">Container 2</text>
+  <text x="470" y="230" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">실행 중, 호스트 8081</text>
+
+  <rect x="620" y="80" width="220" height="160" rx="12" fill="#FFF7ED" stroke="#EA580C" stroke-width="2"/>
+  <text x="730" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#C2410C" font-weight="600">같은 Image로</text>
+  <text x="730" y="160" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#C2410C">컨테이너를</text>
+  <text x="730" y="190" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#C2410C">여러 개 띄울 수 있음</text>
+
+  <line x1="40" y1="302" x2="840" y2="302" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="440" y="330" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
     <tspan font-weight="600">Fig 8. Image와 Container:</tspan>
-    <tspan> 설계도와 실행본의 관계</tspan>
+    <tspan> 하나의 설계도와 여러 실행 프로세스</tspan>
   </text>
+
 </svg>
