@@ -33,7 +33,7 @@
 
   <line x1="40" y1="255" x2="880" y2="255" stroke="#E2E8F0" stroke-width="1"/>
   <text x="460" y="290" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 12. Swarm과 Kubernetes 비유:</tspan>
+    <tspan font-weight="600">Fig 15. Swarm과 Kubernetes 비유:</tspan>
     <tspan> 단지 관리사무소와 도시 운영 체계</tspan>
   </text>
 </svg>

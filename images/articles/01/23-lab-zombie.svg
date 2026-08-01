@@ -12,7 +12,7 @@
 
   <line x1="40" y1="230" x2="820" y2="230" stroke="#E2E8F0" stroke-width="1"/>
   <text x="430" y="260" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 23. 시나리오 7:</tspan>
+    <tspan font-weight="600">Fig 22. 시나리오 7:</tspan>
     <tspan> 컨테이너는 Up · 프로세스는 죽은 상태</tspan>
   </text>
 </svg>

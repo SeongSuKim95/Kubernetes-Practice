@@ -2,13 +2,13 @@
   <rect width="920" height="400" fill="#F7F9FC"/>
 
   <rect x="60" y="40" width="160" height="60" rx="12" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
-  <text x="140" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#92400E" font-weight="600">사용자 · kubectl</text>
+  <text x="140" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#92400E" font-weight="600">사용자(kubectl)</text>
 
   <path d="M220 70 H300" fill="none" stroke="#2563EB" stroke-width="2"/>
   <text x="260" y="55" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#2563EB">하나의 주소</text>
 
   <rect x="300" y="30" width="560" height="300" rx="16" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
-  <text x="580" y="60" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#1D4ED8" font-weight="600">Control Plane · 고가용성</text>
+  <text x="580" y="60" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#1D4ED8" font-weight="600">Control Plane(고가용성)</text>
 
   <rect x="340" y="85" width="150" height="55" rx="10" fill="#FFFFFF" stroke="#2563EB" stroke-width="2"/>
   <text x="415" y="118" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#1D4ED8" font-weight="600">API Server 1</text>
@@ -33,7 +33,7 @@
 
   <line x1="40" y1="355" x2="880" y2="355" stroke="#E2E8F0" stroke-width="1"/>
   <text x="460" y="383" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 10. 고가용성:</tspan>
+    <tspan font-weight="600">Fig 11. 고가용성:</tspan>
     <tspan> 일부 장애에도 이어지는 창구와 상태 기록</tspan>
   </text>
 </svg>

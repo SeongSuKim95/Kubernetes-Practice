@@ -22,7 +22,7 @@
 
   <line x1="40" y1="220" x2="820" y2="220" stroke="#E2E8F0" stroke-width="1"/>
   <text x="430" y="250" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 8. 포트 연결:</tspan>
+    <tspan font-weight="600">Fig 9. 포트 연결:</tspan>
     <tspan> 호스트의 문과 상자 안 문의 연결</tspan>
   </text>
 </svg>

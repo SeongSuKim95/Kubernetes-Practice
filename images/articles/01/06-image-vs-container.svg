@@ -26,7 +26,7 @@
 
   <line x1="40" y1="220" x2="780" y2="220" stroke="#E2E8F0" stroke-width="1"/>
   <text x="410" y="260" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 7. Image와 Container:</tspan>
+    <tspan font-weight="600">Fig 8. Image와 Container:</tspan>
     <tspan> 설계도와 실행본의 관계</tspan>
   </text>
 </svg>

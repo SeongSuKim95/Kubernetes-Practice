@@ -21,7 +21,7 @@
 
   <line x1="40" y1="230" x2="860" y2="230" stroke="#E2E8F0" stroke-width="1"/>
   <text x="450" y="260" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 17. 시나리오 1:</tspan>
+    <tspan font-weight="600">Fig 16. 시나리오 1:</tspan>
     <tspan> 이미지 pull · 컨테이너 기동 · 포트 연결</tspan>
   </text>
 </svg>

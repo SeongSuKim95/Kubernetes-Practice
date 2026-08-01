@@ -15,19 +15,19 @@
   <line x1="155" y1="115" x2="180" y2="115" stroke="#94A3B8" stroke-width="2"/>
   <text x="115" y="150" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#334155" font-weight="600">yaml files</text>
 
-  <line x1="195" y1="145" x2="280" y2="145" stroke="#2563EB" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+  <line x1="195" y1="145" x2="280" y2="145" stroke="#2563EB" stroke-width="2" stroke-linecap="round" marker-end="url(#arr)"/>
   <text x="237" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#2563EB" font-weight="600">apply</text>
 
   <rect x="290" y="55" width="220" height="190" rx="12" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
   <text x="400" y="90" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#1D4ED8" font-weight="600">controller</text>
-  <circle cx="400" cy="160" r="48" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-dasharray="4 3"/>
+  <circle cx="400" cy="160" r="48" fill="none" stroke="#2563EB" stroke-width="2.5"/>
   <path d="M430,130 A48,48 0 0 1 430,190" fill="none" stroke="#2563EB" stroke-width="2.5"/>
   <polygon points="430,190 438,182 422,182" fill="#2563EB"/>
   <text x="400" y="166" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#1D4ED8" font-weight="600">diff</text>
 
-  <line x1="520" y1="100" x2="620" y2="100" stroke="#2563EB" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+  <line x1="520" y1="100" x2="620" y2="100" stroke="#2563EB" stroke-width="2" stroke-linecap="round" marker-end="url(#arr)"/>
   <text x="570" y="88" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#2563EB" font-weight="600">update</text>
-  <line x1="620" y1="200" x2="520" y2="200" stroke="#0D9488" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arr2)"/>
+  <line x1="620" y1="200" x2="520" y2="200" stroke="#0D9488" stroke-width="2" stroke-linecap="round" marker-end="url(#arr2)"/>
   <text x="570" y="222" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0D9488" font-weight="600">observe</text>
 
   <rect x="630" y="55" width="230" height="190" rx="12" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
@@ -39,6 +39,6 @@
   <line x1="40" y1="270" x2="860" y2="270" stroke="#E2E8F0" stroke-width="1"/>
   <text x="450" y="298" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
     <tspan font-weight="600">Fig 4. Control Loop:</tspan>
-    <tspan> 관찰·차이 계산·보정·재관찰의 반복 흐름</tspan>
+    <tspan> 관찰, 차이 계산, 보정, 재관찰의 반복 흐름</tspan>
   </text>
 </svg>

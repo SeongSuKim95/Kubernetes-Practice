@@ -29,7 +29,7 @@
   </g>
   <line x1="40" y1="150" x2="860" y2="150" stroke="#E2E8F0" stroke-width="1"/>
   <text x="450" y="195" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 6. docker run 흐름:</tspan>
+    <tspan font-weight="600">Fig 7. docker run 흐름:</tspan>
     <tspan> Client · Daemon · Kernel · Container</tspan>
   </text>
 </svg>

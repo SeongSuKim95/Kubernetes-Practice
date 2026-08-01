@@ -25,7 +25,7 @@
 
   <line x1="40" y1="270" x2="860" y2="270" stroke="#E2E8F0" stroke-width="1"/>
   <text x="450" y="300" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 11. Docker Compose에서 Docker Swarm으로:</tspan>
+    <tspan font-weight="600">Fig 14. Docker Compose에서 Docker Swarm으로:</tspan>
     <tspan> 한 집의 도면과 여러 건물의 단지</tspan>
   </text>
 </svg>

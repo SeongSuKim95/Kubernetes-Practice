@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="500" viewBox="0 0 960 500">
+  <rect width="960" height="500" fill="#F7F9FC"/>
+  <defs>
+    <marker id="arr-red" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#DC2626"/>
+    </marker>
+    <marker id="arr-teal" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/>
+    </marker>
+    <marker id="arr-blue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+  </defs>
+
+  <!-- LEFT -->
+  <rect x="20" y="16" width="450" height="416" rx="14" fill="#FFFFFF" stroke="#FECACA" stroke-width="2"/>
+  <text x="245" y="42" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#B91C1C" font-weight="700">직접 호출 (강한 결합)</text>
+  <text x="245" y="62" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#EF4444">프로세스가 다음 프로세스를 직접 호출</text>
+
+  <rect x="120" y="84" width="250" height="58" rx="10" fill="#FEF2F2" stroke="#DC2626" stroke-width="2"/>
+  <text x="245" y="110" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#991B1B" font-weight="600">컨테이너 개수 맞춤</text>
+  <text x="245" y="128" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#B91C1C">프로세스</text>
+
+  <line x1="245" y1="142" x2="245" y2="178" stroke="#DC2626" stroke-width="2.4" stroke-linecap="round" marker-end="url(#arr-red)"/>
+  <text x="270" y="166" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#DC2626">호출</text>
+
+  <rect x="120" y="182" width="250" height="58" rx="10" fill="#FEF2F2" stroke="#DC2626" stroke-width="2"/>
+  <text x="245" y="208" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#991B1B" font-weight="600">올릴 서버 선택</text>
+  <text x="245" y="226" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#B91C1C">프로세스</text>
+  <circle cx="348" cy="194" r="11" fill="#DC2626"/>
+  <text x="348" y="198" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#FFFFFF" font-weight="700">X</text>
+
+  <!-- broken call: two solid stubs + gap, not dashed line -->
+  <line x1="245" y1="240" x2="245" y2="252" stroke="#DC2626" stroke-width="2.4" stroke-linecap="round"/>
+  <circle cx="245" cy="266" r="10" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.5"/>
+  <text x="245" y="270" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#DC2626" font-weight="700">X</text>
+  <text x="270" y="270" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#F87171">호출 실패</text>
+  <line x1="245" y1="280" x2="245" y2="292" stroke="#CBD5E1" stroke-width="2.4" stroke-linecap="round"/>
+
+  <rect x="120" y="296" width="250" height="58" rx="10" fill="#F8FAFC" stroke="#94A3B8" stroke-width="2"/>
+  <text x="245" y="322" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#64748B" font-weight="600">컨테이너 실행</text>
+  <text x="245" y="340" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#94A3B8">프로세스</text>
+
+  <rect x="50" y="372" width="390" height="44" rx="10" fill="#FEF2F2" stroke="#FECACA" stroke-width="1.5"/>
+  <text x="245" y="399" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#991B1B" font-weight="600">중간 프로세스가 멈추면 다음 프로세스도 명령을 못 받음</text>
+
+  <!-- RIGHT -->
+  <rect x="490" y="16" width="450" height="416" rx="14" fill="#FFFFFF" stroke="#99F6E4" stroke-width="2"/>
+  <text x="715" y="42" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="700">공유 상태 + Watch (느슨한 결합)</text>
+  <text x="715" y="62" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#14B8A6">각 프로세스가 공유 상태만 구독하고 자기 일만 수행</text>
+
+  <rect x="540" y="80" width="350" height="56" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="715" y="103" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#1D4ED8" font-weight="600">공유 상태 저장소</text>
+  <text x="715" y="122" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">원하는 컨테이너 개수: 3 / 현재: 2</text>
+
+  <text x="715" y="152" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">상태 변화 구독 (Watch)</text>
+
+  <!-- equal solid Watch arrows -->
+  <line x1="580" y1="160" x2="580" y2="198" stroke="#0D9488" stroke-width="2" stroke-linecap="round" marker-end="url(#arr-teal)"/>
+  <line x1="715" y1="160" x2="715" y2="198" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+  <line x1="850" y1="160" x2="850" y2="198" stroke="#0D9488" stroke-width="2" stroke-linecap="round" marker-end="url(#arr-teal)"/>
+
+  <rect x="515" y="202" width="130" height="72" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="580" y="230" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">컨테이너 개수 맞춤</text>
+  <text x="580" y="250" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">프로세스</text>
+
+  <rect x="650" y="202" width="130" height="72" rx="10" fill="#F8FAFC" stroke="#94A3B8" stroke-width="2"/>
+  <text x="715" y="230" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B" font-weight="600">올릴 서버 선택</text>
+  <text x="715" y="250" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#94A3B8">프로세스</text>
+  <circle cx="758" cy="214" r="10" fill="#94A3B8"/>
+  <text x="758" y="218" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10" fill="#FFFFFF" font-weight="700">X</text>
+
+  <rect x="785" y="202" width="130" height="72" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="850" y="230" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">컨테이너 실행</text>
+  <text x="850" y="250" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">프로세스</text>
+
+  <!-- write-back: from process box bottoms, around sides, into store box sides -->
+  <path d="M580 274 V305 H505 V108 H540" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arr-blue)"/>
+  <path d="M850 274 V305 H925 V108 H890" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arr-blue)"/>
+  <text x="715" y="322" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#2563EB">컨테이너 상태를 공유 상태에 다시 기록</text>
+
+  <rect x="520" y="332" width="390" height="80" rx="10" fill="#ECFDF5" stroke="#99F6E4" stroke-width="1.5"/>
+  <text x="715" y="356" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">올릴 서버 선택 프로세스가 멈춰도</text>
+  <text x="715" y="376" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">컨테이너 개수 맞춤 프로세스와</text>
+  <text x="715" y="396" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">컨테이너 실행 프로세스는 계속 동작</text>
+
+  <line x1="40" y1="452" x2="920" y2="452" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="480" y="478" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 5. 직접 호출과 Watch:</tspan>
+    <tspan> 프로세스를 공유 상태로 느슨하게 연결</tspan>
+  </text>
+</svg>

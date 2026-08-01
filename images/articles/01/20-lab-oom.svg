@@ -13,7 +13,7 @@
 
   <line x1="40" y1="230" x2="820" y2="230" stroke="#E2E8F0" stroke-width="1"/>
   <text x="430" y="260" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 20. 시나리오 4:</tspan>
+    <tspan font-weight="600">Fig 19. 시나리오 4:</tspan>
     <tspan> 메모리 한도 초과와 OOM Kill</tspan>
   </text>
 </svg>

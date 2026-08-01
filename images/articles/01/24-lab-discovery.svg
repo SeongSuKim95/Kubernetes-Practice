@@ -14,7 +14,7 @@
 
   <line x1="40" y1="250" x2="880" y2="250" stroke="#E2E8F0" stroke-width="1"/>
   <text x="460" y="280" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 24. 시나리오 8:</tspan>
+    <tspan font-weight="600">Fig 23. 시나리오 8:</tspan>
     <tspan> IP 직접 지정과 이름 기반 연결</tspan>
   </text>
 </svg>

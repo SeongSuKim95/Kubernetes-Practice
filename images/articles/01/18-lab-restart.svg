@@ -18,7 +18,7 @@
 
   <line x1="40" y1="210" x2="840" y2="210" stroke="#E2E8F0" stroke-width="1"/>
   <text x="440" y="240" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 18. 시나리오 2:</tspan>
+    <tspan font-weight="600">Fig 17. 시나리오 2:</tspan>
     <tspan> 종료 후 수동으로 다시 살리는 흐름</tspan>
   </text>
 </svg>

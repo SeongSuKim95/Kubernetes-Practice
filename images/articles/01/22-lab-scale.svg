@@ -14,7 +14,7 @@
 
   <line x1="40" y1="210" x2="860" y2="210" stroke="#E2E8F0" stroke-width="1"/>
   <text x="450" y="240" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 22. 시나리오 6:</tspan>
+    <tspan font-weight="600">Fig 21. 시나리오 6:</tspan>
     <tspan> 수동 스케일 아웃</tspan>
   </text>
 </svg>
