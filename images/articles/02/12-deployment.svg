@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="420" viewBox="0 0 920 420">
+  <rect width="920" height="420" fill="#F7F9FC"/>
+  <defs>
+    <marker id="dg" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/>
+    </marker>
+  </defs>
+
+  <rect x="40" y="40" width="840" height="300" rx="16" fill="#FFF7ED" stroke="#EA580C" stroke-width="2"/>
+  <text x="70" y="75" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#C2410C" font-weight="600">Deployment</text>
+  <text x="70" y="100" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#EA580C">Desired: replicas = 3</text>
+
+  <rect x="80" y="130" width="760" height="180" rx="12" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2" stroke-dasharray="7 4"/>
+  <text x="100" y="160" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#64748B" font-weight="600">ReplicaSet</text>
+
+  <rect x="120" y="185" width="150" height="90" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="195" y="225" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#1D4ED8" font-weight="600">Pod</text>
+  <text x="195" y="250" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">Running</text>
+
+  <rect x="310" y="185" width="150" height="90" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="385" y="225" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#1D4ED8" font-weight="600">Pod</text>
+  <text x="385" y="250" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">Running</text>
+
+  <rect x="500" y="185" width="150" height="90" rx="10" fill="#FEE2E2" stroke="#DC2626" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="575" y="220" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#B91C1C" font-weight="600">Pod</text>
+  <text x="575" y="245" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#DC2626">종료됨</text>
+
+  <path d="M650 230 H700" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#dg)"/>
+  <rect x="710" y="185" width="110" height="90" rx="10" fill="#D1FAE5" stroke="#0D9488" stroke-width="2"/>
+  <text x="765" y="225" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#047857" font-weight="600">새 Pod</text>
+  <text x="765" y="248" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#059669">자동 생성</text>
+
+  <line x1="40" y1="370" x2="880" y2="370" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="460" y="398" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 12. Deployment:</tspan>
+    <tspan> 원하는 Pod 개수 유지와 자동 보정</tspan>
+  </text>
+</svg>

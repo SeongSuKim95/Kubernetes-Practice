@@ -67,5 +67,6 @@
   <text x="755" y="357" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10" fill="#1D4ED8" font-weight="600">deploy</text>
 
   <line x1="40" y1="475" x2="860" y2="475" stroke="#E2E8F0" stroke-width="1"/>
-  <text x="450" y="502" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">Fig 8. Namespace: 같은 클러스터 안 논리적 구역 분리</text>
+  <text x="450" y="502" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569"><tspan font-weight="600">Fig 14. Namespace:</tspan>
+    <tspan> 같은 클러스터 안의 논리적 구역 분리</tspan></text>
 </svg>

@@ -66,5 +66,8 @@
   <text x="380" y="488" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#334155">8. Pod 상태 업데이트</text>
 
   <line x1="40" y1="570" x2="880" y2="570" stroke="#E2E8F0" stroke-width="1"/>
-  <text x="460" y="598" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">Fig 9. Pod 생성 순서: API Server를 중심으로 한 Watch·할당·실행</text>
+  <text x="460" y="598" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 8. 구성 요소 시퀀스:</tspan>
+    <tspan> kubectl부터 Runtime까지의 역할 흐름</tspan>
+  </text>
 </svg>
