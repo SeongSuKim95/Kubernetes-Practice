@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="440" viewBox="0 0 980 440">
+  <rect width="980" height="440" fill="#F7F9FC"/>
+
+  <rect x="30" y="40" width="300" height="120" rx="12" fill="#FEF2F2" stroke="#DC2626"/>
+  <text x="180" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#B91C1C" font-weight="600">When a container dies,</text>
+  <text x="180" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#B91C1C" font-weight="600">person runs start again</text>
+  <text x="180" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#DC2626">No automatic container recovery</text>
+
+  <rect x="340" y="40" width="300" height="120" rx="12" fill="#FFF7ED" stroke="#EA580C"/>
+  <text x="490" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#C2410C" font-weight="600">When scaling containers,</text>
+  <text x="490" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#C2410C" font-weight="600">edit ports and LB list</text>
+  <text x="490" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#EA580C">Count and load balancing are manual</text>
+
+  <rect x="650" y="40" width="300" height="120" rx="12" fill="#FEF3C7" stroke="#D97706"/>
+  <text x="800" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#92400E" font-weight="600">Container may be Up</text>
+  <text x="800" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#92400E" font-weight="600">while web server is dead</text>
+  <text x="800" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B45309">Check web-server health separately</text>
+
+  <rect x="185" y="190" width="300" height="120" rx="12" fill="#DBEAFE" stroke="#2563EB"/>
+  <text x="335" y="230" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#1D4ED8" font-weight="600">When changing image version,</text>
+  <text x="335" y="255" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#1D4ED8" font-weight="600">stop, rm, run per container</text>
+  <text x="335" y="285" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">Repeat swap per container</text>
+
+  <rect x="495" y="190" width="300" height="120" rx="12" fill="#E0E7FF" stroke="#6366F1"/>
+  <text x="645" y="230" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#4338CA" font-weight="600">Person designs</text>
+  <text x="645" y="255" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#4338CA" font-weight="600">IPs and volumes</text>
+  <text x="645" y="285" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#6366F1">Hand-manage links and data survival</text>
+
+  <line x1="40" y1="360" x2="940" y2="360" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="490" y="392" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 25. Scenario 10:</tspan>
+    <tspan> manual work when operating with Docker alone</tspan>
+  </text>
+</svg>

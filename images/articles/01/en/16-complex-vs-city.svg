@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="420" viewBox="0 0 920 420">
+  <rect width="920" height="420" fill="#F7F9FC"/>
+
+  <rect x="40" y="40" width="400" height="300" rx="14" fill="#EDE9FE" stroke="#7C3AED" stroke-width="2"/>
+  <text x="240" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#5B21B6" font-weight="600">Docker Swarm</text>
+  <text x="240" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#7C3AED">Container orchestration</text>
+  <rect x="70" y="130" width="340" height="45" rx="8" fill="#FFFFFF" stroke="#C4B5FD"/>
+  <text x="240" y="158" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#5B21B6">Place containers on many servers</text>
+  <rect x="70" y="190" width="340" height="45" rx="8" fill="#FFFFFF" stroke="#C4B5FD"/>
+  <text x="240" y="218" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#5B21B6">Restart dead containers</text>
+  <rect x="70" y="250" width="340" height="45" rx="8" fill="#FFFFFF" stroke="#C4B5FD"/>
+  <text x="240" y="278" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#5B21B6">Basic rolling updates</text>
+
+  <rect x="480" y="40" width="400" height="300" rx="14" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="680" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#1D4ED8" font-weight="600">Kubernetes</text>
+  <text x="680" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">Same orchestration + ops policy</text>
+  <rect x="510" y="125" width="160" height="55" rx="8" fill="#FFFFFF" stroke="#93C5FD"/>
+  <text x="590" y="148" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8" font-weight="600">CPU, memory</text>
+  <text x="590" y="168" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">Declare request & limit</text>
+  <rect x="690" y="125" width="160" height="55" rx="8" fill="#FFFFFF" stroke="#93C5FD"/>
+  <text x="770" y="148" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8" font-weight="600">Auto scale</text>
+  <text x="770" y="168" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">by load</text>
+  <rect x="510" y="195" width="160" height="55" rx="8" fill="#FFFFFF" stroke="#93C5FD"/>
+  <text x="590" y="218" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8" font-weight="600">Network rules</text>
+  <text x="590" y="238" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">Limit traffic scope</text>
+  <rect x="690" y="195" width="160" height="55" rx="8" fill="#FFFFFF" stroke="#93C5FD"/>
+  <text x="770" y="218" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8" font-weight="600">Auth & storage</text>
+  <text x="770" y="238" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">Enforce by policy</text>
+  <rect x="510" y="265" width="340" height="45" rx="8" fill="#DBEAFE" stroke="#2563EB"/>
+  <text x="680" y="293" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#1D4ED8">Declare ops policy; platform enforces</text>
+
+  <line x1="40" y1="362" x2="880" y2="362" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="460" y="390" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 15. Docker Swarm and Kubernetes:</tspan>
+    <tspan> basic orchestration vs policy-enforcing orchestration</tspan>
+  </text>
+
+</svg>

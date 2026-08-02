@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="440" viewBox="0 0 900 440">
+  <rect width="900" height="440" fill="#F7F9FC"/>
+
+  <!-- left: stack -->
+  <rect x="50" y="30" width="320" height="310" rx="14" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
+  <rect x="80" y="55" width="260" height="75" rx="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
+  <text x="210" y="90" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#92400E" font-weight="600">Application</text>
+  <text x="210" y="112" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B45309">One web service</text>
+  <rect x="80" y="150" width="260" height="65" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="210" y="178" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#1D4ED8" font-weight="600">Host OS</text>
+  <text x="210" y="200" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">OS installed directly on the server</text>
+  <rect x="80" y="235" width="260" height="80" rx="10" fill="#E2E8F0" stroke="#64748B" stroke-width="2"/>
+  <text x="210" y="268" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#334155" font-weight="600">Hardware</text>
+  <text x="210" y="292" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">CPU, Memory, Disk</text>
+
+  <!-- right: unused capacity visual -->
+  <rect x="420" y="30" width="440" height="310" rx="14" fill="#FFF7ED" stroke="#EA580C" stroke-width="2"/>
+  <text x="640" y="65" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#C2410C" font-weight="600">Leftover capacity problem</text>
+
+  <!-- capacity bar -->
+  <text x="450" y="100" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#9A3412" font-weight="600">Server resource use</text>
+  <rect x="450" y="115" width="380" height="36" rx="8" fill="#FFEDD5" stroke="#FDBA74"/>
+  <rect x="450" y="115" width="95" height="36" rx="8" fill="#FB923C"/>
+  <text x="497" y="138" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#FFFFFF" font-weight="600">App in use</text>
+  <text x="700" y="138" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#C2410C" font-weight="600">Idle (unused)</text>
+
+  <text x="640" y="180" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#9A3412">Why another app is hard on the same server</text>
+
+  <rect x="450" y="200" width="110" height="100" rx="10" fill="#FFFFFF" stroke="#FDBA74"/>
+  <text x="505" y="240" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#C2410C" font-weight="600">Ports</text>
+  <text x="505" y="265" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#EA580C">Number clash</text>
+
+  <rect x="575" y="200" width="110" height="100" rx="10" fill="#FFFFFF" stroke="#FDBA74"/>
+  <text x="630" y="240" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#C2410C" font-weight="600">Libraries</text>
+  <text x="630" y="265" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#EA580C">Version clash</text>
+
+  <rect x="700" y="200" width="130" height="100" rx="10" fill="#FFFFFF" stroke="#FDBA74"/>
+  <text x="765" y="240" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#C2410C" font-weight="600">Failures</text>
+  <text x="765" y="265" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#EA580C">If one app dies,</text>
+  <text x="765" y="285" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#EA580C">others are at risk</text>
+
+  <line x1="40" y1="375" x2="860" y2="375" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="450" y="408" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 2. Bare Metal:</tspan>
+    <tspan> one app on one physical server</tspan>
+  </text>
+</svg>

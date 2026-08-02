@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="320" viewBox="0 0 860 320">
+  <rect width="860" height="320" fill="#F7F9FC"/>
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+  </defs>
+  <rect x="50" y="50" width="280" height="180" rx="14" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="190" y="85" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#1D4ED8" font-weight="600">Host (my machine)</text>
+  <rect x="90" y="110" width="200" height="80" rx="10" fill="#DBEAFE" stroke="#2563EB"/>
+  <text x="190" y="145" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#1D4ED8" font-weight="600">Port 8080</text>
+  <text x="190" y="170" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">Number the browser hits</text>
+
+  <path d="M340 140 H420" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#a)"/>
+  <text x="380" y="120" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488" font-weight="600">-p 8080:80</text>
+  <text x="380" y="165" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">Forward request</text>
+
+  <rect x="430" y="50" width="380" height="180" rx="14" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="620" y="85" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">Container</text>
+  <rect x="500" y="110" width="240" height="80" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="620" y="145" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#0F766E" font-weight="600">Port 80</text>
+  <text x="620" y="170" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">Number nginx listens on</text>
+
+  <line x1="40" y1="262" x2="820" y2="262" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="430" y="290" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 9. Port mapping:</tspan>
+    <tspan> host port linked to container port</tspan>
+  </text>
+
+</svg>

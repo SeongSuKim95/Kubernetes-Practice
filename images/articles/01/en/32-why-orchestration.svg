@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420">
+  <rect width="960" height="420" fill="#F7F9FC"/>
+
+  <rect x="40" y="40" width="280" height="280" rx="14" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="180" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#0F766E" font-weight="600">Server A, healthy</text>
+  <rect x="70" y="100" width="100" height="50" rx="8" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="120" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E">Web ×2</text>
+  <rect x="190" y="100" width="100" height="50" rx="8" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="240" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E">App ×1</text>
+  <text x="180" y="190" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">Decisions people make by hand</text>
+  <rect x="70" y="210" width="220" height="80" rx="8" fill="#FFFFFF" stroke="#99F6E4"/>
+  <text x="180" y="240" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E">Which server gets</text>
+  <text x="180" y="262" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E">the web container?</text>
+
+  <rect x="340" y="40" width="280" height="280" rx="14" fill="#FEF2F2" stroke="#DC2626" stroke-width="2"/>
+  <text x="480" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#B91C1C" font-weight="600">Server B, down</text>
+  <rect x="390" y="110" width="180" height="60" rx="8" fill="#FEE2E2" stroke="#DC2626" stroke-dasharray="6 4"/>
+  <text x="480" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#B91C1C">Web containers lost</text>
+  <text x="480" y="155" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#DC2626">Server stopped</text>
+  <rect x="370" y="200" width="220" height="90" rx="8" fill="#FFFFFF" stroke="#FECACA"/>
+  <text x="480" y="235" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B91C1C">Where to restart?</text>
+  <text x="480" y="260" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B91C1C">Who brings it back?</text>
+
+  <rect x="640" y="40" width="280" height="280" rx="14" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="780" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#1D4ED8" font-weight="600">Server C, healthy</text>
+  <rect x="670" y="100" width="100" height="50" rx="8" fill="#DBEAFE" stroke="#2563EB"/>
+  <text x="720" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#1D4ED8">Web ×1</text>
+  <rect x="790" y="100" width="100" height="50" rx="8" fill="#DBEAFE" stroke="#2563EB"/>
+  <text x="840" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#1D4ED8">DB ×1</text>
+  <rect x="670" y="200" width="220" height="90" rx="8" fill="#FFFFFF" stroke="#BFDBFE"/>
+  <text x="780" y="235" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8">If IPs change,</text>
+  <text x="780" y="260" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8">find by name?</text>
+
+  <line x1="40" y1="362" x2="920" y2="362" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="480" y="390" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 12. Why orchestration:</tspan>
+    <tspan> manual place, recover, connect across servers</tspan>
+  </text>
+
+</svg>

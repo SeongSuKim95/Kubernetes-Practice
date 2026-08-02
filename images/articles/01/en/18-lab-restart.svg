@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300">
+  <rect width="900" height="300" fill="#F7F9FC"/>
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+    <marker id="r" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#DC2626"/>
+    </marker>
+    <marker id="g" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/>
+    </marker>
+  </defs>
+  <rect x="40" y="60" width="180" height="120" rx="12" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/>
+  <text x="130" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">Running</text>
+  <text x="130" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">STATUS: Up</text>
+
+  <path d="M230 120 H290" fill="none" stroke="#DC2626" stroke-width="2.5" marker-end="url(#r)"/>
+  <text x="260" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#DC2626">stop</text>
+
+  <rect x="300" y="60" width="180" height="120" rx="12" fill="#FEE2E2" stroke="#DC2626" stroke-width="2"/>
+  <text x="390" y="100" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#B91C1C" font-weight="600">Stopped</text>
+  <text x="390" y="125" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#DC2626">STATUS: Exited</text>
+  <text x="390" y="150" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">curl → failed</text>
+
+  <path d="M490 120 H550" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#g)"/>
+  <text x="520" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">start</text>
+
+  <rect x="560" y="60" width="180" height="120" rx="12" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/>
+  <text x="650" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">Start again</text>
+  <text x="650" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">Person runs start</text>
+
+  <rect x="760" y="80" width="110" height="80" rx="10" fill="#FEF3C7" stroke="#D97706"/>
+  <text x="815" y="115" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#92400E" font-weight="600">No auto</text>
+  <text x="815" y="138" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B45309">recovery</text>
+
+  <line x1="40" y1="242" x2="860" y2="242" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="450" y="270" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 17. Scenario 2:</tspan>
+    <tspan> manual restart after container stop</tspan>
+  </text>
+
+</svg>

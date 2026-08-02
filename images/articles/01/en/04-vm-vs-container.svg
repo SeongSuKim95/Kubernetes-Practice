@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="440" viewBox="0 0 920 440">
+  <rect width="920" height="440" fill="#F7F9FC"/>
+
+  <rect x="40" y="30" width="400" height="330" rx="14" fill="#FFFFFF" stroke="#6366F1" stroke-width="2"/>
+  <text x="240" y="60" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#4338CA" font-weight="600">Virtual Machine</text>
+  <text x="240" y="82" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">Guest OS cloned per VM</text>
+
+  <rect x="70" y="100" width="150" height="120" rx="10" fill="#EEF2FF" stroke="#6366F1"/>
+  <text x="145" y="125" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#4338CA" font-weight="600">VM 1</text>
+  <rect x="85" y="140" width="120" height="28" rx="5" fill="#FEF3C7" stroke="#D97706"/>
+  <text x="145" y="159" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#92400E">App</text>
+  <rect x="85" y="178" width="120" height="28" rx="5" fill="#FFFFFF" stroke="#A5B4FC"/>
+  <text x="145" y="197" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#4338CA">Guest OS</text>
+
+  <rect x="250" y="100" width="150" height="120" rx="10" fill="#EEF2FF" stroke="#6366F1"/>
+  <text x="325" y="125" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#4338CA" font-weight="600">VM 2</text>
+  <rect x="265" y="140" width="120" height="28" rx="5" fill="#FEF3C7" stroke="#D97706"/>
+  <text x="325" y="159" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#92400E">App</text>
+  <rect x="265" y="178" width="120" height="28" rx="5" fill="#FFFFFF" stroke="#A5B4FC"/>
+  <text x="325" y="197" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#4338CA">Guest OS</text>
+
+  <rect x="70" y="240" width="330" height="40" rx="8" fill="#F1F5F9" stroke="#94A3B8"/>
+  <text x="235" y="265" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#334155">Hypervisor</text>
+  <rect x="70" y="295" width="330" height="40" rx="8" fill="#E2E8F0" stroke="#64748B"/>
+  <text x="235" y="320" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#1E293B">Hardware</text>
+
+  <rect x="480" y="30" width="400" height="330" rx="14" fill="#FFFFFF" stroke="#0D9488" stroke-width="2"/>
+  <text x="680" y="60" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#0F766E" font-weight="600">Container</text>
+  <text x="680" y="82" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">Host OS, shared Kernel</text>
+
+  <rect x="510" y="100" width="150" height="100" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="585" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">Container 1</text>
+  <rect x="525" y="145" width="120" height="36" rx="5" fill="#FEF3C7" stroke="#D97706"/>
+  <text x="585" y="168" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#92400E">App + libs</text>
+
+  <rect x="690" y="100" width="150" height="100" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="765" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">Container 2</text>
+  <rect x="705" y="145" width="120" height="36" rx="5" fill="#FEF3C7" stroke="#D97706"/>
+  <text x="765" y="168" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#92400E">App + libs</text>
+
+  <rect x="510" y="230" width="330" height="50" rx="8" fill="#ECFDF5" stroke="#0D9488"/>
+  <text x="675" y="250" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">Host OS</text>
+  <text x="675" y="270" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">Shared Kernel</text>
+  <rect x="510" y="295" width="330" height="40" rx="8" fill="#E2E8F0" stroke="#64748B"/>
+  <text x="675" y="320" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#1E293B">Hardware</text>
+
+  <line x1="40" y1="382" x2="880" y2="382" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="460" y="410" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 5. VM vs Container:</tspan>
+    <tspan> Guest OS clone vs shared Host Kernel</tspan>
+  </text>
+
+</svg>

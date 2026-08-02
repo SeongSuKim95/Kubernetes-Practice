@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="400" viewBox="0 0 900 400">
+  <rect width="900" height="400" fill="#F7F9FC"/>
+  <rect x="40" y="30" width="820" height="280" rx="14" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
+  <text x="450" y="60" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#475569" font-weight="600">VMs inside one physical server</text>
+
+  <rect x="70" y="85" width="230" height="190" rx="12" fill="#EEF2FF" stroke="#6366F1" stroke-width="2"/>
+  <text x="185" y="115" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#4338CA" font-weight="600">VM 1</text>
+  <text x="185" y="138" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#6366F1">Shop web</text>
+  <rect x="95" y="155" width="180" height="40" rx="8" fill="#FEF3C7" stroke="#D97706"/>
+  <text x="185" y="181" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#92400E">Application</text>
+  <rect x="95" y="210" width="180" height="40" rx="8" fill="#FFFFFF" stroke="#A5B4FC"/>
+  <text x="185" y="236" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#4338CA">Guest OS</text>
+
+  <rect x="335" y="85" width="230" height="190" rx="12" fill="#EEF2FF" stroke="#6366F1" stroke-width="2"/>
+  <text x="450" y="115" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#4338CA" font-weight="600">VM 2</text>
+  <text x="450" y="138" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#6366F1">Pay API</text>
+  <rect x="360" y="155" width="180" height="40" rx="8" fill="#FEF3C7" stroke="#D97706"/>
+  <text x="450" y="181" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#92400E">Application</text>
+  <rect x="360" y="210" width="180" height="40" rx="8" fill="#FFFFFF" stroke="#A5B4FC"/>
+  <text x="450" y="236" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#4338CA">Guest OS</text>
+
+  <rect x="600" y="85" width="230" height="190" rx="12" fill="#EEF2FF" stroke="#6366F1" stroke-width="2"/>
+  <text x="715" y="115" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#4338CA" font-weight="600">VM 3</text>
+  <text x="715" y="138" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#6366F1">Product DB</text>
+  <rect x="625" y="155" width="180" height="40" rx="8" fill="#FEF3C7" stroke="#D97706"/>
+  <text x="715" y="181" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#92400E">Application</text>
+  <rect x="625" y="210" width="180" height="40" rx="8" fill="#FFFFFF" stroke="#A5B4FC"/>
+  <text x="715" y="236" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#4338CA">Guest OS</text>
+
+  <line x1="40" y1="340" x2="860" y2="340" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="450" y="372" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 4. Virtual Machine isolation:</tspan>
+    <tspan> each VM with its own Guest OS</tspan>
+  </text>
+</svg>

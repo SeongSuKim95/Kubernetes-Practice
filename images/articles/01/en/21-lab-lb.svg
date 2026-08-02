@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="380" viewBox="0 0 920 380">
+  <rect width="920" height="380" fill="#F7F9FC"/>
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+  </defs>
+  <circle cx="100" cy="160" r="45" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
+  <text x="100" y="155" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#92400E" font-weight="600">User</text>
+  <text x="100" y="175" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#B45309">One address</text>
+
+  <path d="M150 160 H220" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <rect x="230" y="90" width="200" height="140" rx="12" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="330" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#1D4ED8" font-weight="600">Load balancer</text>
+  <text x="330" y="160" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">Backend list</text>
+  <text x="330" y="185" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">(maintained by hand)</text>
+
+  <path d="M430 130 H500" fill="none" stroke="#0D9488" stroke-width="2" marker-end="url(#a)"/>
+  <path d="M430 160 H500" fill="none" stroke="#0D9488" stroke-width="2" marker-end="url(#a)"/>
+  <path d="M430 190 H500" fill="none" stroke="#0D9488" stroke-width="2" marker-end="url(#a)"/>
+
+  <rect x="510" y="50" width="140" height="70" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="580" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">Web :8080</text>
+  <rect x="510" y="135" width="140" height="70" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="580" y="165" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">Web :8081</text>
+  <rect x="510" y="220" width="140" height="70" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="580" y="250" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">Web :8082</text>
+
+  <rect x="690" y="90" width="200" height="160" rx="12" fill="#FFF7ED" stroke="#EA580C" stroke-width="2"/>
+  <text x="790" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#C2410C" font-weight="600">On add/remove,</text>
+  <text x="790" y="170" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#EA580C">person edits</text>
+  <text x="790" y="195" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#EA580C">the list file</text>
+
+  <line x1="40" y1="322" x2="880" y2="322" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="460" y="350" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 20. Scenario 5:</tspan>
+    <tspan> split ports and manual load balancing</tspan>
+  </text>
+
+</svg>

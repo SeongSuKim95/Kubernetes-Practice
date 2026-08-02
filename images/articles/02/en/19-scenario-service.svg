@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="430" viewBox="0 0 960 430">
+  <rect width="960" height="430" fill="#F7F9FC"/>
+  <defs>
+    <marker id="r" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#DC2626"/>
+    </marker>
+    <marker id="t" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/>
+    </marker>
+    <marker id="b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+  </defs>
+  <rect x="20" y="16" width="450" height="348" rx="14" fill="#FFFFFF" stroke="#FECACA" stroke-width="2"/>
+  <text x="245" y="42" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#B91C1C" font-weight="700">Docker</text>
+  <text x="245" y="62" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#EF4444">Hand-write ports and IPs into config</text>
+  <rect x="95" y="88" width="300" height="56" rx="10" fill="#FEF2F2" stroke="#DC2626" stroke-width="2"/>
+  <text x="245" y="112" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#991B1B" font-weight="600">Frontend server list</text>
+  <text x="245" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#DC2626">host:8080, host:8081 …</text>  <text x="245" y="158" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#DC2626">Edit whenever count changes</text>
+  <line x1="245" y1="164" x2="245" y2="180" stroke="#DC2626" stroke-width="2.2" stroke-linecap="round" marker-end="url(#r)"/>
+  <rect x="79" y="180" width="100" height="52" rx="10" fill="#FEE2E2" stroke="#DC2626" stroke-width="2"/>
+  <text x="129.0" y="211" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#991B1B" font-weight="600">:8080</text>  <rect x="195" y="180" width="100" height="52" rx="10" fill="#FEE2E2" stroke="#DC2626" stroke-width="2"/>
+  <text x="245.0" y="211" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#991B1B" font-weight="600">:8081</text>  <rect x="311" y="180" width="100" height="52" rx="10" fill="#F8FAFC" stroke="#94A3B8" stroke-width="2"/>
+  <text x="361.0" y="211" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B" font-weight="600">IP changed</text>  <text x="245" y="292" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#991B1B" font-weight="600">Connection breaks when IP changes</text>
+  <rect x="490" y="16" width="450" height="348" rx="14" fill="#FFFFFF" stroke="#99F6E4" stroke-width="2"/>
+  <text x="715" y="42" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="700">Kubernetes</text>
+  <text x="715" y="62" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#14B8A6">Fixed name routes to live Pods</text>
+  <rect x="565" y="88" width="300" height="56" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="715" y="121" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#1D4ED8" font-weight="600">Service name: web</text>  <text x="715" y="158" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">Platform keeps Pod list current</text>
+  <line x1="599.0" y1="164" x2="599.0" y2="180" stroke="#0D9488" stroke-width="2.2" stroke-linecap="round" marker-end="url(#t)"/>
+  <rect x="549" y="180" width="100" height="52" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="599.0" y="211" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">Pod</text>  <line x1="715.0" y1="164" x2="715.0" y2="180" stroke="#0D9488" stroke-width="2.2" stroke-linecap="round" marker-end="url(#t)"/>
+  <rect x="665" y="180" width="100" height="52" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="715.0" y="211" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">Pod</text>  <line x1="831.0" y1="164" x2="831.0" y2="180" stroke="#0D9488" stroke-width="2.2" stroke-linecap="round" marker-end="url(#t)"/>
+  <rect x="781" y="180" width="100" height="52" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="831.0" y="211" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">Pod</text>  <text x="715" y="292" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">Name stays fixed; target Pods auto-update</text>
+  <line x1="40" y1="392" x2="920" y2="392" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="480" y="418" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 16. Load balancing and service discovery:</tspan>
+    <tspan> Manual frontend lists vs a stable Service name</tspan>
+  </text>
+</svg>

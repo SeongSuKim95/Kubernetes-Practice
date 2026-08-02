@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="380" viewBox="0 0 900 380">
+  <rect width="900" height="380" fill="#F7F9FC"/>
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+  </defs>
+  <rect x="40" y="50" width="280" height="230" rx="14" fill="#FFF7ED" stroke="#EA580C" stroke-width="2"/>
+  <text x="180" y="90" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#C2410C" font-weight="600">compose.yaml</text>
+  <text x="180" y="115" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#EA580C">Defines multi-container setup</text>
+  <rect x="70" y="140" width="220" height="36" rx="6" fill="#FFFFFF" stroke="#FDBA74"/>
+  <text x="180" y="163" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#9A3412">web: nginx</text>
+  <rect x="70" y="188" width="220" height="36" rx="6" fill="#FFFFFF" stroke="#FDBA74"/>
+  <text x="180" y="211" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#9A3412">app: my-api</text>
+  <rect x="70" y="236" width="220" height="36" rx="6" fill="#FFFFFF" stroke="#FDBA74"/>
+  <text x="180" y="259" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#9A3412">db: mysql</text>
+
+  <path d="M330 165 H400" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#a)"/>
+  <text x="365" y="150" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#2563EB">compose up</text>
+
+  <rect x="410" y="40" width="450" height="250" rx="14" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="635" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#1D4ED8" font-weight="600">One server (single host)</text>
+  <rect x="450" y="100" width="110" height="140" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="505" y="160" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">web</text>
+  <text x="505" y="185" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">Container</text>
+  <rect x="580" y="100" width="110" height="140" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="635" y="160" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">app</text>
+  <text x="635" y="185" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">Container</text>
+  <rect x="710" y="100" width="110" height="140" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="765" y="160" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">db</text>
+  <text x="765" y="185" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">Container</text>
+
+  <line x1="40" y1="322" x2="860" y2="322" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="450" y="350" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 11. Docker Compose:</tspan>
+    <tspan> YAML starts many containers on one server</tspan>
+  </text>
+
+</svg>

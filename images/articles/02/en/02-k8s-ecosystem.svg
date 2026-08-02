@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="420" viewBox="0 0 920 420">
+  <rect width="920" height="420" fill="#F7F9FC"/>
+  <rect x="340" y="145" width="240" height="100" rx="16" fill="#EFF6FF" stroke="#326CE5" stroke-width="3"/>
+  <text x="460" y="185" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#326CE5" font-weight="600">Kubernetes</text>
+  <text x="460" y="212" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8">Center of cluster ops</text>
+
+  <rect x="60" y="40" width="160" height="70" rx="12" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
+  <text x="140" y="70" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#334155" font-weight="600">Monitoring</text>
+  <text x="140" y="92" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">Observe, alert</text>
+
+  <rect x="380" y="30" width="160" height="70" rx="12" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
+  <text x="460" y="60" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#334155" font-weight="600">Deploy, GitOps</text>
+  <text x="460" y="82" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">Continuous delivery</text>
+
+  <rect x="700" y="40" width="160" height="70" rx="12" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
+  <text x="780" y="70" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#334155" font-weight="600">Packaging</text>
+  <text x="780" y="92" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">Packaged app installs</text>
+
+  <rect x="60" y="280" width="160" height="70" rx="12" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
+  <text x="140" y="310" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#334155" font-weight="600">Networking</text>
+  <text x="140" y="332" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">Connect, ingress</text>
+
+  <rect x="380" y="300" width="160" height="70" rx="12" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
+  <text x="460" y="330" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#334155" font-weight="600">Storage</text>
+  <text x="460" y="352" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">Data persistence</text>
+
+  <rect x="700" y="280" width="160" height="70" rx="12" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
+  <text x="780" y="310" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#334155" font-weight="600">Security, access</text>
+  <text x="780" y="332" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">Who can do what</text>
+
+  <line x1="220" y1="75" x2="340" y2="170" stroke="#CBD5E1" stroke-width="1.5"/>
+  <line x1="460" y1="100" x2="460" y2="145" stroke="#CBD5E1" stroke-width="1.5"/>
+  <line x1="700" y1="75" x2="580" y2="170" stroke="#CBD5E1" stroke-width="1.5"/>
+  <line x1="220" y1="315" x2="340" y2="230" stroke="#CBD5E1" stroke-width="1.5"/>
+  <line x1="460" y1="245" x2="460" y2="300" stroke="#CBD5E1" stroke-width="1.5"/>
+  <line x1="700" y1="315" x2="580" y2="230" stroke="#CBD5E1" stroke-width="1.5"/>
+
+  <line x1="40" y1="375" x2="880" y2="375" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="460" y="400" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 2. Kubernetes ecosystem:</tspan>
+    <tspan> Deploy, observe, network, storage, and security tools</tspan>
+  </text>
+</svg>

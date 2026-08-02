@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="430" viewBox="0 0 960 430">
+  <rect width="960" height="430" fill="#F7F9FC"/>
+  <defs>
+    <marker id="r" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#DC2626"/>
+    </marker>
+    <marker id="t" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/>
+    </marker>
+    <marker id="b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+  </defs>
+  <rect x="20" y="16" width="450" height="348" rx="14" fill="#FFFFFF" stroke="#FECACA" stroke-width="2"/>
+  <text x="245" y="42" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#B91C1C" font-weight="700">Docker</text>
+  <text x="245" y="62" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#EF4444">Name and port chosen per container</text>
+  <rect x="54" y="88" width="118" height="56" rx="10" fill="#FEF2F2" stroke="#DC2626" stroke-width="2"/>
+  <text x="113.0" y="112" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#991B1B" font-weight="600">web-1</text>
+  <text x="113.0" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#DC2626">:8080</text>  <rect x="186" y="88" width="118" height="56" rx="10" fill="#FEF2F2" stroke="#DC2626" stroke-width="2"/>
+  <text x="245.0" y="112" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#991B1B" font-weight="600">web-2</text>
+  <text x="245.0" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#DC2626">:8081</text>  <rect x="318" y="88" width="118" height="56" rx="10" fill="#FEF2F2" stroke="#DC2626" stroke-width="2"/>
+  <text x="377.0" y="112" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#991B1B" font-weight="600">web-3</text>
+  <text x="377.0" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#DC2626">:8082</text>  <text x="245" y="158" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#DC2626">Repeat docker run for each scale-up</text>
+  <line x1="245" y1="164" x2="245" y2="180" stroke="#DC2626" stroke-width="2.2" stroke-linecap="round" marker-end="url(#r)"/>
+  <rect x="95" y="180" width="300" height="56" rx="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
+  <text x="245" y="213" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#92400E" font-weight="600">Port clashes and upstream edits stay manual</text>  <text x="245" y="292" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#991B1B" font-weight="600">Hand-manage count and port list</text>
+  <rect x="490" y="16" width="450" height="348" rx="14" fill="#FFFFFF" stroke="#99F6E4" stroke-width="2"/>
+  <text x="715" y="42" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="700">Kubernetes</text>
+  <text x="715" y="62" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#14B8A6">Declare Pod replica count only</text>
+  <rect x="565" y="88" width="300" height="56" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="715" y="121" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">replicas: 2 → 5</text>  <text x="715" y="158" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">One scale command</text>
+  <line x1="715" y1="164" x2="715" y2="180" stroke="#0D9488" stroke-width="2.2" stroke-linecap="round" marker-end="url(#t)"/>
+  <rect x="565" y="180" width="52" height="52" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="591.0" y="211" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E" font-weight="600">Pod</text>  <rect x="627" y="180" width="52" height="52" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="653.0" y="211" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E" font-weight="600">Pod</text>  <rect x="689" y="180" width="52" height="52" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="715.0" y="211" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E" font-weight="600">Pod</text>  <rect x="751" y="180" width="52" height="52" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="777.0" y="211" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E" font-weight="600">Pod</text>  <rect x="813" y="180" width="52" height="52" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="839.0" y="211" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E" font-weight="600">…</text>  <text x="715" y="292" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">No need to memorize ports</text>
+  <line x1="40" y1="392" x2="920" y2="392" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="480" y="418" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 14. Scaling out container count:</tspan>
+    <tspan> Repeated manual starts vs declaring Pod replicas</tspan>
+  </text>
+</svg>

@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1020" height="360" viewBox="0 0 1020 360">
+  <rect width="1020" height="360" fill="#F7F9FC"/>
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+  </defs>
+
+  <rect x="20" y="40" width="160" height="200" rx="12" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
+  <text x="100" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#334155" font-weight="600">Bare Metal</text>
+  <text x="100" y="95" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">Physical server</text>
+  <rect x="40" y="115" width="120" height="45" rx="8" fill="#FEE2E2" stroke="#DC2626"/>
+  <text x="100" y="143" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B91C1C">1 app</text>
+  <rect x="40" y="175" width="120" height="40" rx="8" fill="#E2E8F0" stroke="#64748B"/>
+  <text x="100" y="200" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#334155">1 server</text>
+
+  <path d="M185 140 H215" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <rect x="220" y="40" width="160" height="200" rx="12" fill="#FFFFFF" stroke="#6366F1" stroke-width="2"/>
+  <text x="300" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#4338CA" font-weight="600">Virtual Machine</text>
+  <text x="300" y="95" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">Virtual Machine</text>
+  <rect x="240" y="110" width="120" height="36" rx="6" fill="#EEF2FF" stroke="#6366F1"/>
+  <text x="300" y="133" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#4338CA">Guest OS</text>
+  <rect x="240" y="155" width="120" height="36" rx="6" fill="#EEF2FF" stroke="#6366F1"/>
+  <text x="300" y="178" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#4338CA">Guest OS</text>
+  <text x="300" y="215" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">Clone whole OS</text>
+
+  <path d="M385 140 H415" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <rect x="420" y="40" width="160" height="200" rx="12" fill="#FFFFFF" stroke="#0D9488" stroke-width="2"/>
+  <text x="500" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">Container</text>
+  <text x="500" y="95" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">Docker</text>
+  <rect x="440" y="115" width="120" height="32" rx="6" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="500" y="136" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E">App process</text>
+  <rect x="440" y="155" width="120" height="32" rx="6" fill="#CCFBF1" stroke="#0D9488"/>
+  <text x="500" y="176" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E">App process</text>
+  <text x="500" y="215" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">Share Host OS</text>
+
+  <path d="M585 140 H615" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <rect x="620" y="40" width="170" height="200" rx="12" fill="#FFFFFF" stroke="#EA580C" stroke-width="2"/>
+  <text x="705" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#C2410C" font-weight="600">Docker Compose</text>
+  <text x="705" y="100" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#EA580C">One host, many containers</text>
+  <rect x="645" y="120" width="55" height="40" rx="6" fill="#FFEDD5" stroke="#EA580C"/>
+  <text x="672" y="145" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#C2410C">Web</text>
+  <rect x="715" y="120" width="55" height="40" rx="6" fill="#FFEDD5" stroke="#EA580C"/>
+  <text x="742" y="145" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#C2410C">DB</text>
+  <text x="705" y="190" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">Start all via YAML</text>
+
+  <path d="M795 140 H825" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <rect x="830" y="40" width="170" height="200" rx="12" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
+  <text x="915" y="72" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#5B21B6" font-weight="600">Docker Swarm</text>
+  <text x="915" y="92" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#5B21B6" font-weight="600">Kubernetes</text>
+  <text x="915" y="112" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#7C3AED">Many servers</text>
+  <rect x="850" y="125" width="60" height="50" rx="6" fill="#EDE9FE" stroke="#7C3AED"/>
+  <text x="880" y="145" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10" fill="#5B21B6">Server A</text>
+  <text x="880" y="162" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10" fill="#7C3AED">Web x2</text>
+  <rect x="920" y="125" width="60" height="50" rx="6" fill="#EDE9FE" stroke="#7C3AED"/>
+  <text x="950" y="145" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10" fill="#5B21B6">Server B</text>
+  <text x="950" y="162" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10" fill="#7C3AED">Web x1</text>
+  <text x="915" y="200" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">Place & recover containers</text>
+  <text x="915" y="218" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">Delegate to platform</text>
+
+  <line x1="40" y1="280" x2="980" y2="280" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="510" y="315" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 1. Evolution path:</tspan>
+    <tspan> from physical server to orchestration</tspan>
+  </text>
+</svg>
