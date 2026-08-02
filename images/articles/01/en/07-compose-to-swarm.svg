@@ -23,7 +23,7 @@
 
   <rect x="500" y="40" width="380" height="280" rx="14" fill="#EDE9FE" stroke="#7C3AED" stroke-width="2"/>
   <text x="690" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#5B21B6" font-weight="600">Docker Swarm</text>
-  <text x="690" y="100" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#7C3AED">Many servers: place & recover</text>
+  <text x="690" y="100" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#7C3AED">Many servers: place &amp; recover</text>
   <rect x="530" y="125" width="150" height="150" rx="10" fill="#FFFFFF" stroke="#C4B5FD"/>
   <text x="605" y="155" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#5B21B6" font-weight="600">Node A</text>
   <rect x="550" y="175" width="110" height="35" rx="6" fill="#DDD6FE" stroke="#7C3AED"/>
@@ -37,7 +37,7 @@
   <line x1="40" y1="342" x2="880" y2="342" stroke="#E2E8F0" stroke-width="1"/>
   <text x="460" y="370" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
     <tspan font-weight="600">Fig 14. Docker Compose and Docker Swarm:</tspan>
-    <tspan> from one-host start to multi-server place & recover</tspan>
+    <tspan> from one-host start to multi-server place &amp; recover</tspan>
   </text>
 
 </svg>

@@ -59,7 +59,7 @@
   <rect x="920" y="125" width="60" height="50" rx="6" fill="#EDE9FE" stroke="#7C3AED"/>
   <text x="950" y="145" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10" fill="#5B21B6">Server B</text>
   <text x="950" y="162" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10" fill="#7C3AED">Web x1</text>
-  <text x="915" y="200" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">Place & recover containers</text>
+  <text x="915" y="200" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">Place &amp; recover containers</text>
   <text x="915" y="218" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">Delegate to platform</text>
 
   <line x1="40" y1="280" x2="980" y2="280" stroke="#E2E8F0" stroke-width="1"/>
