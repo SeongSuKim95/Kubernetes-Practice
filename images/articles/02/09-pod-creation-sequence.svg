@@ -126,7 +126,7 @@
   <!-- caption -->
   <line x1="40" y1="722" x2="1060" y2="722" stroke="#E2E8F0" stroke-width="1"/>
   <text x="550" y="752" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 10. 선언이 Pod로 실행되기까지:</tspan>
+    <tspan font-weight="600">Fig 11. 선언이 Pod로 실행되기까지:</tspan>
     <tspan> 요청(화살표)과 Watch(실선)를 구분한 네 단계</tspan>
   </text>
 </svg>

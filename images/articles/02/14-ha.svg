@@ -33,7 +33,7 @@
 
   <line x1="40" y1="355" x2="880" y2="355" stroke="#E2E8F0" stroke-width="1"/>
   <text x="460" y="383" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 11. 고가용성:</tspan>
+    <tspan font-weight="600">Fig 12. 고가용성:</tspan>
     <tspan> 일부 장애에도 이어지는 API와 상태 저장</tspan>
   </text>
 </svg>

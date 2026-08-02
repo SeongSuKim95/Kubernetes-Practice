@@ -81,7 +81,7 @@
 
   <line x1="50" y1="448" x2="1030" y2="448" stroke="#E2E8F0" stroke-width="1"/>
   <text x="540" y="480" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 9. 상태 저장과 Watch:</tspan>
+    <tspan font-weight="600">Fig 10. 상태 저장과 Watch:</tspan>
     <tspan> 저장과 구독 기반의 상태 맞춤 구조</tspan>
   </text>
 </svg>

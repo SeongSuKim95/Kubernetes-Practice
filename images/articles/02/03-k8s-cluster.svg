@@ -35,7 +35,7 @@
 
   <line x1="40" y1="295" x2="860" y2="295" stroke="#E2E8F0" stroke-width="1"/>
   <text x="450" y="325" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 6. API와 클러스터:</tspan>
+    <tspan font-weight="600">Fig 7. API와 클러스터:</tspan>
     <tspan> 단일 진입점과 여러 노드로 이루어진 클러스터</tspan>
   </text>
 </svg>

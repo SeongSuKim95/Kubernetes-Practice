@@ -130,7 +130,7 @@
 
   <line x1="40" y1="630" x2="940" y2="630" stroke="#E2E8F0" stroke-width="1"/>
   <text x="490" y="658" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 7. 클러스터 구성 요소:</tspan>
+    <tspan font-weight="600">Fig 8. 클러스터 구성 요소:</tspan>
     <tspan> Control Plane과 Worker Node</tspan>
   </text>
 </svg>

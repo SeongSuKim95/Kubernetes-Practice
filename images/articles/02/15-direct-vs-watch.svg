@@ -87,7 +87,7 @@
 
   <line x1="40" y1="452" x2="920" y2="452" stroke="#E2E8F0" stroke-width="1"/>
   <text x="480" y="478" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 5. 직접 호출과 Watch:</tspan>
+    <tspan font-weight="600">Fig 6. 직접 호출과 Watch:</tspan>
     <tspan> 프로세스를 공유 상태로 느슨하게 연결</tspan>
   </text>
 </svg>

@@ -39,7 +39,7 @@
   <text x="839.0" y="211" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E" font-weight="600">…</text>  <text x="715" y="292" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">포트 목록을 외울 필요 없음</text>
   <line x1="40" y1="392" x2="920" y2="392" stroke="#E2E8F0" stroke-width="1"/>
   <text x="480" y="418" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 13. 컨테이너 개수 스케일 아웃:</tspan>
+    <tspan font-weight="600">Fig 14. 컨테이너 개수 스케일 아웃:</tspan>
     <tspan> 수동 기동 반복과 Pod 복제본 개수 선언</tspan>
   </text>
 </svg>

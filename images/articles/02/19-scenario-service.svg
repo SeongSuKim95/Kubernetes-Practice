@@ -37,7 +37,7 @@
   <text x="831.0" y="211" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">Pod</text>  <text x="715" y="292" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">이름은 고정, 대상 Pod는 자동 갱신</text>
   <line x1="40" y1="392" x2="920" y2="392" stroke="#E2E8F0" stroke-width="1"/>
   <text x="480" y="418" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 15. 요청 부하 분산과 서비스 이름 찾기:</tspan>
+    <tspan font-weight="600">Fig 16. 요청 부하 분산과 서비스 이름 찾기:</tspan>
     <tspan> 수동 앞단 서버 목록과 고정 Service 이름</tspan>
   </text>
 </svg>

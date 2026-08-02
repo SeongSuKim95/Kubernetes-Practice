@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="470" viewBox="0 0 960 470">
+  <rect width="960" height="470" fill="#F7F9FC"/>
+  <defs>
+    <marker id="arr-red" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#DC2626"/>
+    </marker>
+    <marker id="arr-teal" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/>
+    </marker>
+  </defs>
+
+  <!-- LEFT: Docker family -->
+  <rect x="20" y="16" width="450" height="390" rx="14" fill="#FFFFFF" stroke="#FECACA" stroke-width="2"/>
+  <text x="245" y="44" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#B91C1C" font-weight="700">Docker 계열</text>
+  <text x="245" y="64" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#EF4444">컨테이너를 만들고 실행하는 도구</text>
+
+  <rect x="55" y="84" width="380" height="58" rx="10" fill="#FEF2F2" stroke="#DC2626" stroke-width="2"/>
+  <text x="245" y="108" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#991B1B" font-weight="600">Docker</text>
+  <text x="245" y="128" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B91C1C">이미지 생성과 컨테이너 실행</text>
+
+  <line x1="245" y1="142" x2="245" y2="162" stroke="#DC2626" stroke-width="2.2" stroke-linecap="round" marker-end="url(#arr-red)"/>
+
+  <rect x="55" y="166" width="380" height="58" rx="10" fill="#FEF2F2" stroke="#DC2626" stroke-width="2"/>
+  <text x="245" y="190" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#991B1B" font-weight="600">Docker Compose</text>
+  <text x="245" y="210" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B91C1C">한 서버 안의 여러 컨테이너 구성</text>
+
+  <line x1="245" y1="224" x2="245" y2="244" stroke="#DC2626" stroke-width="2.2" stroke-linecap="round" marker-end="url(#arr-red)"/>
+
+  <rect x="55" y="248" width="380" height="58" rx="10" fill="#FEF2F2" stroke="#DC2626" stroke-width="2"/>
+  <text x="245" y="272" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#991B1B" font-weight="600">Docker Swarm</text>
+  <text x="245" y="292" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B91C1C">여러 서버에 컨테이너 분산</text>
+
+  <rect x="55" y="328" width="380" height="58" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.8"/>
+  <text x="245" y="352" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#92400E" font-weight="600">확장과 복구 판단을 사람이 직접 수행</text>
+  <text x="245" y="372" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#B45309">예: docker service scale / docker restart</text>
+
+  <!-- RIGHT: Kubernetes -->
+  <rect x="490" y="16" width="450" height="390" rx="14" fill="#FFFFFF" stroke="#99F6E4" stroke-width="2"/>
+  <text x="715" y="44" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#0F766E" font-weight="700">Kubernetes</text>
+  <text x="715" y="64" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#14B8A6">운영을 자동화하는 오케스트레이션 플랫폼</text>
+
+  <rect x="525" y="84" width="380" height="58" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="715" y="108" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">원하는 상태 선언</text>
+  <text x="715" y="128" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">예: 컨테이너 복제본 3개 유지</text>
+
+  <line x1="715" y1="142" x2="715" y2="162" stroke="#0D9488" stroke-width="2.2" stroke-linecap="round" marker-end="url(#arr-teal)"/>
+
+  <rect x="525" y="166" width="380" height="90" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="715" y="196" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">운영 정책을 시스템에 남김</text>
+  <text x="715" y="218" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">자원 한도, 자동 확장, 통신 범위</text>
+  <text x="715" y="238" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">저장소, 권한</text>
+
+  <line x1="715" y1="256" x2="715" y2="276" stroke="#0D9488" stroke-width="2.2" stroke-linecap="round" marker-end="url(#arr-teal)"/>
+
+  <rect x="525" y="280" width="380" height="58" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="715" y="304" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">플랫폼이 원하는 상태에 맞춤</text>
+  <text x="715" y="324" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">확장, 복구, 배치를 자동으로 수행</text>
+
+  <rect x="525" y="358" width="380" height="28" rx="8" fill="#F0FDFA" stroke="#99F6E4" stroke-width="1.5"/>
+  <text x="715" y="377" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">사람이 매번 지시하지 않아도 운영이 이어짐</text>
+
+  <line x1="40" y1="426" x2="920" y2="426" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="480" y="452" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 3. Docker 계열과 Kubernetes:</tspan>
+    <tspan> 실행 도구에서 운영 정책으로</tspan>
+  </text>
+</svg>

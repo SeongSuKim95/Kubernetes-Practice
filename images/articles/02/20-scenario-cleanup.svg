@@ -39,7 +39,7 @@
   <text x="715" y="213" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B" font-weight="600">관련 Pod와 규칙이 함께 정리됨</text>  <text x="715" y="292" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">목표 단위로 통째로 거둘 수 있음</text>
   <line x1="40" y1="392" x2="920" y2="392" stroke="#E2E8F0" stroke-width="1"/>
   <text x="480" y="418" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 16. 배포한 컨테이너와 진입점을 정리하며 지우기:</tspan>
+    <tspan font-weight="600">Fig 17. 배포한 컨테이너와 진입점을 정리하며 지우기:</tspan>
     <tspan> 이름마다 반복 삭제와 선언 단위 일괄 정리</tspan>
   </text>
 </svg>

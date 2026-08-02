@@ -38,7 +38,7 @@
   <rect x="575" y="272" width="130" height="52" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
   <text x="640.0" y="303" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">새 Pod</text>  <line x1="40" y1="392" x2="920" y2="392" stroke="#E2E8F0" stroke-width="1"/>
   <text x="480" y="418" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 12. 멈춘 컨테이너 복구:</tspan>
+    <tspan font-weight="600">Fig 13. 멈춘 컨테이너 복구:</tspan>
     <tspan> 수동 재기동과 원하는 Pod 개수 자동 맞춤</tspan>
   </text>
 </svg>

@@ -38,7 +38,7 @@
 
   <line x1="40" y1="270" x2="860" y2="270" stroke="#E2E8F0" stroke-width="1"/>
   <text x="450" y="298" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 4. Control Loop:</tspan>
+    <tspan font-weight="600">Fig 5. Control Loop:</tspan>
     <tspan> 관찰, 차이 계산, 보정, 재관찰의 반복 흐름</tspan>
   </text>
 </svg>
