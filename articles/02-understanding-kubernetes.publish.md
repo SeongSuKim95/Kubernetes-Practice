@@ -1,5 +1,5 @@
 <!--
-  게시용 복사본입니다. 이미지 경로를 GitHub raw URL로 바꿨습니다.
+  게시용 복사본입니다. GitHub Flavored Markdown용이며, 이미지 경로는 GitHub raw URL입니다.
   원본(로컬 미리보기용): 02-understanding-kubernetes.draft.md
   이미지 저장소: https://github.com/SeongSuKim95/Kubernetes-Practice
 -->
@@ -14,25 +14,13 @@
 
 ## 1. Kubernetes의 위치와 인기
 
-
-<div align="center">
-
 ![Kubernetes 공식 로고](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/01-k8s-logo.svg)
-
-</div>
-
 
 Kubernetes는 **컨테이너 오케스트레이션**(Container Orchestration) 플랫폼입니다. 컨테이너 오케스트레이션이란, 컨테이너를 실행하는 일에 그치지 않고 배치와 컨테이너 개수 유지, 장애 복구, 트래픽 분배까지 **자동화하는 시스템**을 말합니다. 여러 서버에 걸친 컨테이너의 배치와 복구, 연결을 자동으로 조율합니다. Kubernetes는 이 문제를 풀기 위해 등장한 오픈소스 플랫폼입니다.
 
 2014년 공개된 뒤 전 세계 기여자가 코드를 쌓아 왔고, 주요 클라우드는 Kubernetes를 관리형으로 제공하며 같은 모델을 로컬에서도 돌릴 수 있습니다. 어디에서 실행하든 비슷한 운영 방식을 공유한다는 점이, 사실상의 표준처럼 받아들여진 이유 중 하나라고 할 수 있겠어요.
 
-
-<div align="center">
-
 ![Kubernetes 주변 생태계](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/02-k8s-ecosystem.svg)
-
-</div>
-
 
 인기의 배경에는 이식성도 있습니다. Kubernetes를 전제로 만든 애플리케이션은 환경이 바뀌어도 같은 선언 방식으로 배포를 시도할 수 있습니다. 동시에 배포, 모니터링, 네트워크를 돕는 도구들이 Kubernetes 주변에 모여, 운영에 필요한 기능을 직접 다 만들지 않아도 되도록 받쳐 줍니다. 패키징 도구, 배포 파이프라인, 모니터링 도구 등이 그 생태계를 이룹니다.
 
@@ -54,13 +42,7 @@ docker run -p 8080:80 my-app:1.0
 
 > Docker는 “컨테이너를 실행하는 도구”이고, Kubernetes는 “컨테이너가 실행되는 전체 시스템을 관리하는 **오케스트레이션 플랫폼**”입니다.
 
-
-<div align="center">
-
 ![Docker 계열과 Kubernetes](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/21-docker-tools-vs-k8s.svg)
-
-</div>
-
 
 단일 서버에서는 Docker Compose만으로도 충분한 경우가 많고, 여러 서버에서는 Docker Swarm으로도 일정 수준의 운영이 가능합니다. Swarm도 서비스를 배포하고 스케일하며 롤링 업데이트하는 일을 할 수 있습니다. 다만 규모와 요구가 커질수록, 실행과 복제를 넘어 **운영을 자동화하고 정책을 시스템에 남기는 일**이 부족해져요.
 
@@ -103,13 +85,7 @@ Kubernetes는 다른 접근을 씁니다. 일상적으로는 **YAML**(들여쓰�
 replicas: 3
 ```
 
-
-<div align="center">
-
 ![Desired State와 실제 상태](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/04-desired-state.svg)
-
-</div>
-
 
 이 선언의 핵심은 **원하는 상태**(Desired State)입니다. “지금은 무엇이 몇 개 떠 있는가”가 아니라 **“이렇게 되어 있기를 바란다”**를 적어 둔 목표입니다. Docker Compose의 YAML처럼 목표를 적고 플랫폼에 넘깁니다. 차이는 설정을 넘긴 뒤의 책임에 있습니다.
 
@@ -119,13 +95,7 @@ Docker만 있을 때 컨테이너가 죽으면 사람이 `docker start`를 눌�
 
 ### 3.2 제어 루프
 
-
-<div align="center">
-
 ![Control Loop](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/05-control-loop.svg)
-
-</div>
-
 
 **제어 루프**(Control Loop)를 한 문장으로 정의하면, **플랫폼이 지금 어떤 상태인지 계속 관찰하고, 사용자가 선언한 원하는 상태와 다르면 원하는 상태에 자동으로 맞춰 가는 반복 메커니즘**입니다. 차이를 줄이는 한 번의 맞춤 동작을 **보정**(Reconcile)이라고 부릅니다.
 
@@ -139,13 +109,7 @@ Docker만 있을 때 컨테이너가 죽으면 사람이 `docker start`를 눌�
 
 왜 이렇게 만드는지는, **직접 호출**과 **공유 상태 + Watch**를 비교하면 분명해집니다.
 
-
-<div align="center">
-
 ![직접 호출과 Watch 비교](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/15-direct-vs-watch.svg)
-
-</div>
-
 
 **직접 호출**에서는 컨테이너 개수 맞춤 프로세스가 올릴 서버 선택 프로세스를 직접 부릅니다. 올릴 서버 선택 프로세스가 다시 컨테이너 실행 프로세스를 부릅니다. 호출이 한 줄로 이어지는 구조예요. 이때 올릴 서버 선택 프로세스가 멈추면, 컨테이너 실행 프로세스는 다음 명령을 받지 못합니다. 장애가 **호출 경로**를 따라 다음 프로세스로 전파됩니다.
 
@@ -161,13 +125,7 @@ Docker만 있을 때 컨테이너가 죽으면 사람이 `docker start`를 눌�
 
 앞에서 Docker, Docker Compose, Docker Swarm의 역할을 정리했습니다. Kubernetes는 그 연장선에서, **여러 서버에 흩어진 컨테이너의 운영을 자동화하는 플랫폼**으로 이해하면 됩니다.
 
-
-<div align="center">
-
 ![Kubernetes API와 클러스터](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/03-k8s-cluster.svg)
-
-</div>
-
 
 실무에서 가장 자주 만나는 핵심은 두 가지입니다.
 
@@ -181,25 +139,17 @@ Docker만 있을 때 컨테이너가 죽으면 사람이 `docker start`를 눌�
 
 이전 글에서 만난 Container 캐릭터에 이어, **Pod** 캐릭터도 이 연재에서 계속 등장합니다.
 
-<div align="center">
-
-<img src="https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/characters/character-pod.png" alt="성수선임과 함께 배우는 쿠버네티스 : Pod 캐릭터" width="40%" />
+![성수선임과 함께 배우는 쿠버네티스 : Pod 캐릭터](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/characters/character-pod.png)
 
 *성수선임과 함께 배우는 쿠버네티스 : Pod 캐릭터*
-
-</div>
 
 Pod 캐릭터는 캥거루처럼 앞주머니에 **Container**들을 품고 있습니다. 주머니의 육각, 큐브 표시는 Kubernetes의 최소 실행 단위를, 주머니 안 컨테이너가 둘인 모습은 한 Pod에 컨테이너를 여러 개 둘 수 있다는 점을 떠올리게 합니다.
 
 그 Pod들이 실제로 올라가는 서버가 **Node**입니다. **Node** 캐릭터도 이 연재에서 계속 등장합니다.
 
-<div align="center">
-
-<img src="https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/characters/character-node.png" alt="성수선임과 함께 배우는 쿠버네티스 : Node 캐릭터" width="40%" />
+![성수선임과 함께 배우는 쿠버네티스 : Node 캐릭터](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/characters/character-node.png)
 
 *성수선임과 함께 배우는 쿠버네티스 : Node 캐릭터*
-
-</div>
 
 Node 캐릭터는 서버 랙을 닮은 몸체에, 팔로 **Pod**들을 안고 있습니다. 목걸이의 큐브, 톱니 표시는 실제로 Pod가 올라가는 기계라는 역할을, 품에 안긴 Pod들은 한 노드 위에 여러 Pod가 산다는 관계를 보여 줍니다.
 
@@ -209,13 +159,7 @@ Node 캐릭터는 서버 랙을 닮은 몸체에, 팔로 **Pod**들을 안고 �
 
 클러스터는 크게 **Worker Node**(워커 노드, 실제 Pod가 실행되는 서버)와 **Control Plane**(컨트롤 플레인, 클러스터를 제어하는 구성 요소)으로 나뉩니다.
 
-
-<div align="center">
-
 ![Kubernetes 구성 요소](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/06-k8s-components.svg)
-
-</div>
-
 
 ### 4.1 Worker Node
 
@@ -247,13 +191,7 @@ Control Plane은 클러스터를 **제어하는 구성 요소**입니다. Desire
 
 ### 5.1 kubectl로 API에 연결하기
 
-
-<div align="center">
-
 ![kubectl과 kubeconfig](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/09-kubectl-kubeconfig.svg)
-
-</div>
-
 
 ```yaml
 # kubectl이 어느 클러스터에 어떤 사용자로 붙을지 정하는 kubeconfig 예시
@@ -281,13 +219,7 @@ current-context: my-context
 
 ### 5.2 상태 저장과 Watch
 
-
-<div align="center">
-
 ![상태 저장과 Watch](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/10-state-and-watch.svg)
-
-</div>
-
 
 > “사용자가 `kubectl`로 명령을 내리면 Kubernetes가 즉시 어딘가에 ‘직접 명령’을 내려 Pod를 실행시킨다.”
 
@@ -297,13 +229,7 @@ current-context: my-context
 
 이 저장과 Watch 구조가 실제로 어떻게 이어지는지, 선언이 Pod로 실행되는 순서로 보면 아래와 같아요.
 
-
-<div align="center">
-
 ![구성 요소 동작 시퀀스](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/09-pod-creation-sequence.svg)
-
-</div>
-
 
 아래는 “원하는 상태를 남긴 뒤, Pod가 한 노드에서 실행될 때까지”를 네 단계로 나눈 순서입니다. 그림의 번호와 본문 번호는 같습니다.
 
@@ -318,13 +244,7 @@ current-context: my-context
 
 ## 6. Kubernetes의 고가용성
 
-
-<div align="center">
-
 ![Kubernetes 고가용성](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/14-ha.svg)
-
-</div>
-
 
 운영에서는 API와 상태 저장소가 **한곳에만** 있으면, 그 한곳이 멈출 때 클러스터 운영 자체가 흔들릴 수 있습니다. 그래서 **고가용성**(HA, High Availability, 일부가 죽어도 전체가 멈추지 않게 하는 구성)을 두는 경우가 많습니다. 직관만 잡으면 충분합니다.
 
@@ -338,95 +258,56 @@ API Server를 여러 대 두고, 사용자는 **하나의 주소**로 요청을 
 
 ### 7.1 멈춘 컨테이너 복구
 
-
-<div align="center">
-
 ![멈춘 컨테이너 복구 비교](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/16-scenario-recovery.svg)
 
-</div>
-
-
 이전 글에서 컨테이너를 멈추면 `docker start`를 사람이 다시 눌러야 했습니다.
-
 
 | Docker만 사용                                             | Kubernetes                                                    |
 | ------------------------------------------------------ | ------------------------------------------------------------- |
 | `docker stop web-server-1` `docker start web-server-1` | `kubectl delete pod <pod-name>` `kubectl get pods -l app=web` |
 | **한계점:** 기본값으로는 자동 복구가 없고, 사람이 살릴 때까지 서비스가 비어 있음       | **개선점:** 원하는 Pod 복제본 수가 남아 있으면 플랫폼이 Pod 개수를 다시 맞춤             |
 
-
 ### 7.2 컨테이너 개수 스케일 아웃
-
-
-<div align="center">
 
 ![컨테이너 개수 스케일 아웃 비교](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/17-scenario-scale.svg)
 
-</div>
-
-
 이전 글에서는 컨테이너를 늘릴 때마다 이름과 포트를 직접 고르고, 앞단 목록도 함께 고쳐야 했습니다.
-
 
 | Docker만 사용                                                                                                                                   | Kubernetes                                                                |
 | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | `docker run -d --name web-server-5 -p 8084:80 nginx:latest` `docker run -d --name web-server-6 -p 8085:80 nginx:latest` … (컨테이너 개수, 포트마다 반복) | `kubectl scale deployment web --replicas=5` `kubectl get pods -l app=web` |
 | **한계점:** 포트 충돌을 사람이 피해야 하고, 앞단이 가리킬 서버 목록도 같이 수정                                                                                           | **개선점:** Pod 복제본 개수만 선언하면 되고, 포트 목록을 외울 필요가 없음                            |
 
-
 ### 7.3 컨테이너 이미지 버전 업데이트
-
-
-<div align="center">
 
 ![컨테이너 이미지 버전 업데이트 비교](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/18-scenario-update.svg)
 
-</div>
-
-
 이전 글에서는 컨테이너마다 stop / rm / run을 반복했습니다.
-
 
 | Docker만 사용                                                                                                                  | Kubernetes                                                                                                                        |
 | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | `docker stop web-server-1` `docker rm web-server-1` `docker run -d --name web-server-1 -p 8080:80 nginx:1.25` … (컨테이너마다 반복) | `kubectl set image deployment/web nginx=nginx:1.25` `kubectl rollout status deployment/web` `kubectl rollout undo deployment/web` |
 | **한계점:** 업데이트와 롤백이 컨테이너 단위로 흩어지고, 중간에 일부만 끊기기 쉬움                                                                            | **개선점:** 이미지를 매니페스트에 반영하면 Pod를 차례로 맞추고, undo로 이전 설정에 가깝게 되돌림                                                                         |
 
-
 ### 7.4 요청 부하 분산과 서비스 이름 찾기
-
-
-<div align="center">
 
 ![요청 부하 분산과 서비스 이름 찾기 비교](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/19-scenario-service.svg)
 
-</div>
-
-
 이전 글에서는 앞단이 가리킬 서버 목록을 적거나, 컨테이너 IP를 직접 관리해야 했습니다.
-
 
 | Docker만 사용                                                                      | Kubernetes                                                                       |
 | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | 앞단 서버 목록에 `host:8080` … `host:8083` 나열 후 재시작 `docker inspect`로 IP를 확인해 앱 설정에 기입 | `kubectl expose deployment web --port=80 --type=ClusterIP` `kubectl get svc web` |
 | **한계점:** 컨테이너가 늘거나 줄 때마다 설정 파일을 고치고, IP가 바뀌면 연결이 깨짐                             | **개선점:** Service 이름은 고정되고, 살아 있는 Pod 목록은 플랫폼이 맞춰 줌                               |
 
-
 ### 7.5 배포한 컨테이너와 진입점을 정리하며 지우기
 
-
-<div align="center">
-
 ![배포한 컨테이너와 진입점을 정리하며 지우기 비교](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/20-scenario-cleanup.svg)
-
-</div>
-
 
 | Docker만 사용                                                | Kubernetes                                               |
 | --------------------------------------------------------- | -------------------------------------------------------- |
 | `docker stop …` / `docker rm …`를 이름마다 반복 볼륨, 네트워크까지 따로 확인 | `kubectl delete deployment web` `kubectl delete svc web` |
 | **한계점:** 남긴 컨테이너와 포트를 사람이 하나씩 추적                          | **개선점:** Deployment, Service 단위로 목표를 통째로 거둘 수 있음         |
-
 
 이전 글에서 반복했던 수동 복구와 스케일, 업데이트, IP 관리가, 여기에서는 **선언해 둔 목표를 플랫폼이 따라가는 명령**으로 바뀌는 것만 확인하면 됩니다.
 

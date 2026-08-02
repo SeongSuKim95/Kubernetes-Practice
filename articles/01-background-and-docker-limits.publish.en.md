@@ -1,5 +1,5 @@
 <!--
-  English publish copy. Image paths use GitHub raw URLs.
+  English publish copy. Image paths use GitHub raw URLs. GFM Markdown (no HTML centering wrappers).
   Diagram SVGs point to images/articles/01/en/.
   Korean original: 01-background-and-docker-limits.publish.md
   Image repository: https://github.com/SeongSuKim95/Kubernetes-Practice
@@ -17,25 +17,13 @@ Anyone who has run a modern application can picture moments like these. Fixing a
 
 Technology changed step by step to address that problem. Teams spread leftover server capacity, and virtual machines (VMs) became common. They tried to make “my machine and the server” match, and containers with Docker became familiar. Once execution units spanned many machines and many servers, placement and recovery moved onto a platform. At the end of that path, many teams meet the name Kubernetes. This article is preparation for that name: not memorizing it first, but following **why the operations problems above led through VMs and containers to handing placement and recovery to a platform**.
 
-
-<div align="center">
-
 ![Evolution from virtualization to Kubernetes](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/01-journey.svg)
-
-</div>
-
 
 The figure above is the full path we cover today. You will meet each technology name in the body of the article.
 
 ## 1. Starting point: one app on one physical server
 
-
-<div align="center">
-
 ![Bare Metal structure](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/02-physical-server.svg)
-
-</div>
-
 
 The path starts with **Bare Metal** (a server where the OS runs directly on physical hardware, with no virtualization layer). There is no virtual computer in the middle: **Hardware**, then a **Host OS**, then applications installed on top.
 
@@ -47,23 +35,11 @@ Simplicity was a strength, but the question remained: “Can we share leftover c
 
 ## 2. Sharing leftover server capacity — Virtual Machine
 
-
-<div align="center">
-
 ![Virtual Machine structure](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/03-vm.svg)
-
-</div>
-
 
 A Virtual Machine (VM) places a **Hypervisor** on the physical hardware that once ran Bare Metal, then runs several virtual computers, each with its own **Guest OS**. The Hypervisor is the management layer that divides one machine’s hardware among many virtual computers. The Guest OS is the operating system installed separately inside each virtual computer.
 
-
-<div align="center">
-
 ![Virtual Machine structure, supplemental](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/13-vm-houses.svg)
-
-</div>
-
 
 Each VM has its own operating system and **Kernel** (the core of the OS). One physical server is split into multiple virtual computers.
 
@@ -81,49 +57,25 @@ In short, VMs answered “share one server’s resources,” but they remained h
 
 ## 3. Matching local and server runtimes — Container and Docker
 
-
-<div align="center">
-
-<img src="https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/characters/character-container.png" alt="Learn Kubernetes with Seongsu: Container character" width="40%" />
+![Learn Kubernetes with Seongsu: Container character](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/characters/character-container.png)
 
 *Learn Kubernetes with Seongsu: Container character*
-
-</div>
-
 
 In this series, each core Kubernetes idea gets a character so the concept is easier to remember. The **Container** character you meet below will keep showing up in later posts. It is a guide for turning abstract names into scenes you can picture.
 
 The Container character is a cube shaped like a shipping container. The `</>` mark on the front means it holds and runs application code. The corner braces suggest packing the needed runtime into one unit.
 
-
-<div align="center">
-
 ![VM vs Container comparison](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/04-vm-vs-container.svg)
-
-</div>
-
 
 A Container does not clone a Guest OS. It packs the application and the files it needs into an **Image** (a blueprint that bundles the files required to run). The process actually running from that image is called a **Container**. The OS of the real machine where containers run is the **Host** OS. Containers share the Host’s Kernel and isolate only processes. A Container is lighter than a VM and isolates apps as processes on the same Host.
 
 If you install nginx (a web server program) directly on a local machine, OS versions, packages, and config paths differ per person. If you instead bundle what nginx needs into an Image, a Container started from that Image runs the web server with the same paths and layout. Local, test, and production servers may differ, but the appeal of containers is using the **same Image**.
 
-
-<div align="center">
-
 ![Docker official logo](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/29-docker-official-logo.svg)
-
-</div>
-
 
 **Docker** is the well-known tool that made this isolation—already available in the Linux Kernel—easy to use. Docker was open-sourced in 2013 by Solomon Hykes’s team at dotCloud; the company renamed itself Docker Inc. the same year. The core idea was packaging Linux Kernel container features behind an **Image**, a **CLI** (Command Line Interface), and a **registry** (a store from which you pull images).
 
-
-<div align="center">
-
 ![docker run flow](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/05-docker-flow.svg)
-
-</div>
-
 
 Containers look like a “dedicated environment” not because Docker invented a new OS, but because it bundled features the Linux Kernel already provided. Three names are worth remembering.
 
@@ -135,25 +87,13 @@ A **Namespace** splits the **space** a process sees. Process lists, networks, an
 
 What users type in a terminal is usually the Docker Client (CLI). Creating containers is the job of the background Docker Daemon (a long-running management process). When you send `docker run`, the Daemon calls Namespace, cgroups, and filesystem setup to start the container. Think of Docker as a **management layer** on top of those kernel features.
 
-
-<div align="center">
-
 ![Image vs Container](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/06-image-vs-container.svg)
-
-</div>
-
 
 Docker’s philosophy, in short: keep the execution unit light, run the same image the same way anywhere, and capture the runtime as code such as a **Dockerfile** (a file that records the steps to build an image). It matters not to confuse Image and Container. An Image is a non-running blueprint; a Container is a process actually running from that blueprint. That is why you can start several web-server containers from the same nginx image.
 
 That covers “what an Image builds, and what a Container actually runs.” One more idea before the labs: if you started a web-server container, you need a way to reach it from a browser or `curl`. That mechanism is a **port**.
 
-
-<div align="center">
-
 ![Port mapping](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/11-port-mapping.svg)
-
-</div>
-
 
 A port is a **number** that points to a process (or service) that accepts network requests on one machine. Even when web, DB, and cache share a server, different ports send requests to different targets. Many web servers listen on port 80 **inside** the container; databases often listen on 3306.
 
@@ -167,23 +107,11 @@ Starting one container works with `docker run`. Real services often run containe
 
 ### 4.1 Bundling one-server setups in a file — Docker Compose
 
-
-<div align="center">
-
 ![Docker Compose official logo](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/30-compose-official-logo.svg)
-
-</div>
-
 
 **Docker Compose** defines multi-container applications in YAML and starts or stops them together. Version 1.0 shipped in 2014; today it is often used as the `docker compose` plugin with the Docker CLI.
 
-
-<div align="center">
-
 ![Docker Compose](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/14-compose-menu.svg)
-
-</div>
-
 
 Typing long `docker run` lines repeatedly is error-prone, and it is hard to record “which containers started in which order.” Docker Compose writes that layout in one **YAML** file (a config format structured by indentation) and brings everything up with `docker compose up`. With the file alone, the same combination is easy to reproduce.
 
@@ -191,13 +119,7 @@ Docker Compose still assumes a **single host** (one server) by default. It organ
 
 ### 4.2 Across many servers, people still place and recover by hand
 
-
-<div align="center">
-
 ![Why orchestration is needed](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/32-why-orchestration.svg)
-
-</div>
-
 
 When you add servers or run several containers of the same role, a single-server config file is not enough. It is like stocking goods in several warehouses and still calling someone for every order to decide which warehouse ships.
 
@@ -207,35 +129,17 @@ The layer that hands this operations work to a platform is **Container Orchestra
 
 ### 4.3 Handing placement and recovery to the platform — Docker Swarm
 
-
-<div align="center">
-
 ![Docker Swarm icon](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/31-swarm-official-logo.svg)
-
-</div>
-
 
 **Docker Swarm** is Docker’s container orchestration. From Docker Engine 1.12 in 2016, Swarm mode is built into the engine, so you can treat several servers as one cluster and place or recover services.
 
-
-<div align="center">
-
 ![Docker Compose and Docker Swarm](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/07-compose-to-swarm.svg)
-
-</div>
-
 
 Several **Nodes** (servers that join a cluster) form a **Cluster** (many servers treated as one logical unit). The platform decides which node runs a container and restarts a container when it dies.
 
 Roles split cleanly. Docker Compose is strong at **declaring and starting multi-container setups on one server**. Docker Swarm helps **place and recover containers across servers and adjust service size**. Teams often use Docker Compose for local or small setups, then need orchestration such as Docker Swarm once they have many servers.
 
-
-<div align="center">
-
 ![Docker Swarm and Kubernetes](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/16-complex-vs-city.svg)
-
-</div>
-
 
 **Kubernetes** is the same kind of **container orchestration** as Docker Swarm. Both hand placement across servers, restarting dead containers, and adjusting service size to a platform. In practice you still meet Kubernetes more often, because it offers **more ways to declare and enforce operations policy** than Docker Swarm.
 
@@ -262,13 +166,7 @@ If you see a version, the CLI is ready.
 
 ### 5.1 Basic run and status checks
 
-
-<div align="center">
-
 ![Scenario 1: basic run](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/17-lab-run.svg)
-
-</div>
-
 
 Start a web-server container in the background. `-p 8080:80` maps host port 8080 to port 80 inside the container (where nginx listens). If the image is not local, Docker pulls it from a registry.
 
@@ -313,16 +211,9 @@ curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8080
 200
 ```
 
-
 ### 5.2 Detecting exit and recovering by hand
 
-
-<div align="center">
-
 ![Scenario 2: manual recovery](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/18-lab-restart.svg)
-
-</div>
-
 
 Stop the container. With default settings, a stopped container does not come back on its own.
 
@@ -367,13 +258,7 @@ You can pass `--restart=always`, but if the **server** (node) itself dies, that 
 
 ### 5.3 Multiple containers and manual updates
 
-
-<div align="center">
-
 ![Scenario 3: manual update](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/19-lab-multi-update.svg)
-
-</div>
-
 
 Start more web servers of the same role. Each needs its own host port.
 
@@ -418,13 +303,7 @@ Repeating the same work for the other three containers means some ports go down 
 
 ### 5.4 Out of memory
 
-
-<div align="center">
-
 ![Scenario 4: OOM Kill](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/20-lab-oom.svg)
-
-</div>
-
 
 This time, give a tiny memory limit on purpose and check whether the kernel kills the process when the limit is exceeded. (This lab command only creates a “sudden memory load”; you do not need to memorize every option.)
 
@@ -466,13 +345,7 @@ In Kubernetes, you record each container’s resource range in a manifest, and i
 
 ### 5.5 Sketching load balancing by hand
 
-
-<div align="center">
-
 ![Scenario 5: load balancing](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/21-lab-lb.svg)
-
-</div>
-
 
 Right now each web server has a different host port.
 
@@ -513,13 +386,7 @@ This scenario is for the concept; you do not need to start a load-balancer conta
 
 ### 5.6 Manual scale-out
 
-
-<div align="center">
-
 ![Scenario 6: manual scale](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/22-lab-scale.svg)
-
-</div>
-
 
 Scale-out means growing the number of same-role containers to handle traffic. Assume traffic rose and start three more web servers. You also choose the ports yourself.
 
@@ -540,13 +407,7 @@ To shrink container count you repeat stop/rm again, and you must update the load
 
 ### 5.7 Container running, web server dead
 
-
-<div align="center">
-
 ![Scenario 7: process death](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/23-lab-zombie.svg)
-
-</div>
-
 
 Earlier, `Up` in `docker ps` meant the container was running. That status alone does not guarantee “the web server inside can accept requests.” Force-kill nginx inside `web-server-2` to see the gap.
 
@@ -586,13 +447,7 @@ Kubernetes separates “is the container up?” from “is it ready for requests
 
 ### 5.8 Container networking and service discovery
 
-
-<div align="center">
-
 ![Scenario 8: service discovery](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/24-lab-discovery.svg)
-
-</div>
-
 
 Service discovery means finding a peer container by a stable name, not a changing IP. Start a database container, read its IP, then try connecting from another container with that IP.
 
@@ -634,13 +489,7 @@ You still manage the network and container attachments by hand. Kubernetes lets 
 
 ### 5.9 Without a volume, delete means data is gone
 
-
-<div align="center">
-
 ![Scenario 9: volumes](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/25-lab-volume.svg)
-
-</div>
-
 
 A Volume is storage outside the container for data that should survive container deletion. First delete a database created without a volume, and confirm the data disappears with it.
 
@@ -680,13 +529,7 @@ Docker volumes work, but people still design creation, backup, and sharing acros
 
 ### 5.10 Gathering the limits in one place
 
-
-<div align="center">
-
 ![Scenario 10: limits summary](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/26-lab-summary.svg)
-
-</div>
-
 
 Matching what you just experienced to the background earlier makes the relationship clear.
 

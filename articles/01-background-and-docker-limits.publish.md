@@ -1,5 +1,5 @@
 <!--
-  게시용 복사본입니다. 이미지 경로를 GitHub raw URL로 바꿨습니다.
+  게시용 복사본입니다. GitHub Flavored Markdown용이며, 이미지 경로는 GitHub raw URL입니다.
   원본(로컬 미리보기용): 01-background-and-docker-limits.draft.md
   이미지 저장소: https://github.com/SeongSuKim95/Kubernetes-Practice
 -->
@@ -16,25 +16,13 @@
 
 그 문제를 풀기 위해 기술도 차례로 바뀌었습니다. 남는 서버 자원을 나누려다 가상 머신(Virtual Machine)이 퍼졌습니다. “내 컴퓨터와 서버의 실행 환경을 같게” 만들려다 컨테이너(Container)와 Docker가 익숙해졌습니다. 실행 단위가 여러 대, 여러 서버로 늘어나자 컨테이너의 배치와 복구를 플랫폼에 맡기는 쪽으로 이어졌습니다. 그 끝에서 많은 팀이 Kubernetes라는 이름을 만납니다. 이번 글은 그 이름부터 외우기보다, **앞에서 본 운영 문제가 왜 VM과 컨테이너를 거쳐, 배치와 복구를 플랫폼에 맡기는 단계로 이어졌는지**를 먼저 따라가 보는 준비입니다.
 
-
-<div align="center">
-
 ![가상화에서 Kubernetes까지의 발전 흐름](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/01-journey.svg)
-
-</div>
-
 
 위 그림은 오늘 다룰 전체 흐름입니다. 기술 이름들은 본문에서 하나씩 만납니다.
 
 ## 1. 출발점: 물리 서버 한 대에 앱 하나만 올리던 때
 
-
-<div align="center">
-
 ![Bare Metal 구조](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/02-physical-server.svg)
-
-</div>
-
 
 이 흐름의 출발점은 **Bare Metal**(베어메탈, 가상화 계층 없이 운영체제가 물리 하드웨어 위에 바로 올라가는 서버)입니다. 가상 컴퓨터를 중간에 두지 않고, **Hardware** 위에 **Host OS**를 올리고, 그 위에 애플리케이션을 설치하는 구성입니다.
 
@@ -46,23 +34,11 @@
 
 ## 2. 남는 서버 자원을 나누다 — Virtual Machine
 
-
-<div align="center">
-
 ![Virtual Machine 구조](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/03-vm.svg)
-
-</div>
-
 
 Virtual Machine(가상 머신, VM)은 Bare Metal로 쓰이던 물리 하드웨어 위에 **Hypervisor**(하이퍼바이저)를 두고, 그 위에 **Guest OS**(게스트 운영체제)를 가진 가상 컴퓨터를 여러 대 올리는 방식입니다. Hypervisor는 한 대의 하드웨어를 여러 가상 컴퓨터에 나누어 주는 관리 계층이고, Guest OS는 각 가상 컴퓨터 안에 따로 설치되는 운영체제입니다.
 
-
-<div align="center">
-
 ![Virtual Machine 구조 보충](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/13-vm-houses.svg)
-
-</div>
-
 
 각 VM은 자신만의 운영체제와 **Kernel**(커널, 운영체제의 핵심)을 가집니다. 물리 서버 하나를 여러 대의 가상 컴퓨터로 나누는 방식입니다.
 
@@ -80,49 +56,25 @@ Virtual Machine(가상 머신, VM)은 Bare Metal로 쓰이던 물리 하드웨�
 
 ## 3. 내 컴퓨터와 서버의 실행 환경을 같게 만들다 — Container와 Docker
 
-
-<div align="center">
-
-<img src="https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/characters/character-container.png" alt="성수선임과 함께 배우는 쿠버네티스 : Container 캐릭터" width="40%" />
+![성수선임과 함께 배우는 쿠버네티스 : Container 캐릭터](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/characters/character-container.png)
 
 *성수선임과 함께 배우는 쿠버네티스 : Container 캐릭터*
-
-</div>
-
 
 이 연재에서는 Kubernetes의 핵심 개념을 기억하기 쉽게, 개념마다 캐릭터를 하나씩 둡니다. 아래에서 처음 만날 **Container** 캐릭터는 앞으로 글이 이어질 때도 계속 등장합니다. 추상적인 이름을 장면으로 떠올리는 길잡이가 될 것입니다.
 
 Container 캐릭터는 화물 컨테이너처럼 생긴 큐브입니다. 몸 앞의 `</>` 표시는 애플리케이션 코드를 담아 실행한다는 뜻을, 코너의 보강재는 필요한 실행 환경을 하나로 묶는다는 느낌을 담았습니다.
 
-
-<div align="center">
-
 ![VM과 Container 비교](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/04-vm-vs-container.svg)
-
-</div>
-
 
 Container(컨테이너)는 Guest OS를 복제하지 않습니다. 애플리케이션과 그에 필요한 파일을 **Image**(이미지, 실행에 필요한 파일을 묶어 둔 설계도)에 담습니다. 그 이미지가 실제로 떠 있는 프로세스를 **Container**라고 부릅니다. 컨테이너가 돌아가는 실제 컴퓨터의 운영체제는 **Host**(호스트) OS입니다. 컨테이너들은 Host의 Kernel을 공유한 채 프로세스만 격리합니다. Container는 VM보다 가볍고, 같은 Host 위에서 프로세스 단위로 앱을 격리합니다.
 
 로컬에 nginx(웹 서버 프로그램)를 직접 설치하면 OS 버전이나 패키지, 설정 경로가 사람마다 달라집니다. 대신 nginx 실행에 필요한 파일을 Image로 묶어 두면, 그 Image로 띄운 Container 안에서는 같은 경로와 구성으로 웹 서버가 뜹니다. 로컬과 테스트 서버, 운영 서버가 달라도 **같은 Image**를 쓰려는 것이 컨테이너의 매력입니다.
 
-
-<div align="center">
-
 ![Docker 공식 로고](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/29-docker-official-logo.svg)
-
-</div>
-
 
 이 격리를 Linux Kernel이 이미 제공하던 기능으로 구현하고, 그 위를 다루기 쉽게 만든 대표 도구가 **Docker**입니다. Docker는 2013년 Solomon Hykes가 이끌던 dotCloud에서 오픈소스로 공개했고, 같은 해 회사 이름도 Docker Inc.로 바뀌었습니다. Linux Kernel의 컨테이너 기능을 **Image**, **CLI**(Command Line Interface, 명령줄 도구), **레지스트리**(이미지를 받아 두는 저장소)로 다루기 쉽게 만든 것이 핵심입니다.
 
-
-<div align="center">
-
 ![docker run 흐름](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/05-docker-flow.svg)
-
-</div>
-
 
 컨테이너가 “전용 환경”처럼 보이는 이유는 Docker가 새로 OS를 만든 것이 아니라, Linux Kernel이 이미 제공하던 기능을 묶었기 때문입니다. 기억해 둘 이름은 셋입니다.
 
@@ -134,25 +86,13 @@ Container(컨테이너)는 Guest OS를 복제하지 않습니다. 애플리케�
 
 사용자가 터미널에서 치는 것은 보통 Docker Client(명령줄 도구)입니다. 실제로 컨테이너를 만드는 일은 백그라운드의 Docker Daemon(데몬, 상주 관리 프로세스)이 맡습니다. `docker run`을 보내면 Daemon이 Namespace, cgroups, 파일 시스템 구성을 호출해 컨테이너를 기동합니다. Docker는 그 커널 기능 위의 **관리 계층**이라고 보면 됩니다.
 
-
-<div align="center">
-
 ![Image와 Container](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/06-image-vs-container.svg)
-
-</div>
-
 
 Docker의 철학을 짧게 말하면 이렇습니다. 실행 단위가 가볍고, 한 번 만든 이미지를 어디서든 같게 돌리며, 실행 환경을 **Dockerfile**(이미지를 만드는 절차를 적은 파일)처럼 코드로 남긴다는 쪽에 가깝습니다. 여기서 Image와 Container를 헷갈리지 않는 것이 중요합니다. Image는 실행되지 않는 설계도이고, Container는 그 설계도로 실제로 떠 있는 프로세스입니다. 같은 nginx 이미지로 웹 서버 컨테이너를 여러 개 띄울 수 있는 이유도 여기에 있습니다.
 
 여기까지가 “Image로 무엇을 만들고, Container로 무엇이 실제로 떠 있는가”입니다. 실습으로 넘어가기 전에 한 가지만 더 설명합니다. 웹 서버 컨테이너를 띄웠다면, 브라우저나 `curl`로 접속할 방법이 필요합니다. 그 방법의 이름이 **포트**(port)입니다.
 
-
-<div align="center">
-
 ![포트 연결](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/11-port-mapping.svg)
-
-</div>
-
 
 포트는 한 컴퓨터 안에서 네트워크 요청을 받을 프로세스(또는 서비스)를 가리키는 **번호**입니다. 같은 서버에 웹, DB, 캐시가 함께 있어도, 포트가 다르면 요청이 서로 다른 대상으로 들어갑니다. 예를 들어 많은 웹 서버는 컨테이너 **안**에서 80번을 듣고, 데이터베이스는 3306번을 듣는 식으로 역할이 갈립니다.
 
@@ -166,23 +106,11 @@ Docker의 철학을 짧게 말하면 이렇습니다. 실행 단위가 가볍고
 
 ### 4.1 한 서버 안 구성을 파일로 묶다 — Docker Compose
 
-
-<div align="center">
-
 ![Docker Compose 공식 로고](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/30-compose-official-logo.svg)
-
-</div>
-
 
 **Docker Compose**는 여러 컨테이너로 구성된 애플리케이션을 YAML로 정의해 한꺼번에 올리고 내리는 도구입니다. 2014년에 1.0이 공개되었고, 지금은 `docker compose` 플러그인으로 Docker CLI와 함께 쓰는 경우가 많습니다.
 
-
-<div align="center">
-
 ![Docker Compose](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/14-compose-menu.svg)
-
-</div>
-
 
 매번 긴 `docker run`을 여러 줄 치면 실수하기 쉽고, “어떤 컨테이너를 어떤 순서로 올렸는지”도 남기기 어렵습니다. Docker Compose는 그 구성을 **YAML**(들여쓰기로 구조를 적는 설정 파일 형식) 한 장으로 적고 `docker compose up`으로 한꺼번에 올리는 도구입니다. 설정 파일만 있으면 같은 조합을 다시 재현하기 쉽습니다.
 
@@ -190,13 +118,7 @@ Docker의 철학을 짧게 말하면 이렇습니다. 실행 단위가 가볍고
 
 ### 4.2 여러 서버에서는 배치와 복구를 사람이 맞춰야 한다
 
-
-<div align="center">
-
 ![오케스트레이션이 필요한 이유](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/32-why-orchestration.svg)
-
-</div>
-
 
 서버를 여러 대로 늘리거나, 같은 역할의 컨테이너를 여러 개 두면, 한 서버용 설정 파일만으로는 부족한 상황이 옵니다. 여러 창고에 물건을 나눠 두고도, 주문마다 사람이 전화로 “어느 창고에서 꺼내 보낼지”를 맞추는 일과 비슷합니다.
 
@@ -206,35 +128,17 @@ Docker의 철학을 짧게 말하면 이렇습니다. 실행 단위가 가볍고
 
 ### 4.3 배치와 복구를 플랫폼에 맡기다 — Docker Swarm
 
-
-<div align="center">
-
 ![Docker Swarm 아이콘](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/31-swarm-official-logo.svg)
-
-</div>
-
 
 **Docker Swarm**은 Docker가 제공하는 컨테이너 오케스트레이션입니다. 2016년 Docker Engine 1.12부터 Swarm mode가 엔진에 포함되어, 여러 서버를 하나의 클러스터처럼 묶고 서비스를 배치하거나 복구할 수 있습니다.
 
-
-<div align="center">
-
 ![Docker Compose와 Docker Swarm](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/07-compose-to-swarm.svg)
-
-</div>
-
 
 여러 **Node**(노드, 클러스터에 참여하는 서버)를 **Cluster**(클러스터, 여러 서버를 하나의 논리 단위로 묶은 것)로 묶고, 어느 노드에 컨테이너를 둘지, 컨테이너가 죽으면 컨테이너를 다시 살릴지를 플랫폼이 조율합니다.
 
 정리하면 역할이 갈립니다. Docker Compose는 **한 서버에서 여러 컨테이너 구성을 선언하고 기동하는 데** 강하고, Docker Swarm은 **여러 서버에 걸쳐 컨테이너를 배치하고 복구하며 서비스 규모를 조절하는 일**을 돕는 데 강합니다. Docker Compose로 로컬이나 소규모 컨테이너 구성을 다루다가, 서버가 여러 대가 되는 지점에서 Docker Swarm 같은 오케스트레이션이 필요해지는 흐름입니다.
 
-
-<div align="center">
-
 ![Docker Swarm과 Kubernetes](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/16-complex-vs-city.svg)
-
-</div>
-
 
 **Kubernetes**도 Docker Swarm과 같은 종류의 **컨테이너 오케스트레이션**입니다. 여러 서버에 컨테이너를 배치하고, 컨테이너가 죽으면 컨테이너를 다시 살리고, 서비스 규모를 조절하는 일을 플랫폼에 맡긴다는 점은 같습니다. 그런데도 실무에서는 Kubernetes를 더 자주 만납니다. Docker Swarm보다 **운영 정책을 더 세밀하게 선언하고 강제할 수 있는 기능**이 많기 때문입니다.
 
@@ -261,13 +165,7 @@ Docker version 27.x.x, build ...
 
 ### 5.1 기본 실행과 상태 확인
 
-
-<div align="center">
-
 ![시나리오 1 기본 실행](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/17-lab-run.svg)
-
-</div>
-
 
 웹 서버 컨테이너를 백그라운드로 띄웁니다. `-p 8080:80`으로 호스트의 8080번을 컨테이너 안의 80번(nginx가 수신하는 포트)에 연결합니다. 이미지가 로컬에 없으면 Docker가 레지스트리에서 내려받습니다.
 
@@ -312,16 +210,9 @@ curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8080
 200
 ```
 
-
 ### 5.2 종료 감지와 수동 복구
 
-
-<div align="center">
-
 ![시나리오 2 수동 복구](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/18-lab-restart.svg)
-
-</div>
-
 
 컨테이너를 멈춥니다. 기본 설정에서는 멈춘 컨테이너가 자동으로 다시 살아나지 않습니다.
 
@@ -366,13 +257,7 @@ a1b2c3d4e5f6   nginx:latest   Up 2 seconds   0.0.0.0:8080->80/tcp   web-server-1
 
 ### 5.3 여러 컨테이너와 수동 업데이트
 
-
-<div align="center">
-
 ![시나리오 3 수동 업데이트](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/19-lab-multi-update.svg)
-
-</div>
-
 
 같은 역할의 웹 서버를 더 띄웁니다. 포트는 각각 달라야 합니다.
 
@@ -417,13 +302,7 @@ web-server-2    nginx:latest  Up 1 minute
 
 ### 5.4 메모리 부족
 
-
-<div align="center">
-
 ![시나리오 4 OOM Kill](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/20-lab-oom.svg)
-
-</div>
-
 
 이번에는 메모리를 일부러 아주 작게 주고, 한도를 넘기면 커널이 프로세스를 죽이는지 확인합니다. (이 실험용 명령은 “메모리를 급히 쓰는 부하”를 만들기 위한 것이고, 각 옵션을 외울 필요는 없습니다.)
 
@@ -465,13 +344,7 @@ Kubernetes에서는 컨테이너마다 쓸 수 있는 자원의 범위를 매니
 
 ### 5.5 로드 밸런싱을 손으로 그려 보기
 
-
-<div align="center">
-
 ![시나리오 5 로드 밸런싱](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/21-lab-lb.svg)
-
-</div>
-
 
 지금 웹 서버는 포트가 제각각입니다.
 
@@ -512,13 +385,7 @@ server {
 
 ### 5.6 수동 스케일 아웃
 
-
-<div align="center">
-
 ![시나리오 6 수동 스케일](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/22-lab-scale.svg)
-
-</div>
-
 
 스케일 아웃은 같은 역할의 컨테이너 개수를 늘려 트래픽을 감당하는 일입니다. 트래픽이 늘었다고 가정하고 웹 서버를 세 개 더 올립니다. 포트도 직접 고릅니다.
 
@@ -539,13 +406,7 @@ docker ps --filter "name=web-server" --format "{{.Names}}" | wc -l
 
 ### 5.7 컨테이너는 실행 중인데 웹 서버는 죽은 경우
 
-
-<div align="center">
-
 ![시나리오 7 프로세스 사망](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/23-lab-zombie.svg)
-
-</div>
-
 
 앞에서 `docker ps`의 `Up`이 컨테이너 실행 중 표시라고 했습니다. 그런데 그 표시만으로는 “컨테이너 안에서 웹 서버가 요청을 받을 수 있는가”까지는 보장되지 않습니다. `web-server-2` 안에서 nginx를 강제로 죽여, 그 차이를 확인해 봅니다.
 
@@ -585,13 +446,7 @@ Kubernetes에서는 “컨테이너가 떠 있는가”와 “요청을 받아�
 
 ### 5.8 컨테이너 간 통신과 서비스 디스커버리
 
-
-<div align="center">
-
 ![시나리오 8 서비스 디스커버리](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/24-lab-discovery.svg)
-
-</div>
-
 
 서비스 디스커버리는 상대 컨테이너를 바뀌는 IP가 아니라 안정적인 이름으로 찾는 일입니다. 데이터베이스 컨테이너를 띄우고 IP를 확인한 뒤, 다른 컨테이너에서 그 IP로 접속을 시도합니다.
 
@@ -633,13 +488,7 @@ MYSQL_HOST=mysql-db
 
 ### 5.9 볼륨 없이 지우면 데이터도 사라진다
 
-
-<div align="center">
-
 ![시나리오 9 볼륨](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/25-lab-volume.svg)
-
-</div>
-
 
 볼륨(Volume)은 컨테이너를 지워도 남길 데이터를 컨테이너 밖에 두는 저장 공간입니다. 먼저 볼륨 없이 만든 데이터베이스를 삭제해, 데이터가 함께 사라지는지 확인합니다.
 
@@ -679,13 +528,7 @@ Docker에서도 볼륨은 쓸 수 있지만, 볼륨의 생성과 백업, 여러 
 
 ### 5.10 한계를 한곳에 모아 보기
 
-
-<div align="center">
-
 ![시나리오 10 한계 정리](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/26-lab-summary.svg)
-
-</div>
-
 
 지금까지 겪은 일을 앞에서 본 배경과 맞춰 보면 관계가 분명해집니다.
 
@@ -697,4 +540,3 @@ Kubernetes는 원하는 상태를 선언하면 플랫폼이 실제 상태와의 
 
 이번 글에서 다룬 내용은 이렇습니다. 서버 자원을 나누려 VM이 등장했고, 실행 환경을 가볍게 옮기려 Container와 Docker가 등장했으며, 컨테이너가 늘자 Docker Compose와 Docker Swarm이 필요해졌습니다.
 다음 글에서는 Kubernetes가 무엇인지, 왜 배우는지, 핵심 개념이 어떻게 이어지는지를 개략적으로 정리합니다.
-

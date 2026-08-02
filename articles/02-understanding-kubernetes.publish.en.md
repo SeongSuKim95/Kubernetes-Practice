@@ -1,5 +1,5 @@
 <!--
-  English publish copy. Image paths use GitHub raw URLs.
+  English publish copy. Image paths use GitHub raw URLs. GFM Markdown (no HTML centering wrappers).
   Korean publish original: 02-understanding-kubernetes.publish.md
   Image repository: https://github.com/SeongSuKim95/Kubernetes-Practice
 -->
@@ -14,25 +14,13 @@ In the previous article, we followed the path from physical servers to VMs, cont
 
 ## 1. Where Kubernetes Sits, and Why It Is Popular
 
-
-<div align="center">
-
 ![Official Kubernetes logo](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/en/01-k8s-logo.svg)
-
-</div>
-
 
 Kubernetes is a **container orchestration** (Container Orchestration) platform. Container orchestration means a **system that automates** more than running containers: placement, keeping the right replica count, failure recovery, and traffic distribution. It automatically coordinates placement, recovery, and connectivity for containers across many servers. Kubernetes is the open-source platform that emerged to solve that problem.
 
 Since its release in 2014, contributors worldwide have built up the codebase. Major clouds offer managed Kubernetes, and you can run the same model locally. Sharing a similar operating model wherever you run it is one reason it is treated as a de facto standard.
 
-
-<div align="center">
-
 ![Kubernetes surrounding ecosystem](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/en/02-k8s-ecosystem.svg)
-
-</div>
-
 
 Portability also backs its popularity. An application built around Kubernetes can try the same declarative deployment style when the environment changes. At the same time, tools for deploy, monitoring, and networking gather around Kubernetes, so you do not have to build every operational capability yourself. Packaging tools, delivery pipelines, and monitoring tools make up that ecosystem.
 
@@ -54,13 +42,7 @@ Being able to align local, test, and production with the same image greatly redu
 
 > Docker is a “tool for running containers.” Kubernetes is an **orchestration platform** that manages the whole system where containers run.
 
-
-<div align="center">
-
 ![Docker family and Kubernetes](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/en/21-docker-tools-vs-k8s.svg)
-
-</div>
-
 
 On a single server, Docker Compose is often enough. Across several servers, Docker Swarm can also support a useful level of operations. Swarm can deploy services, scale them, and do rolling updates. As scale and requirements grow, though, it falls short of **automating operations and encoding policy in the system** beyond run and replicate.
 
@@ -103,13 +85,7 @@ Kubernetes takes another approach. Day to day, you write goals in **YAML** (a co
 replicas: 3
 ```
 
-
-<div align="center">
-
 ![Desired State and Current State](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/en/04-desired-state.svg)
-
-</div>
-
 
 The heart of this declaration is **Desired State**. It is not “what is running how many right now,” but a goal that says **“I want it to be like this.”** As with Docker Compose YAML, you write the goal and hand it to the platform. The difference is who owns responsibility after the config is submitted.
 
@@ -119,13 +95,7 @@ Declarative strength is not only auto-recovery. Ops settings live as YAML manife
 
 ### 3.2 Control Loop
 
-
-<div align="center">
-
 ![Control Loop](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/en/05-control-loop.svg)
-
-</div>
-
 
 Define a **Control Loop** in one sentence: it is a **repeating mechanism in which the platform keeps observing current state and, when that differs from the Desired State the user declared, automatically moves toward Desired State**. One alignment action that shrinks the gap is called **reconcile** (Reconcile).
 
@@ -139,13 +109,7 @@ What moves here is not the **worker server** that hosts containers, but **proces
 
 Why this shape is clearer when you compare **direct calls** with **shared state + Watch**.
 
-
-<div align="center">
-
 ![Direct calls vs Watch](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/en/15-direct-vs-watch.svg)
-
-</div>
-
 
 With **direct calls**, the match-container-count process calls the choose-target-server process directly. That process then calls the run-containers process. Calls form one chain. If the choose-target-server process stops, the run-containers process never gets the next command. Failure propagates along the **call path** to the next process.
 
@@ -161,13 +125,7 @@ With design philosophy in place, we move to where that philosophy actually appli
 
 Earlier we summarized the roles of Docker, Docker Compose, and Docker Swarm. On that line, think of Kubernetes as a **platform that automates operations for containers spread across many servers**.
 
-
-<div align="center">
-
 ![Kubernetes API and cluster](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/en/03-k8s-cluster.svg)
-
-</div>
-
 
 In practice you meet two cores most often.
 
@@ -181,25 +139,17 @@ Here we name one more idea. With Docker, the usual unit of execution was **one c
 
 Following the Container character from the previous article, a **Pod** character also appears throughout this series.
 
-<div align="center">
-
-<img src="https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/characters/character-pod.png" alt="Learning Kubernetes with Seongsu: Pod character" width="40%" />
+![Learning Kubernetes with Seongsu: Pod character](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/characters/character-pod.png)
 
 *Learning Kubernetes with Seongsu: Pod character*
-
-</div>
 
 The Pod character holds **Containers** in a front pouch, like a kangaroo. The hexagon and cube marks on the pouch recall Kubernetes’ smallest execution unit, and two containers in the pouch suggest that one Pod can hold more than one container.
 
 The servers those Pods actually land on are **Nodes**. A **Node** character also appears throughout this series.
 
-<div align="center">
-
-<img src="https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/characters/character-node.png" alt="Learning Kubernetes with Seongsu: Node character" width="40%" />
+![Learning Kubernetes with Seongsu: Node character](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/characters/character-node.png)
 
 *Learning Kubernetes with Seongsu: Node character*
-
-</div>
 
 The Node character has a body like a server rack and holds **Pods** in its arms. The cube and gear marks on the necklace signal the machine that actually hosts Pods, and the Pods in its arms show that many Pods live on one node.
 
@@ -209,13 +159,7 @@ Next we look behind the API and cluster at **which processes do what on which se
 
 A cluster splits broadly into **Worker Nodes** (Worker Node, servers where Pods actually run) and the **Control Plane** (Control Plane, components that control the cluster).
 
-
-<div align="center">
-
 ![Kubernetes components](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/en/06-k8s-components.svg)
-
-</div>
-
 
 ### 4.1 Worker Node
 
@@ -247,13 +191,7 @@ We have named API, cluster, Control Plane, and Worker Node. Now we see how those
 
 ### 5.1 Connecting to the API with kubectl
 
-
-<div align="center">
-
 ![kubectl and kubeconfig](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/en/09-kubectl-kubeconfig.svg)
-
-</div>
-
 
 ```yaml
 # Example kubeconfig that sets which cluster and user kubectl connects as
@@ -281,13 +219,7 @@ Before we walk the declaration-to-Pod sequence, we pin the shared structure unde
 
 ### 5.2 State Storage and Watch
 
-
-<div align="center">
-
 ![State storage and Watch](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/en/10-state-and-watch.svg)
-
-</div>
-
 
 > “When a user issues a `kubectl` command, Kubernetes immediately ‘commands’ something elsewhere and runs a Pod.”
 
@@ -297,13 +229,7 @@ The same structure powers **self-healing**. If a container process disappears on
 
 How that store-and-Watch structure actually chains together looks like the following when you follow the declaration-to-Pod sequence.
 
-
-<div align="center">
-
 ![Component sequence](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/en/09-pod-creation-sequence.svg)
-
-</div>
-
 
 Below is the path from “Desired State is recorded” to “a Pod runs on a node,” split into four steps. Figure numbers and body numbers match.
 
@@ -318,13 +244,7 @@ This sequence covers deploy and start. **kube-proxy**, which delivers traffic, i
 
 ## 6. High Availability in Kubernetes
 
-
-<div align="center">
-
 ![Kubernetes high availability](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/en/14-ha.svg)
-
-</div>
-
 
 In production, if the API and state store live in **only one place**, cluster operations can shake when that place stops. So teams often add **high availability** (HA, High Availability, a setup where partial failure does not stop the whole). Grasping the idea is enough.
 
@@ -338,95 +258,56 @@ The tables use the names **Deployment** and **Service**. For now it is enough to
 
 ### 7.1 Recovering a Stopped Container
 
-
-<div align="center">
-
 ![Stopped-container recovery comparison](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/en/16-scenario-recovery.svg)
 
-</div>
-
-
 In the previous article, stopping a container meant a person had to press `docker start` again.
-
 
 | Docker only                                                 | Kubernetes                                                    |
 | ----------------------------------------------------------- | ------------------------------------------------------------- |
 | `docker stop web-server-1` `docker start web-server-1`     | `kubectl delete pod <pod-name>` `kubectl get pods -l app=web` |
 | **Limit:** By default there is no auto-recovery; the service stays empty until a person revives it | **Improvement:** If Desired Pod replica count remains, the platform restores Pod count |
 
-
 ### 7.2 Scaling Out Container Count
-
-
-<div align="center">
 
 ![Container scale-out comparison](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/en/17-scenario-scale.svg)
 
-</div>
-
-
 In the previous article, each scale-up meant choosing names and ports by hand and also editing the frontend list.
-
 
 | Docker only                                                                                                                                   | Kubernetes                                                                |
 | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | `docker run -d --name web-server-5 -p 8084:80 nginx:latest` `docker run -d --name web-server-6 -p 8085:80 nginx:latest` … (repeat per container count and port) | `kubectl scale deployment web --replicas=5` `kubectl get pods -l app=web` |
 | **Limit:** A person must avoid port clashes and also edit the frontend server list                                                            | **Improvement:** You only declare Pod replica count; no need to memorize ports |
 
-
 ### 7.3 Updating Container Image Version
-
-
-<div align="center">
 
 ![Container image version update comparison](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/en/18-scenario-update.svg)
 
-</div>
-
-
 In the previous article, you repeated stop / rm / run per container.
-
 
 | Docker only                                                                                                                  | Kubernetes                                                                                                                        |
 | ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | `docker stop web-server-1` `docker rm web-server-1` `docker run -d --name web-server-1 -p 8080:80 nginx:1.25` … (repeat per container) | `kubectl set image deployment/web nginx=nginx:1.25` `kubectl rollout status deployment/web` `kubectl rollout undo deployment/web` |
 | **Limit:** Update and rollback scatter per container, and mid-flight partial outages are easy                                 | **Improvement:** Reflect the image in the manifest, reconcile Pods in turn, and use undo to return near the prior config          |
 
-
 ### 7.4 Load Balancing and Finding Services by Name
-
-
-<div align="center">
 
 ![Load balancing and service discovery comparison](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/en/19-scenario-service.svg)
 
-</div>
-
-
 In the previous article, you listed frontend targets or managed container IPs by hand.
-
 
 | Docker only                                                                      | Kubernetes                                                                       |
 | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | List `host:8080` … `host:8083` in the frontend server list and restart; use `docker inspect` for IPs and write them into app config | `kubectl expose deployment web --port=80 --type=ClusterIP` `kubectl get svc web` |
 | **Limit:** Edit config whenever containers grow or shrink; connections break when IPs change | **Improvement:** The Service name stays fixed; the platform keeps the live Pod list current |
 
-
 ### 7.5 Cleaning Up Deployed Containers and Entry Points
 
-
-<div align="center">
-
 ![Cleanup of deployed containers and entry points comparison](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/en/20-scenario-cleanup.svg)
-
-</div>
-
 
 | Docker only                                                | Kubernetes                                               |
 | ---------------------------------------------------------- | -------------------------------------------------------- |
 | Repeat `docker stop …` / `docker rm …` per name; check volumes and networks separately | `kubectl delete deployment web` `kubectl delete svc web` |
 | **Limit:** A person tracks leftover containers and ports one by one | **Improvement:** You can remove the whole goal by Deployment and Service units |
-
 
 What matters here is only that the manual recovery, scale, update, and IP management from the previous article become **commands where the platform follows a declared goal**.
 
