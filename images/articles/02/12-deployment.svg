@@ -32,7 +32,7 @@
 
   <line x1="40" y1="370" x2="880" y2="370" stroke="#E2E8F0" stroke-width="1"/>
   <text x="460" y="398" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 12. Deployment:</tspan>
+    <tspan font-weight="600">Fig 5. Deployment:</tspan>
     <tspan> 원하는 Pod 개수 유지와 자동 보정</tspan>
   </text>
 </svg>

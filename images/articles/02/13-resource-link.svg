@@ -1,50 +1,59 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="920" height="420" viewBox="0 0 920 420">
-  <rect width="920" height="420" fill="#F7F9FC"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="440" viewBox="0 0 1200 440">
+  <rect width="1200" height="440" fill="#F7F9FC"/>
   <defs>
-    <marker id="rl" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
-    </marker>
-    <marker id="rg" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+    <marker id="arrow-request" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
       <path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/>
+    </marker>
+    <marker id="arrow-manage" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#EA580C"/>
     </marker>
   </defs>
 
-  <rect x="40" y="50" width="200" height="70" rx="12" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
-  <text x="140" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#92400E" font-weight="600">Client</text>
-  <text x="140" y="100" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B45309">요청</text>
+  <rect x="230" y="25" width="940" height="320" rx="18" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
+  <text x="250" y="52" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#6D28D9" font-weight="600">Namespace: dev</text>
 
-  <path d="M240 85 H310" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#rg)"/>
+  <rect x="30" y="65" width="150" height="100" rx="12" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
+  <text x="105" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#92400E" font-weight="600">외부 클라이언트</text>
+  <text x="105" y="132" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B45309">HTTP 요청 전송</text>
 
-  <rect x="310" y="50" width="220" height="70" rx="12" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
-  <text x="420" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#0F766E" font-weight="600">Service</text>
-  <text x="420" y="100" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">selector: app=web</text>
+  <path d="M180 115 H260" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#arrow-request)"/>
+  <text x="220" y="98" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10" fill="#0F766E">example.com/web</text>
 
-  <path d="M530 85 H600" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#rl)"/>
-  <text x="565" y="70" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#2563EB">label</text>
+  <rect x="260" y="65" width="180" height="100" rx="12" fill="#EEF2FF" stroke="#4F46E5" stroke-width="2"/>
+  <text x="350" y="102" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#4338CA" font-weight="600">Ingress Controller</text>
+  <text x="350" y="128" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#4F46E5">Ingress의 host와 path 확인</text>
 
-  <rect x="600" y="40" width="280" height="90" rx="12" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
-  <text x="740" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#1D4ED8" font-weight="600">Pod (app=web)</text>
-  <text x="740" y="100" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">응답</text>
+  <path d="M440 115 H530" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#arrow-request)"/>
+  <text x="485" y="98" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10" fill="#0F766E">web Service 선택</text>
 
-  <rect x="310" y="200" width="220" height="90" rx="12" fill="#FFF7ED" stroke="#EA580C" stroke-width="2"/>
-  <text x="420" y="240" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#C2410C" font-weight="600">Deployment</text>
-  <text x="420" y="265" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#EA580C">replicas · 버전 유지</text>
+  <rect x="530" y="65" width="180" height="100" rx="12" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="620" y="102" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#0F766E" font-weight="600">Service: web</text>
+  <text x="620" y="128" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">selector: app=web</text>
 
-  <path d="M420 200 V140 H600" fill="none" stroke="#EA580C" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#rl)"/>
-  <text x="480" y="175" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#EA580C">Pod 생성 · 유지</text>
+  <path d="M710 115 H820" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#arrow-request)"/>
+  <text x="765" y="98" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10" fill="#0F766E">준비된 Pod 선택</text>
 
-  <rect x="40" y="200" width="200" height="90" rx="12" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2"/>
-  <text x="140" y="240" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#5B21B6" font-weight="600">Namespace</text>
-  <text x="140" y="265" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#7C3AED">운영 경계</text>
+  <rect x="820" y="65" width="320" height="105" rx="12" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="980" y="92" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#1D4ED8" font-weight="600">Pod 집합: app=web</text>
+  <rect x="850" y="110" width="75" height="38" rx="8" fill="#2563EB"/>
+  <rect x="942.5" y="110" width="75" height="38" rx="8" fill="#2563EB"/>
+  <rect x="1035" y="110" width="75" height="38" rx="8" fill="#2563EB"/>
+  <text x="887.5" y="134" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#FFFFFF" font-weight="600">Pod 1</text>
+  <text x="980" y="134" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#FFFFFF" font-weight="600">Pod 2</text>
+  <text x="1072.5" y="134" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#FFFFFF" font-weight="600">Pod 3</text>
 
-  <path d="M240 245 H310" fill="none" stroke="#7C3AED" stroke-width="2" stroke-dasharray="5 3"/>
-  <text x="275" y="235" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#7C3AED">포함</text>
+  <rect x="260" y="225" width="180" height="90" rx="12" fill="#FFF7ED" stroke="#EA580C" stroke-width="2"/>
+  <text x="350" y="262" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#C2410C" font-weight="600">Deployment: web</text>
+  <text x="350" y="288" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#EA580C">원하는 Pod 개수: 3</text>
 
-  <text x="460" y="340" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">경로: Service → Pod  ·  Deployment·Service는 label로 Pod에 간접 연결</text>
+  <path d="M440 270 H760 V160 H820" fill="none" stroke="#EA580C" stroke-width="2.5" marker-end="url(#arrow-manage)"/>
+  <text x="600" y="258" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10" fill="#C2410C">Pod 생성과 Pod 개수 유지</text>
 
-  <line x1="40" y1="365" x2="880" y2="365" stroke="#E2E8F0" stroke-width="1"/>
-  <text x="460" y="393" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 15. 리소스 연결:</tspan>
-    <tspan> Pod label로 맞물리는 Service·Deployment 관계</tspan>
+  <text x="600" y="373" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">Ingress Controller가 Service를 고르고, Service가 준비된 Pod에 외부 요청을 전달</text>
+
+  <line x1="40" y1="395" x2="1160" y2="395" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="600" y="423" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 11. 외부 요청 처리:</tspan>
+    <tspan> Ingress에서 Service와 Pod로 이어지는 요청 경로</tspan>
   </text>
 </svg>

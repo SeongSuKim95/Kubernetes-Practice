@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="380" viewBox="0 0 960 380">
+  <rect width="960" height="380" fill="#F7F9FC"/>
+  <defs>
+    <marker id="arrow-live" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#DC2626"/>
+    </marker>
+    <marker id="arrow-ready" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/>
+    </marker>
+  </defs>
+
+  <rect x="35" y="45" width="890" height="105" rx="14" fill="#FFF7F7" stroke="#FCA5A5" stroke-width="1.5"/>
+  <rect x="60" y="63" width="155" height="70" rx="10" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
+  <text x="137.5" y="91" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#334155" font-weight="600">Kubelet</text>
+  <text x="137.5" y="114" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">컨테이너 상태 검사</text>
+
+  <path d="M215 98 H290" fill="none" stroke="#DC2626" stroke-width="2.5" marker-end="url(#arrow-live)"/>
+  <rect x="290" y="63" width="200" height="70" rx="10" fill="#FEE2E2" stroke="#DC2626" stroke-width="2"/>
+  <text x="390" y="91" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#B91C1C" font-weight="600">Liveness Probe</text>
+  <text x="390" y="114" text-anchor="middle" font-family="Menlo, Consolas, monospace" font-size="11" fill="#DC2626">GET /healthz</text>
+
+  <path d="M490 98 H575" fill="none" stroke="#DC2626" stroke-width="2.5" marker-end="url(#arrow-live)"/>
+  <text x="532.5" y="82" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#B91C1C">검사 실패</text>
+
+  <rect x="575" y="63" width="320" height="70" rx="10" fill="#FFFFFF" stroke="#DC2626" stroke-width="2"/>
+  <text x="735" y="91" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#B91C1C" font-weight="600">Kubelet이 컨테이너 재시작</text>
+  <text x="735" y="114" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#DC2626">동작하지 않는 프로세스 복구</text>
+
+  <rect x="35" y="175" width="890" height="105" rx="14" fill="#F0FDFA" stroke="#99F6E4" stroke-width="1.5"/>
+  <rect x="60" y="193" width="155" height="70" rx="10" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
+  <text x="137.5" y="221" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#334155" font-weight="600">Kubelet</text>
+  <text x="137.5" y="244" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">요청 준비 상태 검사</text>
+
+  <path d="M215 228 H290" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#arrow-ready)"/>
+  <rect x="290" y="193" width="200" height="70" rx="10" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/>
+  <text x="390" y="221" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">Readiness Probe</text>
+  <text x="390" y="244" text-anchor="middle" font-family="Menlo, Consolas, monospace" font-size="11" fill="#0D9488">GET /ready</text>
+
+  <path d="M490 228 H575" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#arrow-ready)"/>
+  <text x="532.5" y="212" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E">검사 실패</text>
+
+  <rect x="575" y="193" width="320" height="70" rx="10" fill="#FFFFFF" stroke="#0D9488" stroke-width="2"/>
+  <text x="735" y="221" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">Service 요청 전달 대상에서 Pod 제외</text>
+  <text x="735" y="244" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">컨테이너를 재시작하지 않고 요청만 차단</text>
+
+  <line x1="40" y1="325" x2="920" y2="325" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="480" y="353" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 6. Probe 실패 결과:</tspan>
+    <tspan> 컨테이너 재시작과 Service 요청 차단의 차이</tspan>
+  </text>
+</svg>

@@ -14,13 +14,13 @@
 
   <circle cx="120" cy="200" r="40" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
   <text x="120" y="195" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#92400E" font-weight="600">Client</text>
-  <text x="120" y="213" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#B45309">요청</text>
+  <text x="120" y="213" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#B45309">요청 전송</text>
 
   <path d="M160 200 H250" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#bg)"/>
 
   <rect x="250" y="160" width="180" height="80" rx="12" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
   <text x="340" y="195" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#0F766E" font-weight="600">Service</text>
-  <text x="340" y="218" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">안정적 이름 · IP</text>
+  <text x="340" y="218" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">고정 이름과 IP</text>
 
   <path d="M430 185 H500" fill="none" stroke="#2563EB" stroke-width="2" marker-end="url(#bb)"/>
   <path d="M430 200 H500" fill="none" stroke="#2563EB" stroke-width="2" marker-end="url(#bb)"/>
@@ -28,7 +28,7 @@
   <text x="465" y="150" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#2563EB">selector</text>
 
   <rect x="500" y="90" width="340" height="260" rx="12" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2" stroke-dasharray="8 5"/>
-  <text x="520" y="325" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#64748B" font-weight="600">Deployment · ReplicaSet</text>
+  <text x="520" y="325" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#64748B" font-weight="600">Deployment와 ReplicaSet</text>
 
   <rect x="530" y="120" width="120" height="90" rx="8" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.5"/>
   <text x="590" y="145" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#1D4ED8" font-weight="600">Pod</text>
@@ -51,7 +51,7 @@
 
   <line x1="40" y1="450" x2="880" y2="450" stroke="#E2E8F0" stroke-width="1"/>
   <text x="460" y="478" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 13. Service:</tspan>
+    <tspan font-weight="600">Fig 8. Service:</tspan>
     <tspan> 변하는 Pod 앞의 안정적인 진입점</tspan>
   </text>
 </svg>

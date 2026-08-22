@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="420" viewBox="0 0 920 420">
+  <rect width="920" height="420" fill="#F7F9FC"/>
+  <defs>
+    <marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+  </defs>
+
+  <rect x="40" y="55" width="245" height="255" rx="16" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
+  <text x="162.5" y="90" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#334155" font-weight="600">YAML 매니페스트</text>
+  <rect x="70" y="115" width="185" height="160" rx="10" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>
+  <text x="90" y="145" font-family="Menlo, Consolas, monospace" font-size="12" fill="#475569">apiVersion: group/version</text>
+  <text x="90" y="172" font-family="Menlo, Consolas, monospace" font-size="12" fill="#475569">kind: ResourceKind</text>
+  <text x="90" y="199" font-family="Menlo, Consolas, monospace" font-size="12" fill="#475569">metadata:</text>
+  <text x="105" y="226" font-family="Menlo, Consolas, monospace" font-size="12" fill="#475569">name: example</text>
+  <text x="90" y="253" font-family="Menlo, Consolas, monospace" font-size="12" fill="#475569">spec: desiredState</text>
+
+  <path d="M285 182 H370" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <text x="327.5" y="164" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#1D4ED8">매니페스트 제출</text>
+
+  <rect x="370" y="127" width="180" height="110" rx="14" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="460" y="170" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#1D4ED8" font-weight="600">API Server</text>
+  <text x="460" y="198" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">형식 검사와 리소스 저장</text>
+
+  <path d="M550 182 H635" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <text x="592.5" y="164" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#1D4ED8">리소스 저장</text>
+
+  <rect x="635" y="55" width="245" height="255" rx="16" fill="#FFFFFF" stroke="#0D9488" stroke-width="2"/>
+  <text x="757.5" y="90" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#0F766E" font-weight="600">Kubernetes 리소스</text>
+  <text x="757.5" y="114" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">ResourceKind: example</text>
+
+  <rect x="665" y="135" width="185" height="62" rx="9" fill="#ECFDF5" stroke="#10B981" stroke-width="1.5"/>
+  <text x="685" y="160" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#047857" font-weight="600">spec</text>
+  <text x="685" y="181" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#059669">사용자가 선언한 원하는 상태</text>
+
+  <rect x="665" y="215" width="185" height="62" rx="9" fill="#F1F5F9" stroke="#94A3B8" stroke-width="1.5"/>
+  <text x="685" y="240" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#475569" font-weight="600">status</text>
+  <text x="685" y="261" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">클러스터가 관찰한 현재 상태</text>
+
+  <text x="460" y="338" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">매니페스트는 원하는 리소스 상태를 표현하고, API Server는 그 선언을 클러스터 리소스로 저장</text>
+
+  <line x1="40" y1="365" x2="880" y2="365" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="460" y="393" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 1. 리소스와 매니페스트:</tspan>
+    <tspan> YAML 선언과 Kubernetes API 객체의 관계</tspan>
+  </text>
+</svg>
