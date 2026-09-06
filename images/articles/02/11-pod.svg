@@ -1,27 +1,56 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="380" viewBox="0 0 900 380">
-  <rect width="900" height="380" fill="#F7F9FC"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="620" viewBox="0 0 1000 620">
+  <rect width="1000" height="620" fill="#F7F9FC"/>
+  <defs>
+    <marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+    <marker id="arrow-teal" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto-start-reverse">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/>
+    </marker>
+  </defs>
 
-  <rect x="60" y="40" width="360" height="260" rx="16" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
-  <text x="240" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#475569" font-weight="600">Docker의 컨테이너 단위</text>
-  <rect x="120" y="110" width="240" height="140" rx="12" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
-  <text x="240" y="170" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#1D4ED8" font-weight="600">Container</text>
-  <text x="240" y="198" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">독립 네트워크와 생명주기</text>
+  <rect x="30" y="150" width="195" height="142" rx="16" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
+  <text x="127.5" y="186" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#334155" font-weight="600">Kubernetes</text>
+  <text x="127.5" y="222" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">Pod를 배치할</text>
+  <text x="127.5" y="243" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">Worker Node 선택</text>
 
-  <text x="450" y="170" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="28" fill="#94A3B8">→</text>
+  <path d="M225 221 H300" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <text x="262.5" y="202" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#1D4ED8">Pod 단위 배치</text>
 
-  <rect x="500" y="40" width="360" height="260" rx="16" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
-  <text x="680" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#1D4ED8" font-weight="600">Kubernetes의 Pod 단위</text>
-  <rect x="540" y="95" width="280" height="175" rx="12" fill="#FFFFFF" stroke="#2563EB" stroke-width="2"/>
-  <text x="680" y="125" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#1D4ED8" font-weight="600">Pod</text>
-  <rect x="565" y="145" width="230" height="40" rx="8" fill="#2563EB"/>
-  <text x="680" y="171" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#FFFFFF" font-weight="600">app container</text>
-  <rect x="565" y="198" width="230" height="40" rx="8" fill="#3B82F6"/>
-  <text x="680" y="224" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#FFFFFF" font-weight="600">sidecar container</text>
-  <text x="680" y="255" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">localhost와 볼륨 공유</text>
+  <rect x="300" y="40" width="670" height="475" rx="20" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
+  <text x="635" y="73" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#475569" font-weight="600">하나의 Worker Node</text>
 
-  <line x1="40" y1="330" x2="860" y2="330" stroke="#E2E8F0" stroke-width="1"/>
-  <text x="450" y="358" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 3. Pod:</tspan>
-    <tspan> 컨테이너 묶음의 최소 실행 단위</tspan>
+  <rect x="330" y="92" width="610" height="345" rx="18" fill="#EFF6FF" stroke="#2563EB" stroke-width="2.5"/>
+  <text x="635" y="126" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="17" fill="#1D4ED8" font-weight="600">Pod: Kubernetes의 최소 실행 단위</text>
+
+  <rect x="365" y="154" width="220" height="80" rx="12" fill="#FFFFFF" stroke="#2563EB" stroke-width="2"/>
+  <text x="475" y="187" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#1D4ED8" font-weight="600">Container A</text>
+  <text x="475" y="211" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">애플리케이션 프로세스</text>
+
+  <rect x="685" y="154" width="220" height="80" rx="12" fill="#FFFFFF" stroke="#2563EB" stroke-width="2"/>
+  <text x="795" y="187" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#1D4ED8" font-weight="600">Container B</text>
+  <text x="795" y="211" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">함께 동작하는 프로세스</text>
+
+  <path d="M585 194 H685" fill="none" stroke="#0D9488" stroke-width="2" marker-start="url(#arrow-teal)" marker-end="url(#arrow-teal)"/>
+  <text x="635" y="178" text-anchor="middle" font-family="Menlo, Consolas, monospace" font-size="11" fill="#0F766E">localhost</text>
+
+  <rect x="365" y="263" width="540" height="52" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="1.8"/>
+  <text x="635" y="285" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">공유 네트워크</text>
+  <text x="635" y="304" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">하나의 Pod IP와 포트 공간을 함께 사용</text>
+
+  <rect x="365" y="332" width="540" height="52" rx="10" fill="#F0FDFA" stroke="#14B8A6" stroke-width="1.8"/>
+  <text x="635" y="354" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">공유 Volume</text>
+  <text x="635" y="373" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">각 Container가 같은 저장 공간을 자기 경로에 연결</text>
+
+  <text x="635" y="414" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8" font-weight="600">Pod 생성, 한 노드에 배치, Pod 삭제라는 수명 경계를 함께 따름</text>
+
+  <rect x="330" y="460" width="610" height="39" rx="10" fill="#FFF7ED" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="635" y="485" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11.5" fill="#B45309">Container 하나가 종료되면 Pod 안에서 해당 Container만 재시작될 수 있음</text>
+
+  <text x="500" y="540" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">Kubernetes는 Container를 따로 배치하지 않고, 서로 협력하는 Container들을 Pod라는 하나의 실행 경계로 관리</text>
+  <line x1="40" y1="565" x2="960" y2="565" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="500" y="595" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 5. Pod:</tspan>
+    <tspan> 함께 배치하고 자원을 공유하는 최소 실행 단위</tspan>
   </text>
 </svg>

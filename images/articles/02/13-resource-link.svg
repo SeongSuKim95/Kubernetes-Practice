@@ -10,7 +10,7 @@
   </defs>
 
   <rect x="230" y="25" width="940" height="320" rx="18" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
-  <text x="250" y="52" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#6D28D9" font-weight="600">Namespace: dev</text>
+  <text x="250" y="52" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#6D28D9" font-weight="600">Kubernetes 클러스터 내부</text>
 
   <rect x="30" y="65" width="150" height="100" rx="12" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
   <text x="105" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#92400E" font-weight="600">외부 클라이언트</text>
@@ -53,7 +53,7 @@
 
   <line x1="40" y1="395" x2="1160" y2="395" stroke="#E2E8F0" stroke-width="1"/>
   <text x="600" y="423" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 11. 외부 요청 처리:</tspan>
+    <tspan font-weight="600">Fig 8. 외부 요청 처리:</tspan>
     <tspan> Ingress에서 Service와 Pod로 이어지는 요청 경로</tspan>
   </text>
 </svg>

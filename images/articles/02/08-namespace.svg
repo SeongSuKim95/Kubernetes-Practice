@@ -65,6 +65,6 @@
   <text x="755" y="357" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10" fill="#1D4ED8" font-weight="600">deploy</text>
 
   <line x1="40" y1="475" x2="860" y2="475" stroke="#E2E8F0" stroke-width="1"/>
-  <text x="450" y="502" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569"><tspan font-weight="600">Fig 10. Namespace:</tspan>
+  <text x="450" y="502" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569"><tspan font-weight="600">Fig 13. Namespace:</tspan>
     <tspan> 리소스 이름과 정책 범위 구분</tspan></text>
 </svg>

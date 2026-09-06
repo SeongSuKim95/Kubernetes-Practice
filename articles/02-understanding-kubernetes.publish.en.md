@@ -314,4 +314,4 @@ What matters here is only that the manual recovery, scale, update, and IP manage
 ## Before Moving to the Next Article
 
 Here is what this article covered. Starting from Docker-only ops limits, Kubernetes emerged for container orchestration, with declarative style, Control Loops, and Watch-based communication at the design core. API and cluster, Control Plane and Worker Node mesh so a declaration becomes a running Pod, and we sketched in tables how the same ops limits map to commands.
-In the next article, we organize the core resources you handle when operating a service—centered on Pod, Deployment, Service, Ingress, and Namespace.
+In the next article, we cover Pods as the unit that runs containers and Deployments as the resource that manages Pod replica counts and rollout state.

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="540" viewBox="0 0 1000 540">
+  <rect width="1000" height="540" fill="#F7F9FC"/>
+  <defs>
+    <marker id="green" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/>
+    </marker>
+    <marker id="orange" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#EA580C"/>
+    </marker>
+  </defs>
+
+  <rect x="25" y="20" width="950" height="210" rx="16" fill="#FFFFFF" stroke="#99F6E4" stroke-width="2"/>
+  <text x="50" y="51" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#0F766E" font-weight="700">Pod 삭제 뒤 ReplicaSet의 자동 복구</text>
+
+  <rect x="60" y="80" width="225" height="105" rx="12" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="172.5" y="108" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="700">ReplicaSet v1</text>
+  <text x="172.5" y="132" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">원하는 Pod: 3</text>
+  <text x="172.5" y="157" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#DC2626">현재 Pod: 2</text>
+
+  <path d="M285 132.5 H380" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#green)"/>
+  <text x="332.5" y="115" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E">부족한 Pod 1개 생성</text>
+
+  <rect x="390" y="80" width="535" height="105" rx="12" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <rect x="420" y="108" width="135" height="50" rx="9" fill="#2563EB"/>
+  <rect x="590" y="108" width="135" height="50" rx="9" fill="#2563EB"/>
+  <rect x="760" y="108" width="135" height="50" rx="9" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="487.5" y="138" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#FFFFFF">기존 Pod A</text>
+  <text x="657.5" y="138" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#FFFFFF">기존 Pod B</text>
+  <text x="827.5" y="138" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8" font-weight="700">새 Pod C</text>
+
+  <rect x="25" y="250" width="950" height="225" rx="16" fill="#FFFFFF" stroke="#FDBA74" stroke-width="2"/>
+  <text x="50" y="281" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#C2410C" font-weight="700">Pod 템플릿 변경 뒤 Deployment의 롤링 업데이트</text>
+
+  <rect x="55" y="310" width="230" height="115" rx="12" fill="#FFF7ED" stroke="#EA580C" stroke-width="2"/>
+  <text x="170" y="338" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#C2410C" font-weight="700">Deployment</text>
+  <text x="170" y="363" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#EA580C">image: v1에서 v2로 변경</text>
+  <text x="170" y="390" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#EA580C">새 Pod 템플릿 감지</text>
+
+  <path d="M285 367.5 H355" fill="none" stroke="#EA580C" stroke-width="2.5" marker-end="url(#orange)"/>
+
+  <rect x="365" y="300" width="250" height="135" rx="12" fill="#FEF2F2" stroke="#DC2626" stroke-width="2"/>
+  <text x="490" y="328" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#B91C1C" font-weight="700">기존 ReplicaSet v1</text>
+  <text x="490" y="352" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#DC2626">기존 Pod를 점진적으로 줄임</text>
+  <rect x="395" y="375" width="55" height="35" rx="7" fill="#FCA5A5"/>
+  <rect x="462.5" y="375" width="55" height="35" rx="7" fill="#FCA5A5"/>
+  <rect x="530" y="375" width="55" height="35" rx="7" fill="#FEE2E2" stroke="#FCA5A5"/>
+  <text x="557.5" y="398" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B91C1C">감소</text>
+
+  <path d="M615 367.5 H685" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#green)"/>
+
+  <rect x="695" y="300" width="250" height="135" rx="12" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="820" y="328" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="700">새 ReplicaSet v2</text>
+  <text x="820" y="352" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">새 Pod를 점진적으로 늘림</text>
+  <rect x="725" y="375" width="55" height="35" rx="7" fill="#A7F3D0"/>
+  <rect x="792.5" y="375" width="55" height="35" rx="7" fill="#A7F3D0"/>
+  <rect x="860" y="375" width="55" height="35" rx="7" fill="#A7F3D0"/>
+  <text x="820" y="455" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E">사용 가능한 Pod를 유지하며 교체</text>
+
+  <line x1="40" y1="495" x2="960" y2="495" stroke="#E2E8F0"/>
+  <text x="500" y="525" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 11. ReplicaSet의 상태 변화:</tspan>
+    <tspan> 부족한 Pod 복구와 새 Pod 템플릿으로의 점진적 교체</tspan>
+  </text>
+</svg>

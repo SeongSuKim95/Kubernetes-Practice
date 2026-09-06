@@ -6,17 +6,17 @@
     </marker>
   </defs>
 
-  <rect x="40" y="55" width="245" height="255" rx="16" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
-  <text x="162.5" y="90" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#334155" font-weight="600">YAML 매니페스트</text>
-  <rect x="70" y="115" width="185" height="160" rx="10" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>
-  <text x="90" y="145" font-family="Menlo, Consolas, monospace" font-size="12" fill="#475569">apiVersion: group/version</text>
-  <text x="90" y="172" font-family="Menlo, Consolas, monospace" font-size="12" fill="#475569">kind: ResourceKind</text>
-  <text x="90" y="199" font-family="Menlo, Consolas, monospace" font-size="12" fill="#475569">metadata:</text>
-  <text x="105" y="226" font-family="Menlo, Consolas, monospace" font-size="12" fill="#475569">name: example</text>
-  <text x="90" y="253" font-family="Menlo, Consolas, monospace" font-size="12" fill="#475569">spec: desiredState</text>
+  <rect x="25" y="55" width="285" height="255" rx="16" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
+  <text x="167.5" y="90" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#334155" font-weight="600">YAML 매니페스트</text>
+  <rect x="50" y="115" width="235" height="160" rx="10" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>
+  <text x="68" y="145" font-family="Menlo, Consolas, monospace" font-size="11.5" fill="#475569">apiVersion: group/version</text>
+  <text x="68" y="172" font-family="Menlo, Consolas, monospace" font-size="11.5" fill="#475569">kind: ResourceKind</text>
+  <text x="68" y="199" font-family="Menlo, Consolas, monospace" font-size="11.5" fill="#475569">metadata:</text>
+  <text x="84" y="226" font-family="Menlo, Consolas, monospace" font-size="11.5" fill="#475569">name: example</text>
+  <text x="68" y="253" font-family="Menlo, Consolas, monospace" font-size="11.5" fill="#475569">spec: desiredState</text>
 
-  <path d="M285 182 H370" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
-  <text x="327.5" y="164" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#1D4ED8">매니페스트 제출</text>
+  <path d="M310 182 H370" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <text x="340" y="164" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#1D4ED8">매니페스트 제출</text>
 
   <rect x="370" y="127" width="180" height="110" rx="14" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
   <text x="460" y="170" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#1D4ED8" font-weight="600">API Server</text>
@@ -41,7 +41,7 @@
 
   <line x1="40" y1="365" x2="880" y2="365" stroke="#E2E8F0" stroke-width="1"/>
   <text x="460" y="393" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 1. 리소스와 매니페스트:</tspan>
+    <tspan font-weight="600">Fig 2. 리소스와 매니페스트:</tspan>
     <tspan> YAML 선언과 Kubernetes API 객체의 관계</tspan>
   </text>
 </svg>

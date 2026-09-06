@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="430" viewBox="0 0 960 430">
+  <rect width="960" height="430" fill="#F7F9FC"/>
+  <defs>
+    <marker id="blue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+    <marker id="green" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/>
+    </marker>
+  </defs>
+
+  <rect x="35" y="25" width="720" height="320" rx="20" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
+  <text x="60" y="58" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#6D28D9" font-weight="700">하나의 Pod</text>
+  <text x="60" y="80" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#7C3AED">두 컨테이너가 같은 Worker Node와 볼륨을 공유</text>
+
+  <rect x="75" y="110" width="240" height="105" rx="14" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="195" y="143" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#1D4ED8" font-weight="700">애플리케이션 컨테이너</text>
+  <text x="195" y="170" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">API 요청 처리</text>
+  <text x="195" y="192" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">/var/log/app에 로그 기록</text>
+
+  <rect x="475" y="110" width="240" height="105" rx="14" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="595" y="143" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#0F766E" font-weight="700">로그 수집 사이드카</text>
+  <text x="595" y="170" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">/var/log/app에서 로그 읽기</text>
+  <text x="595" y="192" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">외부 로그 저장소로 전송</text>
+
+  <rect x="275" y="265" width="240" height="58" rx="12" fill="#FFF7ED" stroke="#EA580C" stroke-width="2"/>
+  <text x="395" y="289" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#C2410C" font-weight="700">공유 emptyDir 볼륨</text>
+  <text x="395" y="310" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#EA580C">app-logs</text>
+
+  <path d="M195 215 V294 H275" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#blue)"/>
+  <text x="218" y="278" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#1D4ED8">로그 기록</text>
+  <path d="M515 294 H595 V215" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#green)"/>
+  <text x="548" y="278" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E">로그 읽기</text>
+
+  <rect x="800" y="125" width="125" height="75" rx="12" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="862.5" y="155" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="700">외부 로그</text>
+  <text x="862.5" y="178" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="700">저장소</text>
+  <path d="M715 162.5 H790" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#green)"/>
+  <text x="752.5" y="147" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E">로그 전송</text>
+
+  <line x1="40" y1="375" x2="920" y2="375" stroke="#E2E8F0"/>
+  <text x="480" y="405" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 6. 사이드카 패턴:</tspan>
+    <tspan> 같은 Pod의 공유 볼륨을 이용한 애플리케이션 로그 수집</tspan>
+  </text>
+</svg>

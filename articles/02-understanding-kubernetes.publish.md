@@ -314,4 +314,4 @@ API Server를 여러 대 두고, 사용자는 **하나의 주소**로 요청을 
 ## 다음 글로 넘어가기 전에
 
 이번 글에서 다룬 내용은 이렇습니다. Docker만으로 운용할 때의 한계를 바탕으로 Kubernetes가 컨테이너 오케스트레이션으로 등장했고, 선언형과 제어 루프, Watch 기반 통신이 설계의 핵심이 되었습니다. API와 클러스터, Control Plane과 Worker Node가 맞물려 선언이 Pod로 실행되며, 같은 운용 한계가 어떤 명령으로 바뀌는지도 표로 살펴보았습니다.
-다음 글에서는 Pod, Deployment, Service, Ingress, Namespace를 중심으로 서비스를 운영할 때 다루는 핵심 리소스를 정리합니다.
+다음 글에서는 컨테이너 실행 단위인 Pod와 Pod 복제본 개수, 배포 상태를 관리하는 Deployment를 정리합니다.

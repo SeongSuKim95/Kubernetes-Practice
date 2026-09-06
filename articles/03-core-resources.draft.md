@@ -1,14 +1,28 @@
-# Chap03. 서비스 운영에 필요한 핵심 리소스
+# Chap03. Pod와 Deployment
 
-> 15주 연재의 셋째 글입니다. Kubernetes에서 애플리케이션을 실행하고, Pod 복제본을 유지하고, 요청을 전달하고, 리소스를 구분할 때 사용하는 Pod, Deployment, Service, Ingress, Namespace를 정리합니다.
+> 15주 연재의 셋째 글입니다. Kubernetes가 컨테이너를 실행하는 최소 단위인 Pod와 Pod 복제본 개수, 배포 상태를 관리하는 Deployment를 정리합니다.
 
 ## 들어가며
 
-이전 글에서는 Kubernetes가 원하는 상태를 API에 저장하고, 여러 제어 프로세스가 그 상태를 실제 실행으로 옮기는 흐름을 살펴보았습니다. 이번 글에서는 개발자가 Kubernetes API에 제출하는 리소스를 구체적으로 살펴봅니다.
+<div align="center">
 
-애플리케이션 하나를 운영하려면 컨테이너를 실행하는 단위만으로는 부족합니다. 같은 애플리케이션을 몇 개 유지할지 정해야 하고, 교체되는 실행 단위에 요청을 계속 전달해야 합니다. 외부 요청을 도메인과 경로에 따라 나누고, 여러 팀이나 환경의 리소스도 구분해야 합니다. Kubernetes는 각 문제를 하나의 거대한 설정에 모으지 않고, 서로 다른 리소스에 나누어 맡깁니다.
+![Kubernetes 공식 로고](../images/articles/02/01-k8s-logo.svg)
+
+</div>
+
+이전 글에서는 Kubernetes를 단순히 컨테이너를 여러 서버에 배치하는 도구가 아니라, **애플리케이션의 원하는 상태를 지속해서 유지하는 플랫폼**으로 살펴보았습니다. 사용자는 컨테이너를 어느 순서로 만들고 장애가 발생했을 때 어떤 명령을 다시 실행할지 모두 지시하지 않습니다. 대신 애플리케이션이 어떤 상태로 유지되어야 하는지를 선언하고, Kubernetes가 실제 상태를 그 선언에 맞추도록 운영 책임을 나눕니다.
+
+이러한 선언형 방식은 명령 한 번의 성공보다 **상태를 계속 유지하는 과정**을 중요하게 봅니다. 실행 중인 컨테이너가 사라지거나 실제 컨테이너 개수가 원하는 컨테이너 개수와 달라지면 Kubernetes는 그 변화를 실패한 명령으로만 보지 않습니다. 원하는 상태와 실제 상태 사이에 차이가 생긴 것으로 판단하고, 제어 루프를 반복하면서 실제 상태를 다시 맞춥니다. 한 번 실행하고 끝나는 자동화가 아니라, 시간이 지나도 선언한 상태를 유지하려는 설계입니다.
+
+Kubernetes의 구성 요소가 서로에게 실행 순서를 직접 명령하기보다 API에 기록된 상태를 함께 관찰하는 것도 같은 철학에서 나옵니다. 각 구성 요소는 자신이 맡은 상태 변화를 확인하고, 실제 상태를 보정하는 작업을 수행합니다. 특정 구성 요소가 잠시 멈추더라도 원하는 상태는 API에 남아 있으므로, 구성 요소가 다시 동작할 때 실제 상태 보정을 이어갈 수 있습니다. 운영 절차보다 상태를 중심에 두면 구성 요소 사이의 결합을 줄이고, 장애와 변화에 계속 대응할 수 있습니다.
+
+이번 글에서는 이 철학이 컨테이너 실행과 Pod 복제본 유지라는 관리 단위로 어떻게 표현되는지를 살펴봅니다. Kubernetes는 함께 실행할 컨테이너를 Pod로 묶고, Deployment로 Pod 집합의 개수와 배포 상태를 관리합니다. 먼저 사용자가 원하는 상태를 적는 매니페스트와 Kubernetes가 지속해서 관리하는 리소스의 관계부터 구분하겠습니다.
 
 ## 1. 리소스와 매니페스트
+
+2장에서 살펴본 선언형 방식은 사용자가 원하는 상태를 API에 남기고, Kubernetes가 실제 상태를 원하는 상태에 계속 맞추는 방식이었습니다. 여기서 먼저 구분해야 할 대상이 있습니다. 사용자가 원하는 상태를 **어디에 적는지**와 Kubernetes가 그 상태를 **무엇으로 저장하고 관리하는지**는 서로 다릅니다.
+
+이 구분이 없으면 YAML 파일과 클러스터 안의 대상을 모두 리소스라고 부르거나, 로컬 파일을 수정하면 실행 중인 애플리케이션도 바로 바뀐다고 오해하기 쉽습니다. Kubernetes가 제어 루프로 관찰하는 대상은 로컬의 YAML 파일이 아니라 API에 저장된 객체입니다. 따라서 사용자가 API에 제출하는 선언과 API가 보관하는 관리 대상을 나누어 이해해야 합니다.
 
 <div align="center">
 
@@ -16,9 +30,11 @@
 
 </div>
 
-**리소스**(resource)는 Kubernetes API가 저장하고 관리하는 객체입니다. Pod와 Deployment, Service처럼 각 리소스는 맡은 책임이 다릅니다. 사용자는 필요한 리소스를 조합해서 애플리케이션의 실행 방식과 운영 정책을 표현합니다.
+**매니페스트**(manifest)는 어떤 리소스를 어떤 상태로 두고 싶은지를 적은 선언입니다. 실무에서는 매니페스트를 YAML 형식으로 작성하는 경우가 많지만, JSON도 사용할 수 있습니다. YAML은 내용을 표현하는 파일 형식이고, 매니페스트는 Kubernetes API에 제출할 선언이라는 역할을 가리킵니다.
 
-**매니페스트**(manifest)는 어떤 리소스를 어떤 상태로 두고 싶은지를 적은 선언입니다. 실무에서는 매니페스트를 YAML 형식으로 작성하는 경우가 많습니다. YAML은 내용을 표현하는 문법이고, 매니페스트는 Kubernetes API에 제출하는 선언의 역할을 가리킵니다.
+**리소스**(resource)는 매니페스트를 제출한 결과로 Kubernetes API가 저장하고 관리하는 객체입니다. 각 리소스는 사용자가 선언한 원하는 상태인 `spec`과 Kubernetes가 관찰한 현재 상태인 `status`를 가질 수 있습니다. 제어 프로세스는 로컬 매니페스트 파일이 아니라 API에 저장된 리소스를 관찰하고, 리소스의 `spec`을 실제 상태로 만들기 위해 필요한 작업을 수행합니다.
+
+정리하면 매니페스트는 API에 전달하는 **입력**이고, 리소스는 클러스터 안에서 지속해서 관리되는 **대상**입니다. 하나의 매니페스트 파일에는 여러 리소스 선언을 넣을 수 있고, 여러 매니페스트 파일이 하나의 애플리케이션 운영 상태를 함께 표현할 수도 있습니다.
 
 대부분의 매니페스트에는 다음 네 가지 필드가 반복해서 등장합니다. `apiVersion`에는 사용할 API 버전을 적고, `kind`에는 만들 리소스의 종류를 적습니다. `metadata`에는 리소스 이름과 분류 정보를 적습니다. `spec`에는 사용자가 원하는 상태를 적습니다. Kubernetes는 리소스를 만든 뒤 실제 상태를 `status`에 기록하지만, 사용자가 매니페스트에 `status`를 직접 작성하는 경우는 드뭅니다.
 
@@ -32,7 +48,38 @@ spec:
   <원하는 상태>
 ```
 
-이 매니페스트를 `kubectl apply -f` 명령으로 제출하면 API Server가 리소스를 검사하고 저장합니다. 저장된 `spec`은 한 번 실행하고 버리는 명령이 아닙니다. Kubernetes의 제어 프로세스는 `spec`에 적힌 원하는 상태와 클러스터의 실제 상태를 계속 비교합니다.
+**kubectl**은 사용자의 명령과 매니페스트를 Kubernetes API에 전달하는 명령줄 클라이언트입니다. kubectl이 Pod나 컨테이너를 직접 실행하는 것이 아니라, API에 원하는 상태의 변경을 요청합니다. Kubernetes의 제어 프로세스는 API에 저장된 변경을 관찰한 뒤 실제 상태를 원하는 상태에 맞춥니다.
+
+### 1.1 매니페스트로 원하는 상태를 관리하는 이점
+
+매니페스트를 사용하면 운영 설정이 터미널에 입력한 일회성 명령으로만 남지 않습니다. 어떤 리소스가 필요하고 각 리소스를 어떤 상태로 유지할지가 파일에 기록됩니다. 다른 환경에서도 같은 매니페스트를 제출하면 같은 원하는 상태를 다시 요청할 수 있으므로, 작업자의 기억에 의존하는 수동 설정을 줄일 수 있습니다.
+
+파일로 남은 매니페스트는 Git으로 버전을 관리할 수 있습니다. 팀은 애플리케이션 코드처럼 매니페스트 변경 내용을 검토하고, 누가 어떤 설정을 바꾸었는지 변경 이력을 확인할 수 있습니다. 문제가 생기면 이전 버전의 매니페스트를 다시 제출해서 이전 매니페스트가 표현한 원하는 상태로 되돌리는 기준도 마련할 수 있습니다.
+
+매니페스트는 자동화의 입력으로도 사용할 수 있습니다. 사람이 매번 같은 명령을 다시 조합하지 않아도 배포 파이프라인이 검토된 파일을 Kubernetes API에 제출할 수 있습니다. 다만 로컬 매니페스트 파일과 API의 리소스가 자동으로 연결되는 것은 아닙니다. 파일을 수정한 뒤 `kubectl apply`로 매니페스트를 다시 제출하거나, GitOps 도구처럼 파일 변경을 감지해서 제출하는 별도의 동기화 과정이 있어야 클러스터의 리소스가 바뀝니다.
+
+### 1.2 kubectl apply -f로 매니페스트 제출하기
+
+<div align="center">
+
+![kubectl apply로 매니페스트를 제출하는 흐름](../images/articles/03/02-kubectl-apply.svg)
+
+</div>
+
+`kubectl apply -f`는 일반적으로 개발자의 로컬이나 CI 서버처럼 `kubectl`과 클러스터 접속 설정이 준비된 머신의 터미널에서 실행합니다. Worker Node에 직접 접속해서 명령을 실행하는 방식이 아닙니다. `kubectl`을 실행하는 머신이 네트워크를 통해 API Server에 접근할 수 있으면 됩니다.
+
+`apply`는 매니페스트의 설정을 Kubernetes 리소스에 반영하라는 하위 명령입니다. `-f`는 `--filename`의 줄임말이며, 뒤에 적용할 매니페스트 파일의 경로를 받습니다. 아래 명령에서 `./app.yaml`은 터미널의 현재 디렉터리를 기준으로 찾는 로컬 파일입니다. 절대 경로를 적거나, 매니페스트가 들어 있는 디렉터리와 URL을 지정하는 방법도 있습니다. 즉 `-f`는 입력으로 읽을 매니페스트를 선택하고, kubeconfig의 현재 컨텍스트는 매니페스트를 제출할 클러스터를 선택합니다.
+
+```bash
+# 현재 디렉터리의 매니페스트를 선택된 Kubernetes 클러스터에 제출하는 예시
+kubectl apply -f ./app.yaml
+```
+
+명령을 실행하면 `kubectl`은 먼저 `app.yaml`의 매니페스트를 읽습니다. 이어서 **kubeconfig**(kubectl이 접속할 클러스터와 사용자 인증 정보를 찾는 설정)에서 현재 선택된 클러스터의 API Server 주소와 인증 정보를 확인합니다. `kubectl`은 매니페스트 내용을 API 요청으로 변환하고, 네트워크를 통해 선택된 API Server에 요청을 보냅니다.
+
+API Server는 요청한 사용자의 신원과 권한을 확인하고, 매니페스트의 필드가 API 형식에 맞는지 검사합니다. 요청이 유효하면 API Server는 리소스가 없을 때 리소스를 새로 만들고, 같은 리소스가 있으면 매니페스트의 변경 내용을 기존 리소스에 반영합니다. 여기서 같은 리소스인지는 리소스 종류와 이름을 포함한 식별 정보로 판단합니다.
+
+API Server가 리소스를 저장했다고 해서 `kubectl`이 Worker Node에서 컨테이너를 직접 실행한 것은 아닙니다. 리소스가 저장된 뒤 제어 프로세스가 리소스의 변화를 관찰하고, `spec`에 적힌 원하는 상태와 실제 상태의 차이를 줄입니다. 따라서 `created`, `configured`, `unchanged` 같은 `kubectl apply`의 결과는 API 리소스의 반영 결과를 뜻하며, 애플리케이션이 실행 준비를 모두 마쳤다는 뜻은 아닙니다.
 
 ## 2. 컨테이너를 함께 실행하는 Pod
 
@@ -40,9 +87,23 @@ spec:
 
 <img src="https://raw.githubusercontent.com/kubernetes/community/main/icons/svg/resources/labeled/pod.svg" alt="Kubernetes 공식 Pod 리소스 마크" width="260">
 
-*Fig 2. Kubernetes 공식 Pod 리소스 마크: Kubernetes Community 공개 아이콘 에셋*
+*Fig 4. Kubernetes 공식 Pod 리소스 마크: Kubernetes Community 공개 아이콘 에셋*
 
 </div>
+
+### 2.1 Kubernetes가 배치하는 최소 실행 단위
+
+<div align="center">
+
+![Kubernetes Pod](../images/articles/02/11-pod.svg)
+
+</div>
+
+**Pod**(파드)는 Kubernetes가 생성하고 Worker Node에 배치하는 최소 실행 단위입니다. Kubernetes는 컨테이너를 하나씩 독립적으로 배치하지 않습니다. Scheduler가 Pod를 실행할 Worker Node 하나를 정하면, 해당 노드의 Kubelet이 Pod 안에 선언된 컨테이너들을 실행합니다. Kubernetes가 배치하고 교체하는 경계는 개별 컨테이너가 아니라 Pod입니다.
+
+Pod에는 컨테이너를 하나 이상 넣을 수 있습니다. 실제로는 애플리케이션 컨테이너 하나만 넣는 구성이 가장 흔합니다. 컨테이너가 하나뿐이어도 Kubernetes는 Pod를 통해 배치 위치와 네트워크, 스토리지, 수명주기를 일관된 단위로 관리할 수 있습니다.
+
+컨테이너를 여러 개 넣는 기능은 서로 밀접하게 협력해야 하는 프로세스들을 하나의 실행 단위로 묶기 위해 존재합니다. 함께 배치되어야 하고 같은 네트워크나 파일을 사용해야 하며, Pod가 사라질 때 함께 정리되어야 하는 컨테이너들이 이 경계에 들어갑니다. 따라서 Pod는 단순히 컨테이너를 담는 형식이 아니라, **어떤 컨테이너들을 하나의 애플리케이션 실행 단위로 관리할지 정하는 경계**입니다.
 
 <div align="center">
 
@@ -54,17 +115,27 @@ spec:
 
 Pod 캐릭터는 캥거루처럼 앞주머니에 **Container**들을 품고 있습니다. 주머니의 육각, 큐브 표시는 Kubernetes의 최소 실행 단위를, 주머니 안 컨테이너가 둘인 모습은 한 Pod에 컨테이너를 여러 개 둘 수 있다는 점을 떠올리게 합니다.
 
+### 2.2 Pod 안에서 함께 사용하는 것
+
+같은 Pod 안의 모든 컨테이너는 항상 같은 Worker Node에 배치됩니다. Pod가 생성되어 노드에 배치되고 삭제되는 수명 경계도 함께 따릅니다. 다만 수명 경계를 공유한다는 말이 모든 컨테이너가 언제나 동시에 재시작된다는 뜻은 아닙니다. 컨테이너 하나가 종료되면 Kubelet은 Pod를 유지한 채 설정된 재시작 정책에 따라 해당 컨테이너만 다시 실행할 수 있습니다.
+
+네트워크는 Pod 단위로 공유합니다. 같은 Pod의 컨테이너들은 하나의 Pod IP와 포트 공간을 함께 사용합니다. 각 컨테이너는 서로 다른 포트를 사용해야 하며, 다른 컨테이너의 프로세스에는 `localhost`로 접근할 수 있습니다. 외부에서 컨테이너 하나를 직접 찾는 대신 Pod IP를 통해 Pod의 프로세스에 접근하는 이유도 이 공유 네트워크에 있습니다.
+
+스토리지도 Pod 안에서 공유할 수 있습니다. **볼륨**(volume)은 컨테이너가 사용할 저장 공간을 Pod에 연결하는 방식입니다. Pod에 볼륨을 한 번 선언하고 여러 컨테이너가 같은 볼륨을 각자의 경로에 연결하면, 컨테이너들이 같은 파일을 읽고 쓸 수 있습니다. 각 컨테이너의 기본 파일 시스템까지 하나로 합쳐지는 것은 아니며, 같은 볼륨을 연결한 경로만 공유합니다.
+
+이러한 공유 범위 때문에 관련이 적은 애플리케이션을 하나의 Pod에 모아서는 안 됩니다. 웹 서버와 데이터베이스처럼 배포 시점과 확장 기준이 다른 애플리케이션은 서로 다른 Pod로 나누는 편이 좋습니다. 함께 배치하고 함께 삭제해야 하며 네트워크나 파일을 긴밀하게 공유하는 컨테이너만 같은 Pod에 둡니다.
+
+### 2.3 사이드카 패턴
+
+Pod의 공유 특성을 활용하는 대표 사례가 **사이드카 패턴**(sidecar pattern)입니다. 사이드카 패턴은 애플리케이션의 주 기능을 실행하는 컨테이너 옆에 보조 기능을 맡는 컨테이너를 함께 두는 구성입니다. 로그 수집, 프록시, 설정 갱신처럼 애플리케이션과 같은 실행 환경을 사용해야 하는 기능에 활용할 수 있습니다.
+
 <div align="center">
 
-![Kubernetes Pod](../images/articles/02/11-pod.svg)
+![사이드카가 애플리케이션 로그를 수집하는 구조](../images/articles/03/06-sidecar-logging.svg)
 
 </div>
 
-**Pod**(파드)는 Kubernetes가 스케줄링하고 실행하는 최소 단위입니다. Pod에는 컨테이너를 하나 이상 넣을 수 있습니다. 애플리케이션 컨테이너 하나만 넣는 구성이 가장 흔하지만, 반드시 함께 실행해야 하는 보조 컨테이너가 있으면 같은 Pod에 둘 수 있습니다.
-
-같은 Pod 안의 컨테이너는 항상 같은 노드에 배치됩니다. 컨테이너들은 하나의 Pod IP를 함께 사용하고, 서로 다른 포트를 사용해서 `localhost`로 통신할 수 있습니다. Pod에 볼륨을 선언하면 컨테이너들이 같은 파일도 공유할 수 있습니다. **볼륨**(volume)은 컨테이너가 읽고 쓸 저장 공간을 Pod에 연결하는 방식입니다.
-
-보조 컨테이너를 **사이드카**(sidecar)라고 부릅니다. 예를 들어 애플리케이션 컨테이너가 파일에 로그를 쓰고, 로그 수집 컨테이너가 같은 파일을 읽어 외부 저장소로 보낼 수 있습니다. 두 컨테이너는 같은 노드에서 함께 실행되어야 하고 같은 로그 디렉터리를 봐야 하므로, 두 컨테이너를 하나의 Pod로 묶는 구성이 자연스럽습니다.
+예를 들어 애플리케이션 컨테이너가 파일에 로그를 쓰고, 로그 수집 컨테이너가 같은 파일을 읽어 외부 저장소로 보낼 수 있습니다. 두 컨테이너는 같은 Pod에 배치되고 같은 로그 볼륨을 연결하므로, 별도의 네트워크 파일 공유 없이 로그 파일을 함께 사용할 수 있습니다. 다음 매니페스트는 이러한 구조를 보여 주는 예시입니다.
 
 ```yaml
 # 한 Pod 안의 두 컨테이너가 임시 볼륨을 공유하는 예시
@@ -89,11 +160,9 @@ spec:
     emptyDir: {}
 ```
 
-위 매니페스트의 `emptyDir`은 Pod가 노드에서 실행되는 동안 사용할 수 있는 임시 볼륨입니다. 두 컨테이너는 `app-logs`라는 같은 볼륨을 각자의 `/var/log/app` 경로에 연결합니다. Pod가 삭제되면 `emptyDir`에 저장한 데이터도 함께 사라집니다. 영구 보관이 필요한 데이터에는 별도의 영구 볼륨을 사용해야 합니다.
+위 매니페스트에서 두 컨테이너는 `app-logs`라는 같은 볼륨을 각자의 `/var/log/app` 경로에 연결합니다. `emptyDir`은 Pod가 노드에서 실행되는 동안 사용하는 임시 볼륨이므로, Pod가 삭제되면 `emptyDir`에 저장한 로그도 함께 사라집니다. 영구 보관이 필요한 로그에는 Pod의 수명과 분리된 별도의 저장 방식을 사용해야 합니다.
 
-한 Pod에 컨테이너를 여러 개 넣을 수 있다고 해서 관련이 적은 애플리케이션까지 모두 묶어서는 안 됩니다. 함께 배포하고 함께 교체해야 하며 네트워크나 파일을 긴밀하게 공유하는 컨테이너만 같은 Pod에 두는 편이 좋습니다. 웹 서버와 데이터베이스처럼 배포 주기와 확장 기준이 다른 애플리케이션은 보통 서로 다른 Pod로 나눕니다.
-
-Pod는 교체될 수 있는 실행 단위입니다. Pod를 새로 만들면 Pod 이름과 IP가 달라질 수 있고, 단독으로 만든 Pod를 삭제하면 Kubernetes가 같은 Pod를 자동으로 다시 만들지 않습니다. 장기간 운영할 애플리케이션에는 Pod 복제본 개수와 Pod 교체 과정을 관리하는 상위 리소스가 필요합니다.
+Pod는 교체될 수 있는 실행 단위입니다. 한 번 Worker Node에 배치된 Pod가 다른 노드로 이동하는 것은 아닙니다. 기존 Pod를 대체해야 하면 Kubernetes는 새로운 이름과 IP를 가진 Pod를 만듭니다. 단독으로 만든 Pod를 삭제하면 Kubernetes가 같은 Pod를 자동으로 다시 만들지 않으므로, 장기간 운영할 애플리케이션에는 Pod 복제본 개수와 Pod 교체 과정을 관리하는 상위 리소스가 필요합니다.
 
 ## 3. Pod 복제본과 배포를 관리하는 Deployment
 
@@ -101,9 +170,49 @@ Pod는 교체될 수 있는 실행 단위입니다. Pod를 새로 만들면 Pod 
 
 <img src="https://raw.githubusercontent.com/kubernetes/community/main/icons/svg/resources/labeled/deploy.svg" alt="Kubernetes 공식 Deployment 리소스 마크" width="260">
 
-*Fig 4. Kubernetes 공식 Deployment 리소스 마크: Kubernetes Community 공개 아이콘 에셋*
+*Fig 7. Kubernetes 공식 Deployment 리소스 마크: Kubernetes Community 공개 아이콘 에셋*
 
 </div>
+
+<div align="center">
+
+![Kubernetes Deployment](../images/articles/02/12-deployment.svg)
+
+</div>
+
+Pod는 애플리케이션이 실제로 실행되는 최소 단위지만, Pod 하나의 이름과 IP를 계속 보존하는 것을 Kubernetes 운영의 목표로 삼지는 않습니다. Pod는 장애나 배포 과정에서 사라질 수 있고, 새로운 이름과 IP를 가진 Pod로 교체될 수 있습니다. 운영에서 유지해야 하는 대상은 특정 Pod 한 개의 정체성이 아니라, **같은 역할을 하는 Pod 집합의 상태**입니다.
+
+**Deployment**(디플로이먼트)는 이 Pod 집합의 원하는 상태를 선언하고 유지하는 상위 리소스입니다. 사용자는 어떤 구성의 Pod를 몇 개 유지할지와 Pod 구성을 어떤 방식으로 교체할지를 Deployment에 선언합니다. Deployment는 현재 Pod 집합과 원하는 Pod 집합의 차이를 계속 확인하고, 필요한 Pod를 만들거나 기존 Pod를 줄이면서 그 차이를 보정합니다. 이는 2장에서 살펴본 선언형 방식과 제어 루프가 애플리케이션 배포에 적용된 모습입니다.
+
+여기서 **복제본**(replica)은 같은 Pod 구성을 바탕으로 만들어져 같은 역할을 수행하는 각각의 Pod를 뜻합니다. `Replica Pod`이라는 별도의 리소스 종류가 있는 것은 아닙니다. 복제본 세 개를 유지한다는 선언은 한 Pod 안에 같은 컨테이너를 세 개 넣는다는 뜻도 아닙니다. 같은 Pod 템플릿으로 만든 독립적인 Pod 세 개를 클러스터에 유지한다는 뜻입니다. 각 Pod는 서로 다른 이름과 IP를 가지며, 장애와 교체도 각각의 Pod 단위로 일어납니다.
+
+Deployment는 내부에서 **ReplicaSet**(레플리카셋, 같은 Label 조건을 가진 Pod의 복제본 개수를 유지하는 리소스)을 만들고 관리합니다. Deployment가 Pod 템플릿과 배포 변경 과정을 관리한다면, ReplicaSet은 Selector와 일치하는 Pod를 세어서 원하는 Pod 복제본 개수와 맞추는 일을 담당합니다. 원하는 Pod가 부족하면 ReplicaSet이 Pod 객체를 만들고, 원하는 Pod보다 많으면 ReplicaSet이 초과한 Pod를 줄입니다.
+
+이 관계는 Deployment, ReplicaSet, Pod 순서로 이어집니다. 사용자는 일반적으로 Deployment의 `replicas`와 Pod 템플릿을 변경하고, Deployment는 그 선언에 맞는 ReplicaSet을 관리합니다. Deployment가 관리하는 ReplicaSet의 복제본 개수를 직접 바꾸면 Deployment가 선언한 상태와 충돌할 수 있으므로, 배포 중인 애플리케이션의 복제본 개수와 Pod 템플릿은 Deployment를 통해 변경하는 편이 안전합니다.
+
+그림 아래쪽은 같은 ReplicaSet이 만든 Pod 세 개가 서로 다른 Worker Node에 배치된 예시입니다. ReplicaSet은 Pod 객체를 만들고 Pod 복제본 개수를 유지하지만, 각 Pod를 어느 Worker Node에 배치할지는 정하지 않습니다. Scheduler가 아직 Node가 정해지지 않은 각 Pod를 독립적으로 확인하고 실행할 Worker Node를 선택합니다.
+
+<div align="center">
+
+![Scheduler가 새 Pod를 Worker Node에 배치하는 과정](../images/articles/03/03-pod-scheduling.svg)
+
+</div>
+
+Scheduler는 먼저 각 노드가 Pod가 요청한 CPU와 메모리를 수용할 수 있는지 확인합니다. 이어서 Pod를 실행할 수 있는 노드의 조건을 정한 배치 제약을 확인하고, 조건을 통과한 후보 노드들의 점수를 계산해서 적합한 노드를 선택합니다. 별도의 배치 제약을 선언하지 않으면 복제본들이 서로 다른 노드에 하나씩 분산된다고 보장되지 않으며, 여러 Pod가 같은 노드에 배치될 수도 있습니다. 복제본을 여러 Node에 의도적으로 분산하려면 **Pod 안티어피니티**(특정 Pod끼리 같은 위치에 배치하지 않도록 정하는 조건)나 **Topology Spread Constraints**(Node와 가용 영역 같은 토폴로지 단위에 Pod 분포를 맞추는 조건)를 추가해야 합니다.
+
+Pod의 이름과 IP가 계속 바뀔 수 있으므로 Deployment는 그 값을 기준으로 Pod 집합을 구분하지 않습니다. Kubernetes는 리소스에 붙이는 키와 값 형태의 분류 정보인 **Label**(레이블)을 사용합니다. Deployment는 **Selector**(셀렉터)에 적힌 Label 조건과 일치하는 Pod들을 자신이 관리할 집합으로 봅니다. 새 Pod를 만들 때도 Pod 템플릿에 같은 Label을 붙여, 새 Pod가 같은 관리 집합에 포함되도록 합니다.
+
+<div align="center">
+
+![Deployment가 Label과 Selector로 Pod 집합을 선택하는 구조](../images/articles/03/07-deployment-selector.svg)
+
+</div>
+
+Label과 Selector를 사용하면 Deployment가 특정 Pod 이름을 미리 알지 않아도 Pod 집합을 계속 관리할 수 있습니다. 예를 들어 `app: web`이라는 Label을 관리 기준으로 삼으면, 기존 Pod가 사라지고 새로운 Pod가 만들어져도 같은 Label을 가진 Pod를 웹 애플리케이션의 복제본으로 셀 수 있습니다. 원하는 Pod 복제본 개수가 세 개인데 조건에 맞는 Pod가 두 개뿐이면 ReplicaSet이 새 Pod 하나를 만들고, 네 개이면 Pod 하나를 줄입니다. 삭제된 Pod 자체를 되살리는 대신 같은 역할을 하는 새 Pod로 원하는 상태를 회복하는 방식입니다.
+
+Deployment는 개별 Pod 목록을 직접 보관하지 않고 Label 조건으로 관리할 Pod 집합을 선언합니다. 이 구조는 리소스들이 API의 공유 상태를 기준으로 느슨하게 연결되는 Kubernetes의 철학과도 이어집니다.
+
+Deployment는 Pod 복제본 개수만 유지하지 않습니다. 컨테이너 이미지처럼 Pod 구성이 바뀌면 기존 Pod 집합을 새 구성의 Pod 집합으로 점진적으로 교체하고, 배포 도중에도 사용 가능한 Pod를 유지하도록 변경 과정을 관리합니다. 따라서 Deployment의 핵심은 Pod를 한 번 생성하는 기능이 아니라, **Pod 집합의 개수와 구성, 변경 과정을 원하는 상태로 계속 관리하는 것**입니다.
 
 <div align="center">
 
@@ -113,21 +222,15 @@ Pod는 교체될 수 있는 실행 단위입니다. Pod를 새로 만들면 Pod 
 
 *성수선임과 함께 배우는 쿠버네티스 : Deployment 캐릭터*
 
-Deployment 캐릭터는 안전모와 점검표를 든 관리자처럼 여러 **Pod**를 살피고 있습니다. 건강한 Pod들을 일정하게 유지하고 문제가 생긴 Pod를 돌보는 모습은 Deployment가 원하는 복제본 수를 맞추고 배포 상태를 관리한다는 점을 보여 줍니다.
-
-<div align="center">
-
-![Kubernetes Deployment](../images/articles/02/12-deployment.svg)
-
-</div>
-
-**Deployment**(디플로이먼트)는 원하는 Pod 복제본 개수와 Pod의 구성을 선언하는 상위 리소스입니다. Deployment는 내부에 적힌 Pod 템플릿을 기준으로 Pod를 만들고, 지정한 Pod 복제본 개수를 유지합니다. 컨테이너 이미지가 바뀌면 Pod를 새 구성으로 교체하는 배포 과정도 관리합니다.
+Deployment 캐릭터는 안전모와 점검표를 든 관리자처럼 여러 **Pod**를 살피고 있습니다. 같은 모습을 가진 Pod들을 일정하게 유지하고 문제가 생긴 Pod를 돌보는 모습은 Deployment가 원하는 Pod 복제본 개수와 배포 상태를 계속 관리한다는 점을 보여 줍니다.
 
 ### 3.1 Pod 템플릿과 셀렉터
 
-**Pod 템플릿**(Pod template)은 Deployment가 만들 Pod의 모습을 적은 부분입니다. 템플릿에는 Pod에 붙일 레이블과 컨테이너 이미지, 포트 같은 설정이 들어갑니다. **레이블**(label)은 리소스를 분류하기 위해 붙이는 키와 값 형태의 정보입니다.
+앞에서 설명한 Pod 구성과 복제본 개수, 관리할 Pod의 Label 조건은 Deployment 매니페스트의 `spec`에 기록합니다. 이 개념들이 각각 `template`, `replicas`, `selector`라는 필드로 표현됩니다.
 
-Deployment의 `spec.selector`는 Deployment가 어떤 Pod를 관리할지 고르는 조건입니다. 이 조건을 **셀렉터**(selector)라고 합니다. `spec.selector.matchLabels`와 `spec.template.metadata.labels`는 같은 레이블을 가리켜야 합니다. 두 값이 다르면 API가 리소스 생성을 거절합니다.
+**Pod 템플릿**(Pod template)은 Deployment가 새 Pod를 만들 때 사용할 공통 구성을 적은 부분입니다. 템플릿에는 Pod에 붙일 Label과 컨테이너 이미지, 포트 같은 설정이 들어갑니다. 템플릿이 같아도 이 템플릿으로 생성된 각 Pod는 서로 다른 이름과 IP를 가진 독립적인 실행 단위입니다.
+
+Deployment의 `spec.selector`에는 Deployment가 관리할 Pod를 고르는 Label 조건을 적습니다. `spec.selector.matchLabels`와 `spec.template.metadata.labels`는 같은 Label을 가리켜야 합니다. 두 값이 다르면 새로 만드는 Pod가 Deployment의 관리 조건에 포함되지 않으므로 API가 Deployment 생성을 거절합니다.
 
 ```yaml
 # Pod 복제본 세 개와 Pod 템플릿을 선언하는 Deployment 예시
@@ -158,11 +261,17 @@ spec:
 
 ### 3.2 ReplicaSet과 자동 복구
 
+<div align="center">
+
+![ReplicaSet의 Pod 복구와 롤링 업데이트 과정](../images/articles/03/08-replicaset-lifecycle.svg)
+
+</div>
+
 Deployment는 Pod를 직접 하나씩 유지하지 않습니다. Deployment가 **ReplicaSet**(레플리카셋)을 만들고, ReplicaSet이 지정한 Pod 복제본 개수를 유지합니다. Deployment 매니페스트에 `replicas: 3`을 적으면 ReplicaSet은 같은 템플릿을 사용하는 Pod 세 개가 실행되도록 상태를 맞춥니다.
 
 Deployment가 만든 Pod 하나를 삭제하면 ReplicaSet은 실제 Pod 복제본 개수가 두 개로 줄었다는 사실을 확인합니다. ReplicaSet은 원하는 Pod 복제본 개수인 세 개를 맞추기 위해 새 Pod 하나를 만듭니다. 이 동작은 삭제된 Pod 자체를 되살리는 것이 아니라, 같은 템플릿을 사용하는 새 Pod를 만드는 방식입니다. 따라서 새 Pod의 이름과 IP는 이전 Pod와 달라질 수 있습니다.
 
-Deployment의 컨테이너 이미지를 `my-web:1.0`에서 `my-web:1.1`로 바꾸면 Deployment는 새 ReplicaSet을 만들고 Pod를 점진적으로 교체합니다. 이 과정을 **롤링 업데이트**(rolling update)라고 합니다. 배포 기록이 남아 있으면 이전 Pod 템플릿으로 되돌리는 롤백도 수행할 수 있습니다.
+하나의 ReplicaSet은 특정 시점의 Pod 템플릿을 기준으로 복제본 개수를 유지합니다. Deployment의 컨테이너 이미지를 `my-web:1.0`에서 `my-web:1.1`로 바꾸면 기존 ReplicaSet의 Pod를 직접 수정하지 않고, 새 Pod 템플릿을 가진 ReplicaSet을 만듭니다. Deployment는 기존 ReplicaSet의 복제본을 줄이는 동시에 새 ReplicaSet의 복제본을 늘려 Pod를 점진적으로 교체합니다. 이 과정을 **롤링 업데이트**(rolling update)라고 합니다. 이전 ReplicaSet의 배포 기록이 남아 있으면 이전 Pod 템플릿으로 되돌리는 롤백도 수행할 수 있습니다.
 
 ### 3.3 컨테이너 상태를 검사하는 Probe
 
@@ -200,203 +309,8 @@ spec:
 
 애플리케이션 기동이 느린데 Liveness Probe를 너무 일찍 시작하면, 애플리케이션이 준비를 마치기 전에 컨테이너 재시작이 반복될 수 있습니다. 이때는 애플리케이션의 실제 기동 시간을 먼저 확인하고 검사 시작 시점과 실패 기준을 조정해야 합니다.
 
-## 4. 변하는 Pod 앞에 고정 주소를 제공하는 Service
-
-<div align="center">
-
-<img src="https://raw.githubusercontent.com/kubernetes/community/main/icons/svg/resources/labeled/svc.svg" alt="Kubernetes 공식 Service 리소스 마크" width="260">
-
-*Fig 7. Kubernetes 공식 Service 리소스 마크: Kubernetes Community 공개 아이콘 에셋*
-
-</div>
-
-<div align="center">
-
-![성수선임과 함께 배우는 쿠버네티스 : Service 캐릭터](../images/characters/character-service.png)
-
-</div>
-
-*성수선임과 함께 배우는 쿠버네티스 : Service 캐릭터*
-
-Service 캐릭터는 안내 데스크에서 요청 목록을 확인한 뒤 뒤편의 **Pod**들을 가리키고 있습니다. 요청을 보내는 쪽은 매번 달라지는 Pod를 직접 찾지 않아도 되고, Service라는 고정된 입구를 이용하면 알맞은 Pod로 연결된다는 점을 표현합니다.
-
-<div align="center">
-
-![Kubernetes Service](../images/articles/02/07-k8s-service.svg)
-
-</div>
-
-Pod는 장애 복구와 배포 과정에서 계속 교체될 수 있습니다. 새 Pod에는 새 IP가 할당될 수 있으므로, 클라이언트가 Pod IP를 직접 저장해서 사용하면 연결이 쉽게 끊어집니다. **Service**(서비스)는 변하는 Pod 집합 앞에 고정된 가상 IP와 DNS 이름을 제공하는 네트워크 리소스입니다.
-
-Service는 셀렉터와 일치하는 레이블을 가진 Pod를 요청 전달 대상으로 찾습니다. 클라이언트는 개별 Pod IP 대신 Service 이름과 포트로 요청을 보냅니다. Service 뒤의 Pod가 교체되어도 새 Pod의 레이블이 Service 셀렉터와 일치하면 요청 전달 대상이 새 Pod로 갱신됩니다.
-
-```yaml
-# app=web 레이블을 가진 Pod에 요청을 전달하는 Service 예시
-apiVersion: v1
-kind: Service
-metadata:
-  name: web
-spec:
-  type: ClusterIP
-  selector:
-    app: web
-  ports:
-  - name: http
-    port: 80
-    targetPort: 8080
-```
-
-`port`는 클라이언트가 Service에 요청을 보낼 때 사용하는 포트입니다. `targetPort`는 선택된 Pod 안에서 애플리케이션이 요청을 받는 포트입니다. 위 설정에서는 클라이언트가 Service의 80번 포트로 보낸 요청을 Pod의 8080번 포트로 전달합니다.
-
-Service의 `metadata.labels`가 아니라 `spec.selector`가 Pod 레이블과 맞아야 합니다. Deployment와 Service도 서로를 직접 참조하지 않습니다. Deployment는 Pod에 `app: web` 레이블을 붙이고, Service는 `app: web` 레이블을 가진 Pod를 독립적으로 찾습니다. 두 리소스가 같은 Pod 레이블을 기준으로 동작하기 때문에 간접적으로 연결됩니다.
-
-Service의 기본 타입인 **ClusterIP**는 클러스터 내부에서만 사용할 가상 IP를 만듭니다. **NodePort**는 각 노드의 정해진 포트를 통해 Service를 외부에 노출합니다. **LoadBalancer**는 지원하는 클라우드 환경에서 외부 로드 밸런서를 만들고 Service와 연결합니다.
-
-Readiness Probe도 Service와 연결됩니다. Pod의 Readiness Probe가 실패하면 해당 Pod는 요청을 받을 준비가 되지 않은 상태가 됩니다. Kubernetes는 준비되지 않은 Pod를 Service의 일반적인 요청 전달 대상에서 제외합니다. 컨테이너를 재시작하지 않고 트래픽만 차단한다는 점이 Liveness Probe와의 차이입니다.
-
-## 5. HTTP 요청을 Service로 나누는 Ingress
-
-<div align="center">
-
-<img src="https://raw.githubusercontent.com/kubernetes/community/main/icons/svg/resources/labeled/ing.svg" alt="Kubernetes 공식 Ingress 리소스 마크" width="260">
-
-*Fig 9. Kubernetes 공식 Ingress 리소스 마크: Kubernetes Community 공개 아이콘 에셋*
-
-</div>
-
-<div align="center">
-
-![성수선임과 함께 배우는 쿠버네티스 : Ingress 캐릭터](../images/characters/character-ingress.png)
-
-</div>
-
-*성수선임과 함께 배우는 쿠버네티스 : Ingress 캐릭터*
-
-Ingress 캐릭터는 열쇠를 든 문지기처럼 외부 요청을 확인하고 여러 **Service** 입구 중 알맞은 곳을 가리키고 있습니다. 쇼핑과 웹을 나타내는 요청이 서로 다른 길로 나뉘는 모습은 Ingress가 도메인과 URL 경로에 따라 요청을 해당 Service로 전달한다는 점을 보여 줍니다.
-
-**Ingress**(인그레스)는 클러스터 외부에서 들어오는 HTTP와 HTTPS 요청을 도메인이나 URL 경로에 따라 Service로 전달하도록 규칙을 선언하는 리소스입니다. 예를 들어 `example.com/api` 요청은 API Service로 보내고, `example.com/web` 요청은 웹 Service로 보내도록 한 주소에서 경로를 나눌 수 있습니다.
-
-Ingress와 Service는 맡은 범위가 다릅니다. Service는 선택한 Pod 집합에 안정적인 주소를 제공하고 요청을 전달합니다. Ingress는 Service 앞에서 HTTP 호스트와 경로를 검사한 뒤 요청을 알맞은 Service로 보냅니다. Ingress의 백엔드는 Pod가 아니라 Service입니다.
-
-```yaml
-# example.com의 /web 요청을 web Service로 보내는 Ingress 예시
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: web
-spec:
-  ingressClassName: nginx
-  rules:
-  - host: example.com
-    http:
-      paths:
-      - path: /web
-        pathType: Prefix
-        backend:
-          service:
-            name: web
-            port:
-              number: 80
-```
-
-`host`는 요청의 도메인을, `path`는 URL 경로를 고르는 조건입니다. `pathType: Prefix`는 `/web`으로 시작하는 경로를 같은 규칙으로 처리한다는 뜻입니다. `backend.service.name`과 `backend.service.port`는 요청을 넘길 Service 이름과 포트를 가리킵니다.
-
-Ingress 매니페스트만 만든다고 실제 네트워크 프록시가 생기지는 않습니다. **Ingress Controller**(인그레스 컨트롤러)는 Ingress 리소스를 관찰하고, 선언한 규칙을 실제 프록시나 로드 밸런서 설정으로 적용하는 실행 구성 요소입니다. 클러스터에 Ingress Controller가 설치되어 있어야 외부 요청이 Ingress 규칙을 따라 Service에 도달합니다. `ingressClassName`은 여러 Ingress Controller 중에서 이 Ingress를 처리할 대상을 지정합니다.
-
-Ingress는 HTTPS 연결을 종료하고 인증서를 처리하도록 구성할 수도 있습니다. 이 경우 인증서와 개인 키를 Kubernetes 리소스에 저장하고 Ingress의 TLS 설정에서 해당 리소스를 참조합니다. 핵심은 Ingress가 규칙을 저장하고, Ingress Controller가 실제 요청을 처리한다는 책임 분리입니다.
-
-## 6. 리소스 이름과 정책 범위를 나누는 Namespace
-
-<div align="center">
-
-![Kubernetes Namespace](../images/articles/02/08-namespace.svg)
-
-</div>
-
-**Namespace**(네임스페이스)는 하나의 클러스터 안에서 리소스 이름과 정책 적용 범위를 논리적으로 나누는 리소스입니다. 같은 클러스터를 여러 팀이나 서비스, 개발 환경이 함께 사용할 때 리소스를 구분하는 기준으로 사용합니다.
-
-```yaml
-# dev Namespace를 선언하는 매니페스트 예시
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: dev
-```
-
-Namespace에 속하는 리소스의 `metadata.namespace`에 `dev`를 적으면 해당 리소스가 `dev` Namespace에 만들어집니다. 매니페스트와 명령에 Namespace를 지정하지 않으면 현재 kubectl 문맥에 설정된 Namespace를 사용하며, 별도 설정이 없을 때는 보통 `default` Namespace를 사용합니다.
-
-리소스 이름은 Namespace 안에서 고유하면 됩니다. `dev` Namespace와 `prod` Namespace에는 이름이 같은 `web` Deployment와 `web` Service가 각각 존재할 수 있습니다. 따라서 리소스를 정확히 식별하려면 Namespace와 리소스 이름을 함께 확인해야 합니다.
-
-Service의 짧은 DNS 이름도 Namespace를 기준으로 해석됩니다. 같은 Namespace에 있는 Pod는 `web`이라는 이름으로 같은 Namespace의 Service에 접근할 수 있습니다. 다른 Namespace의 Service에 접근하려면 `web.prod`처럼 Service 이름과 Namespace 이름을 함께 적을 수 있습니다. 전체 DNS 이름은 `web.prod.svc.cluster.local`과 같은 형태입니다.
-
-Namespace는 클러스터를 물리적으로 분리하지 않습니다. Namespace를 나눈 것만으로 서로 다른 Namespace 사이의 네트워크 통신이 자동으로 차단되거나 노드가 분리되는 것도 아닙니다. 권한을 제한하려면 역할 기반 접근 제어 정책을, 자원 사용량을 제한하려면 리소스 할당량을, 네트워크 통신을 제한하려면 네트워크 정책을 별도로 적용해야 합니다.
-
-Pod와 Deployment, Service, Ingress는 특정 Namespace에 속합니다. 반면 Node처럼 클러스터 전체를 대상으로 하는 리소스도 있습니다. 따라서 모든 Kubernetes 리소스가 Namespace에 속한다고 이해하면 안 됩니다.
-
-## 7. Pod이 하나의 외부 요청을 처리하는 흐름
-
-<div align="center">
-
-![Pod가 외부 요청을 처리하는 리소스 연결 관계](../images/articles/02/13-resource-link.svg)
-
-</div>
-
-지금까지 살펴본 리소스는 서로 다른 책임을 맡지만, 실제 요청을 처리할 때는 하나의 흐름으로 이어집니다. Namespace는 Pod와 Deployment, Service, Ingress의 이름과 정책 범위를 나눕니다. Deployment는 Pod 템플릿을 기준으로 ReplicaSet을 만들고, ReplicaSet은 원하는 Pod 복제본 개수를 유지합니다. Service는 Pod 레이블을 기준으로 요청 전달 대상을 찾습니다. Ingress는 외부 HTTP와 HTTPS 요청을 도메인과 경로에 따라 Service로 전달합니다.
-
-외부 요청은 Ingress Controller에서 Ingress 규칙에 맞는 Service로 전달됩니다. Service는 자신의 셀렉터와 일치하고 요청을 받을 준비가 된 Pod 중 하나로 요청을 보냅니다. 선택된 Pod 안의 애플리케이션 컨테이너가 요청을 처리합니다. Pod가 교체되어도 Deployment가 원하는 Pod 복제본 개수를 유지하고, Service가 새 Pod를 요청 전달 대상으로 반영하므로 클라이언트는 개별 Pod IP를 알 필요가 없습니다.
-
-이 연결에서 가장 자주 헷갈리는 부분은 레이블과 셀렉터입니다. Deployment의 `spec.selector.matchLabels`는 Deployment가 관리할 Pod를 고르고, `spec.template.metadata.labels`는 새 Pod에 실제 레이블을 붙입니다. Service의 `spec.selector`는 요청을 전달할 Pod를 고릅니다. Deployment와 Service의 셀렉터는 대개 같은 Pod 레이블을 사용하지만, 두 셀렉터는 서로 다른 목적을 가집니다.
-
-리소스가 속한 Namespace도 맞아야 합니다. Service는 같은 Namespace에 있는 Pod를 셀렉터로 찾고, Ingress의 백엔드 Service도 Ingress와 같은 Namespace에 있어야 합니다. 이름과 레이블이 같더라도 Namespace가 다르면 이 연결은 성립하지 않습니다.
-
-### 7.1 Service에 연결할 Pod가 보이지 않을 때
-
-Service의 가상 IP가 만들어졌는데 요청이 실패한다면, 먼저 Service 셀렉터와 Pod 레이블을 확인해야 합니다. Service 셀렉터가 Pod 레이블과 다르거나, 일치하는 Pod가 준비되지 않았으면 Service가 요청을 전달할 대상을 찾지 못합니다.
-
-**Endpoints**(엔드포인트)는 Service가 현재 요청을 전달할 Pod IP와 포트 목록입니다. Service와 Pod가 정상적으로 연결되었는지는 Endpoints에 대상 주소가 들어 있는지 확인해서 판단할 수 있습니다.
-
-```bash
-# Service 셀렉터와 일치하는 Pod와 요청 전달 대상을 확인하는 명령
-kubectl -n dev get service web
-kubectl -n dev get pods -l app=web --show-labels
-kubectl -n dev get endpoints web
-```
-
-정상 상태에서는 Service 정보와 `app=web` 레이블을 가진 Pod가 보이고, Endpoints에 Pod IP와 애플리케이션 포트가 표시됩니다.
-
-```text
-NAME   TYPE        CLUSTER-IP      PORT(S)   AGE
-web    ClusterIP   10.96.120.15    80/TCP    2m
-
-NAME                   READY   STATUS    LABELS
-web-7d9c7f8b6f-k2m4p    1/1     Running   app=web
-
-NAME   ENDPOINTS          AGE
-web    10.244.1.12:8080   2m
-```
-
-Endpoints가 `<none>`으로 표시된다면 Service의 `spec.selector`와 Pod의 `metadata.labels`가 같은지 확인합니다. 레이블이 맞는데도 Endpoints가 비어 있다면 Pod의 `READY` 상태와 Readiness Probe 결과를 확인합니다. Pod 이벤트에는 이미지 다운로드 실패와 Probe 실패처럼 Pod가 준비되지 못한 원인이 기록될 수 있습니다.
-
-```bash
-# 준비되지 않은 Pod의 상태와 이벤트를 확인하는 명령
-kubectl -n dev describe pod -l app=web
-kubectl -n dev get events --sort-by=.metadata.creationTimestamp
-```
-
-```text
-Conditions:
-  Type    Status
-  Ready   False
-
-Events:
-  Type     Reason      Message
-  Warning  Unhealthy   Readiness probe failed: HTTP probe failed with statuscode: 503
-```
-
-`describe` 출력의 `Conditions`와 `Events`에서 `Ready=False` 또는 `Readiness probe failed`를 확인할 수 있습니다. 이미지 이름이 잘못되었다면 `ErrImagePull`이나 `ImagePullBackOff` 상태가 나타날 수 있습니다. 증상을 확인한 뒤 Service 셀렉터, Pod 레이블, Readiness Probe, 컨테이너 이미지 순서로 원인을 좁히면 연결 문제를 찾기 쉽습니다.
-
 ## 다음 글로 넘어가기 전에
 
-이번 글에서 다룬 내용은 이렇습니다. Pod는 함께 실행할 컨테이너를 묶고, Deployment는 Pod 복제본 개수와 배포 상태를 유지합니다. Service는 변하는 Pod 집합에 고정 주소를 제공하고, Ingress는 외부 HTTP와 HTTPS 요청을 Service로 나눕니다. Namespace는 리소스 이름과 정책 범위를 구분하며, Deployment와 Service는 Pod 레이블을 기준으로 각각 Pod를 관리하고 요청을 전달합니다.
+이번 글에서 다룬 내용은 이렇습니다. 매니페스트는 Kubernetes API에 원하는 상태를 전달하는 입력이고, 리소스는 클러스터 안에서 지속해서 관리되는 대상입니다. Pod는 함께 실행할 컨테이너를 묶고, Deployment는 Label과 Selector를 기준으로 Pod 복제본 개수와 배포 상태를 유지합니다.
 
-다음 글에서는 로컬에 Kubernetes 실습 환경을 구성하고, 이번 글에서 살펴본 매니페스트와 명령을 실제 클러스터에 적용합니다.
+다음 글에서는 변하는 Pod 집합에 고정 주소를 제공하는 Service와 외부 HTTP와 HTTPS 요청을 Service로 나누는 Ingress를 살펴봅니다.

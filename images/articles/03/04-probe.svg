@@ -45,7 +45,7 @@
 
   <line x1="40" y1="325" x2="920" y2="325" stroke="#E2E8F0" stroke-width="1"/>
   <text x="480" y="353" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 6. Probe 실패 결과:</tspan>
+    <tspan font-weight="600">Fig 12. Probe 실패 결과:</tspan>
     <tspan> 컨테이너 재시작과 Service 요청 차단의 차이</tspan>
   </text>
 </svg>
