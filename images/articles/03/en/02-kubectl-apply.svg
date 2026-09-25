@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="620" viewBox="0 0 1040 620">
+  <rect width="1040" height="620" fill="#F7F9FC"/>
+  <defs>
+    <marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+    <marker id="arrow-teal" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/>
+    </marker>
+  </defs>
+
+  <rect x="30" y="45" width="450" height="270" rx="18" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
+  <text x="255" y="76" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#334155" font-weight="600">user machine running kubectl</text>
+
+  <rect x="55" y="95" width="175" height="56" rx="9" fill="#0F172A"/>
+  <text x="72" y="119" font-family="Menlo, Consolas, monospace" font-size="11.5" fill="#E2E8F0">kubectl apply -f</text>
+  <text x="72" y="138" font-family="Menlo, Consolas, monospace" font-size="11.5" fill="#93C5FD">./app.yaml</text>
+
+  <rect x="55" y="174" width="175" height="49" rx="9" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5"/>
+  <text x="142.5" y="195" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#334155" font-weight="600">app.yaml</text>
+  <text x="142.5" y="212" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.5" fill="#64748B">manifest describing desired state</text>
+
+  <rect x="55" y="244" width="175" height="49" rx="9" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5"/>
+  <text x="142.5" y="265" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#334155" font-weight="600">kubeconfig</text>
+  <text x="142.5" y="282" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.5" fill="#64748B">cluster address and credentials</text>
+
+  <rect x="285" y="112" width="160" height="139" rx="14" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="365" y="143" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#1D4ED8" font-weight="600">kubectl</text>
+  <text x="365" y="172" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11.5" fill="#3B82F6">read manifest</text>
+  <text x="365" y="196" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11.5" fill="#3B82F6">select target cluster</text>
+  <text x="365" y="220" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11.5" fill="#3B82F6">create API request</text>
+
+  <path d="M230 123 H270 V147 H285" fill="none" stroke="#2563EB" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <path d="M230 198 H285" fill="none" stroke="#2563EB" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <path d="M230 268 H270 V224 H285" fill="none" stroke="#2563EB" stroke-width="2" marker-end="url(#arrow-blue)"/>
+
+  <path d="M480 181 H535" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <text x="507.5" y="146" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="9.5" fill="#1D4ED8">
+    <tspan x="507.5">API</tspan>
+    <tspan x="507.5" dy="14">request</tspan>
+  </text>
+
+  <rect x="535" y="101" width="200" height="160" rx="15" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text x="635" y="136" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#1D4ED8" font-weight="600">API Server</text>
+  <text x="635" y="171" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11.5" fill="#3B82F6">check identity and permissions</text>
+  <text x="635" y="197" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11.5" fill="#3B82F6">validate manifest fields</text>
+  <text x="635" y="223" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11.5" fill="#3B82F6">create or update resource</text>
+
+  <path d="M735 181 H790" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <text x="762.5" y="146" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="9.5" fill="#1D4ED8">
+    <tspan x="762.5">validated</tspan>
+    <tspan x="762.5" dy="14">resource</tspan>
+  </text>
+
+  <rect x="790" y="76" width="220" height="210" rx="16" fill="#FFFFFF" stroke="#0D9488" stroke-width="2"/>
+  <text x="900" y="111" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#0F766E" font-weight="600">Kubernetes resource</text>
+  <rect x="815" y="135" width="170" height="55" rx="9" fill="#ECFDF5" stroke="#10B981" stroke-width="1.5"/>
+  <text x="833" y="158" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#047857" font-weight="600">spec</text>
+  <text x="833" y="177" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.5" fill="#059669">user-declared desired state</text>
+  <rect x="815" y="207" width="170" height="55" rx="9" fill="#F1F5F9" stroke="#94A3B8" stroke-width="1.5"/>
+  <text x="833" y="230" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#475569" font-weight="600">status</text>
+  <text x="833" y="249" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.5" fill="#64748B">current state observed by cluster</text>
+
+  <path d="M900 286 V326 H795 V364" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
+  <text x="847" y="317" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E">watch resource changes</text>
+
+  <rect x="535" y="364" width="260" height="88" rx="14" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
+  <text x="665" y="397" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#0F766E" font-weight="600">control process</text>
+  <text x="665" y="426" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11.5" fill="#0D9488">reconcile desired and actual state</text>
+
+  <path d="M665 452 V485" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
+  <text x="686" y="474" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.5" fill="#0F766E">request actual-state change</text>
+
+  <rect x="535" y="485" width="260" height="56" rx="12" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
+  <text x="665" y="519" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#334155" font-weight="600">cluster actual state</text>
+
+  <text x="520" y="560" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">kubectl submits the manifest; control processes reconcile actual state from the stored resource</text>
+  <line x1="40" y1="578" x2="1000" y2="578" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="520" y="606" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 3. kubectl apply flow:</tspan>
+    <tspan> local manifest submission and Kubernetes resource reconciliation</tspan>
+  </text>
+</svg>

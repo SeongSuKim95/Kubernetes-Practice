@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="620" viewBox="0 0 1000 620">
+  <rect width="1000" height="620" fill="#F7F9FC"/>
+  <defs>
+    <marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/>
+    </marker>
+    <marker id="arrow-teal" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto-start-reverse">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#0D9488"/>
+    </marker>
+  </defs>
+
+  <rect x="30" y="150" width="195" height="142" rx="16" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
+  <text x="127.5" y="186" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#334155" font-weight="600">Kubernetes</text>
+  <text x="127.5" y="222" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">Choose a Worker Node</text>
+  <text x="127.5" y="243" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">for the Pod</text>
+
+  <path d="M225 221 H300" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <text x="262.5" y="202" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#1D4ED8">place as a Pod</text>
+
+  <rect x="300" y="40" width="670" height="475" rx="20" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
+  <text x="635" y="73" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#475569" font-weight="600">One Worker Node</text>
+
+  <rect x="330" y="92" width="610" height="345" rx="18" fill="#EFF6FF" stroke="#2563EB" stroke-width="2.5"/>
+  <text x="635" y="126" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="17" fill="#1D4ED8" font-weight="600">Pod: Kubernetes minimum execution unit</text>
+
+  <rect x="365" y="154" width="220" height="80" rx="12" fill="#FFFFFF" stroke="#2563EB" stroke-width="2"/>
+  <text x="475" y="187" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#1D4ED8" font-weight="600">Container A</text>
+  <text x="475" y="211" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">application process</text>
+
+  <rect x="685" y="154" width="220" height="80" rx="12" fill="#FFFFFF" stroke="#2563EB" stroke-width="2"/>
+  <text x="795" y="187" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#1D4ED8" font-weight="600">Container B</text>
+  <text x="795" y="211" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#64748B">cooperating process</text>
+
+  <path d="M585 194 H685" fill="none" stroke="#0D9488" stroke-width="2" marker-start="url(#arrow-teal)" marker-end="url(#arrow-teal)"/>
+  <text x="635" y="178" text-anchor="middle" font-family="Menlo, Consolas, monospace" font-size="11" fill="#0F766E">localhost</text>
+
+  <rect x="365" y="263" width="540" height="52" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="1.8"/>
+  <text x="635" y="285" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">shared network</text>
+  <text x="635" y="304" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">share one Pod IP and port space</text>
+
+  <rect x="365" y="332" width="540" height="52" rx="10" fill="#F0FDFA" stroke="#14B8A6" stroke-width="1.8"/>
+  <text x="635" y="354" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">shared volume</text>
+  <text x="635" y="373" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">each container mounts the same storage at its own path</text>
+
+  <text x="635" y="414" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#1D4ED8" font-weight="600">share the lifecycle of Pod creation, placement on one node, and deletion</text>
+
+  <rect x="330" y="460" width="610" height="39" rx="10" fill="#FFF7ED" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="635" y="485" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11.5" fill="#B45309">if one container exits, only that container may restart inside the Pod</text>
+
+  <text x="500" y="540" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">Kubernetes places cooperating containers together and manages them within one execution boundary called a Pod</text>
+  <line x1="40" y1="565" x2="960" y2="565" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="500" y="595" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 4. Pod:</tspan>
+    <tspan> minimum execution unit for co-placement and resource sharing</tspan>
+  </text>
+</svg>

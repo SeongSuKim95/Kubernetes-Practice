@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="570" viewBox="0 0 1000 570">
+  <rect width="1000" height="570" fill="#F7F9FC"/>
+
+  <!-- Deployment scene -->
+  <rect x="35" y="55" width="450" height="435" rx="18" fill="#FFFFFF" stroke="#FDBA74" stroke-width="2"/>
+  <rect x="35" y="55" width="450" height="54" rx="18" fill="#FFF7ED"/>
+  <rect x="35" y="91" width="450" height="18" fill="#FFF7ED"/>
+  <text x="260" y="88" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="17" fill="#C2410C" font-weight="700">Deployment: product catalog web servers</text>
+
+  <rect x="70" y="132" width="380" height="62" rx="12" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="260" y="157" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#1D4ED8" font-weight="700">“Show me the product list”</text>
+  <text x="260" y="179" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#475569">any web server can return the same result</text>
+
+  <!-- shoppers -->
+  <circle cx="105" cy="246" r="16" fill="#FDE68A" stroke="#D97706" stroke-width="1.5"/>
+  <path d="M80 293 Q105 260 130 293 V310 H80 Z" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+  <circle cx="105" cy="241" r="3" fill="#92400E"/>
+  <text x="105" y="332" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#92400E">customer</text>
+
+  <!-- interchangeable web counters -->
+  <g>
+    <rect x="155" y="220" width="84" height="116" rx="10" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/>
+    <rect x="168" y="237" width="58" height="43" rx="6" fill="#FFFFFF" stroke="#60A5FA"/>
+    <circle cx="197" cy="258" r="10" fill="#BFDBFE"/>
+    <path d="M180 273 Q197 251 214 273" fill="#93C5FD"/>
+    <text x="197" y="304" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#1D4ED8" font-weight="600">web Pod</text>
+    <text x="197" y="321" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10" fill="#2563EB">same role</text>
+  </g>
+  <g>
+    <rect x="255" y="220" width="84" height="116" rx="10" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/>
+    <rect x="268" y="237" width="58" height="43" rx="6" fill="#FFFFFF" stroke="#60A5FA"/>
+    <circle cx="297" cy="258" r="10" fill="#BFDBFE"/>
+    <path d="M280 273 Q297 251 314 273" fill="#93C5FD"/>
+    <text x="297" y="304" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#1D4ED8" font-weight="600">web Pod</text>
+    <text x="297" y="321" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10" fill="#2563EB">same role</text>
+  </g>
+  <g>
+    <rect x="355" y="220" width="84" height="116" rx="10" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/>
+    <rect x="368" y="237" width="58" height="43" rx="6" fill="#FFFFFF" stroke="#60A5FA"/>
+    <circle cx="397" cy="258" r="10" fill="#BFDBFE"/>
+    <path d="M380 273 Q397 251 414 273" fill="#93C5FD"/>
+    <text x="397" y="304" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#1D4ED8" font-weight="600">web Pod</text>
+    <text x="397" y="321" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10" fill="#2563EB">same role</text>
+  </g>
+
+  <rect x="78" y="370" width="364" height="76" rx="12" fill="#FFF7ED" stroke="#FDBA74" stroke-width="1.5"/>
+  <text x="260" y="398" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#C2410C" font-weight="700">the service continues when one web Pod is replaced</text>
+  <text x="260" y="421" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#7C2D12">a new Pod from the same template takes its place</text>
+
+  <!-- StatefulSet scene -->
+  <rect x="515" y="55" width="450" height="435" rx="18" fill="#FFFFFF" stroke="#5EEAD4" stroke-width="2"/>
+  <rect x="515" y="55" width="450" height="54" rx="18" fill="#ECFDF5"/>
+  <rect x="515" y="91" width="450" height="18" fill="#ECFDF5"/>
+  <text x="740" y="88" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="17" fill="#0F766E" font-weight="700">StatefulSet: database storing order history</text>
+
+  <rect x="550" y="132" width="380" height="62" rx="12" fill="#FEF3C7" stroke="#FCD34D" stroke-width="1.5"/>
+  <text x="740" y="157" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#92400E" font-weight="700">“Order history must survive Pod replacement”</text>
+  <text x="740" y="179" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#475569">each Pod keeps a distinct name and dedicated storage</text>
+
+  <!-- database cabinet 0 -->
+  <g>
+    <rect x="570" y="218" width="160" height="125" rx="12" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/>
+    <rect x="588" y="236" width="124" height="39" rx="7" fill="#FFFFFF" stroke="#5EEAD4"/>
+    <text x="650" y="261" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="700">database-0</text>
+    <rect x="588" y="286" width="124" height="39" rx="7" fill="#99F6E4" stroke="#14B8A6"/>
+    <circle cx="607" cy="305" r="6" fill="#0D9488"/>
+    <line x1="622" y1="301" x2="694" y2="301" stroke="#0F766E" stroke-width="2"/>
+    <line x1="622" y1="310" x2="676" y2="310" stroke="#0F766E" stroke-width="2"/>
+    <text x="650" y="364" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E">dedicated order store 0</text>
+  </g>
+
+  <!-- database cabinet 1 -->
+  <g>
+    <rect x="750" y="218" width="160" height="125" rx="12" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/>
+    <rect x="768" y="236" width="124" height="39" rx="7" fill="#FFFFFF" stroke="#5EEAD4"/>
+    <text x="830" y="261" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="700">database-1</text>
+    <rect x="768" y="286" width="124" height="39" rx="7" fill="#99F6E4" stroke="#14B8A6"/>
+    <circle cx="787" cy="305" r="6" fill="#0D9488"/>
+    <line x1="802" y1="301" x2="874" y2="301" stroke="#0F766E" stroke-width="2"/>
+    <line x1="802" y1="310" x2="856" y2="310" stroke="#0F766E" stroke-width="2"/>
+    <text x="830" y="364" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E">dedicated order store 1</text>
+  </g>
+
+  <rect x="558" y="382" width="364" height="64" rx="12" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1.5"/>
+  <text x="740" y="408" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#047857" font-weight="700">the new Pod inherits the existing name and order history</text>
+  <text x="740" y="430" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#065F46">the new database-0 Pod reconnects to database-0 storage</text>
+
+  <line x1="40" y1="515" x2="960" y2="515" stroke="#E2E8F0"/>
+  <text x="500" y="547" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
+    <tspan font-weight="600">Fig 9. Deployment and StatefulSet use cases:</tspan>
+    <tspan> replaceable web servers and a database retaining identity and storage</tspan>
+  </text>
+</svg>
