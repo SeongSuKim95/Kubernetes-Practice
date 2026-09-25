@@ -81,7 +81,7 @@
 
   <line x1="40" y1="660" x2="960" y2="660" stroke="#E2E8F0"/>
   <text x="500" y="690" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 8. Deployment와 ReplicaSet:</tspan>
+    <tspan font-weight="600">Fig 6. Deployment와 ReplicaSet:</tspan>
     <tspan> Pod 복제본 유지와 여러 Worker Node 배치의 책임 분리</tspan>
   </text>
 </svg>

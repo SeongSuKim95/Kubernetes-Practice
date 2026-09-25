@@ -1,6 +1,6 @@
-# Chap04. Service와 Ingress
+# Chap04. Namespace, Service, Ingress와 RBAC
 
-> 15주 연재의 넷째 글입니다. Service가 변하는 Pod 집합에 안정적인 접근점을 제공하는 방법과 Ingress가 외부 HTTP와 HTTPS 요청을 여러 Service로 나누는 방법을 정리합니다.
+> 15주 연재의 넷째 글입니다. Namespace로 리소스의 범위를 나누고, Service와 Ingress로 애플리케이션의 요청 경로를 만들며, RBAC으로 Kubernetes API 접근 권한을 제한하는 방법을 정리합니다.
 
 ## 들어가며
 
@@ -10,13 +10,41 @@
 
 </div>
 
-이전 글에서는 Pod가 컨테이너를 함께 실행하는 단위이고, Deployment가 같은 역할을 하는 Pod 집합의 개수와 배포 상태를 유지한다는 점을 살펴보았습니다. Deployment가 Pod를 새로 만들거나 교체하면 Pod의 이름과 IP는 달라질 수 있습니다.
+이전 글에서는 Pod가 컨테이너를 함께 실행하는 단위이고, Deployment, StatefulSet, DaemonSet이 서로 다른 규칙으로 Pod 집합을 관리한다는 점을 살펴보았습니다. 상위 워크로드 리소스가 Pod를 새로 만들거나 교체하면 Pod의 이름과 IP는 달라질 수 있습니다.
 
 애플리케이션이 교체되는 Pod IP를 직접 사용하면 Pod가 바뀔 때마다 연결 설정도 바꿔야 합니다. 여러 웹 애플리케이션을 외부에 공개할 때는 도메인과 URL 경로에 따라 요청을 나눌 진입점도 필요합니다. Kubernetes는 안정적인 내부 접근점을 Service로 표현하고, 외부 HTTP와 HTTPS 요청의 분기 규칙을 Ingress로 표현합니다.
 
-이번 글에서는 Service가 Label을 기준으로 Pod를 찾고 실제 요청 경로를 유지하는 과정부터 살펴봅니다. 이어서 Ingress 리소스와 Ingress Controller의 차이를 구분하고, Ingress가 Service 이름과 포트를 참조해서 외부 요청을 전달하는 과정을 정리합니다.
+이번 글에서는 먼저 Namespace가 리소스 이름과 정책의 범위를 어떻게 나누는지 살펴봅니다. 이어서 Service가 Label을 기준으로 Pod를 찾고, Ingress가 Service 이름과 포트를 참조해서 외부 요청을 전달하는 과정을 정리합니다. 마지막에는 RBAC이 사용자와 ServiceAccount의 Kubernetes API 권한을 Namespace 또는 클러스터 범위에서 어떻게 제한하는지 살펴봅니다.
 
-## 1. 변하는 Pod 앞에 고정 주소를 제공하는 Service
+## 1. 리소스 이름과 정책 범위를 나누는 Namespace
+
+<div align="center">
+
+![Kubernetes Namespace](../images/articles/02/08-namespace.svg)
+
+</div>
+
+**Namespace**(네임스페이스)는 하나의 클러스터 안에서 리소스 이름과 정책 적용 범위를 논리적으로 나누는 리소스입니다. 같은 클러스터를 여러 팀이나 서비스, 개발 환경이 함께 사용할 때 리소스를 구분하는 기준으로 사용합니다.
+
+```yaml
+# dev Namespace를 선언하는 매니페스트 예시
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev
+```
+
+Namespace에 속하는 리소스의 `metadata.namespace`에 `dev`를 적으면 해당 리소스가 `dev` Namespace에 만들어집니다. 매니페스트와 명령에 Namespace를 지정하지 않으면 현재 kubectl 문맥에 설정된 Namespace를 사용하며, 별도 설정이 없을 때는 보통 `default` Namespace를 사용합니다.
+
+리소스 이름은 Namespace 안에서 고유하면 됩니다. `dev` Namespace와 `prod` Namespace에는 이름이 같은 `web` Deployment와 `web` Service가 각각 존재할 수 있습니다. 따라서 리소스를 정확히 식별하려면 Namespace와 리소스 이름을 함께 확인해야 합니다.
+
+Service의 짧은 DNS 이름도 Namespace를 기준으로 해석됩니다. 같은 Namespace에 있는 Pod는 `web`이라는 이름으로 같은 Namespace의 Service에 접근할 수 있습니다. 다른 Namespace의 Service에 접근하려면 `web.prod`처럼 Service 이름과 Namespace 이름을 함께 적을 수 있습니다. 전체 DNS 이름은 `web.prod.svc.cluster.local`과 같은 형태입니다.
+
+Namespace는 클러스터를 물리적으로 분리하지 않습니다. Namespace를 나눈 것만으로 서로 다른 Namespace 사이의 네트워크 통신이 자동으로 차단되거나 Node가 분리되는 것도 아닙니다. 권한을 제한하려면 RBAC을, 자원 사용량을 제한하려면 ResourceQuota를, 네트워크 통신을 제한하려면 NetworkPolicy를 별도로 적용해야 합니다.
+
+Pod와 Deployment, Service, Ingress는 특정 Namespace에 속합니다. 반면 Node처럼 클러스터 전체를 대상으로 하는 리소스도 있습니다. 따라서 모든 Kubernetes 리소스가 Namespace에 속한다고 이해하면 안 됩니다.
+
+## 2. 변하는 Pod 앞에 고정 주소를 제공하는 Service
 
 <div align="center">
 
@@ -26,7 +54,7 @@
 
 </div>
 
-### 1.1 변하는 Pod와 안정적인 서비스 정체성
+### 2.1 변하는 Pod와 안정적인 서비스 정체성
 
 Pod는 장애 복구와 배포 과정에서 계속 교체됩니다. Deployment가 같은 역할의 Pod 복제본 개수를 유지하더라도, 새로 만들어진 Pod는 이전 Pod와 다른 이름과 IP를 가집니다. 다른 애플리케이션이 이 Pod들의 IP를 직접 저장하면 Pod가 교체될 때마다 새로운 주소를 찾아서 연결 설정을 바꿔야 합니다.
 
@@ -48,7 +76,7 @@ Deployment와 Service도 서로를 직접 참조하지 않습니다. Deployment�
 
 Service 캐릭터는 안내 데스크에서 요청 목록을 확인한 뒤 뒤편의 **Pod**들을 가리키고 있습니다. 요청을 보내는 쪽은 매번 달라지는 Pod를 직접 찾지 않아도 되고, Service라는 고정된 입구를 이용하면 알맞은 Pod로 연결된다는 점을 표현합니다.
 
-### 1.2 Service 선언이 실제 요청 경로가 되기까지
+### 2.2 Service 선언이 실제 요청 경로가 되기까지
 
 <div align="center">
 
@@ -62,7 +90,7 @@ Selector가 있는 Service를 API에 저장하면 **EndpointSlice Controller**(�
 
 실제 요청은 클라이언트에서 Service의 DNS 이름과 가상 IP로 들어옵니다. 노드의 네트워크 규칙이 요청을 받을 준비가 된 Pod 하나를 선택하고, 요청의 목적지를 해당 Pod IP와 포트로 바꿔 전달합니다. Service 뒤의 Pod가 교체되면 EndpointSlice와 네트워크 규칙만 새로운 Pod 주소에 맞게 갱신됩니다. 클라이언트는 계속 같은 Service 이름과 포트를 사용합니다.
 
-### 1.3 Deployment와 Service를 Pod Label로 연결하기
+### 2.3 Deployment와 Service를 Pod Label로 연결하기
 
 앞 글의 Deployment 매니페스트에서는 `spec.template.metadata.labels`에 `app: web`을 적어, Deployment가 새로 만드는 모든 Pod에 같은 Label을 붙였습니다. 그리고 Deployment의 `spec.selector.matchLabels`는 이 Label을 기준으로 복제본으로 관리할 Pod 집합을 찾았습니다.
 
@@ -123,15 +151,17 @@ spec:
 
 `port`는 클라이언트가 Service에 요청을 보낼 때 사용하는 포트입니다. `targetPort`는 선택된 Pod 안에서 애플리케이션이 요청을 받는 포트입니다. 위 설정에서는 클라이언트가 Service의 80번 포트로 보낸 요청을 Pod의 8080번 포트로 전달합니다.
 
-### 1.4 Service가 제공하는 접근 범위
+### 2.4 Service가 제공하는 접근 범위
 
 Service의 기본 타입인 **ClusterIP**는 클러스터 내부에서만 사용할 가상 IP를 만듭니다. **NodePort**는 각 노드의 정해진 포트를 통해 Service를 외부에 노출합니다. **LoadBalancer**는 지원하는 클라우드 환경에서 외부 로드 밸런서를 만들고 Service와 연결합니다.
 
-Readiness Probe도 Service의 요청 대상 관리와 연결됩니다. Pod의 Readiness Probe가 실패하면 EndpointSlice에 기록된 해당 Pod의 준비 상태가 바뀝니다. 노드의 네트워크 규칙은 준비되지 않은 Pod를 Service의 일반적인 요청 전달 대상에서 제외합니다. 컨테이너를 재시작하지 않고 해당 Pod로 향하는 일반 요청만 차단한다는 점이 Liveness Probe와의 차이입니다.
+`clusterIP: None`으로 선언하는 **Headless Service**는 하나의 가상 IP로 요청을 분산하는 대신, 뒤에 있는 Pod 주소를 DNS로 찾을 수 있게 합니다. StatefulSet은 Headless Service와 함께 사용해서 `database-0`, `database-1` 같은 각 Pod에 안정적인 네트워크 이름을 제공할 수 있습니다.
+
+Service는 요청을 받을 준비가 된 Pod를 일반적인 요청 전달 대상으로 사용합니다. Pod의 준비 상태를 판단하는 Readiness Probe와 EndpointSlice의 상태 변화는 5장에서 컨테이너 상태 검사 과정과 함께 자세히 살펴봅니다.
 
 각 Service 타입의 외부 노출 방식과 클라우드 로드 밸런서 연동은 Service를 자세히 다루는 글에서 살펴봅니다.
 
-## 2. HTTP 요청을 Service로 나누는 Ingress
+## 3. HTTP 요청을 Service로 나누는 Ingress
 
 <div align="center">
 
@@ -141,7 +171,7 @@ Readiness Probe도 Service의 요청 대상 관리와 연결됩니다. Pod의 Re
 
 </div>
 
-### 2.1 여러 Service로 외부 HTTP 요청을 나누는 이유
+### 3.1 여러 Service로 외부 HTTP 요청을 나누는 이유
 
 앞에서 살펴본 Service는 변하는 Pod 집합에 안정적인 이름과 가상 IP를 제공합니다. 클러스터 안의 다른 애플리케이션은 Service 이름으로 요청을 보내고, Service의 네트워크 경로는 요청을 받을 준비가 된 Pod로 연결합니다. 여기까지 해결된 문제는 **어떤 Pod가 현재 실행 중인지 몰라도 같은 애플리케이션에 접근하는 것**입니다.
 
@@ -161,7 +191,7 @@ Ingress는 Service를 대체하지 않습니다. Ingress는 HTTP 요청의 호�
 
 Ingress 캐릭터는 열쇠를 든 문지기처럼 외부 요청을 확인하고 여러 **Service** 입구 중 알맞은 곳을 가리키고 있습니다. 쇼핑과 웹을 나타내는 요청이 서로 다른 길로 나뉘는 모습은 Ingress가 도메인과 URL 경로에 따라 요청을 해당 Service로 전달한다는 점을 보여 줍니다.
 
-### 2.2 Ingress 선언이 실제 요청 경로가 되기까지
+### 3.2 Ingress 선언이 실제 요청 경로가 되기까지
 
 <div align="center">
 
@@ -175,7 +205,7 @@ Ingress도 Service와 마찬가지로 요청을 직접 처리하는 서버 프�
 
 외부 요청이 Ingress Controller에 도착하면 Controller가 HTTP 요청의 호스트와 경로를 Ingress 규칙과 비교합니다. 일치하는 규칙을 찾으면 해당 규칙에 적힌 Service 이름과 포트로 요청을 넘깁니다. 그다음부터는 앞에서 설명한 Service의 역할이 이어집니다. Service의 네트워크 규칙이 준비된 Pod 하나를 선택해 요청을 전달하고, Pod 안의 컨테이너가 요청을 처리합니다.
 
-### 2.3 Ingress가 Service 이름과 포트를 참조하는 방법
+### 3.3 Ingress가 Service 이름과 포트를 참조하는 방법
 
 <div align="center">
 
@@ -228,7 +258,7 @@ spec:
 
 `host`는 요청의 도메인을, `path`는 URL 경로를 고르는 조건입니다. `pathType: Prefix`는 `/web`으로 시작하는 경로를 같은 규칙으로 처리한다는 뜻입니다. `ingressClassName: nginx`는 이 Ingress를 처리할 IngressClass를 지정하며, 해당 Class와 연결된 Ingress Controller가 규칙을 구현합니다.
 
-### 2.4 Ingress에서 HTTPS 연결을 지원하는 방법
+### 3.4 Ingress에서 HTTPS 연결을 지원하는 방법
 
 <div align="center">
 
@@ -297,7 +327,57 @@ Ingress Controller는 Ingress의 `secretName`을 따라 TLS Secret을 읽고 인
 
 Ingress는 HTTP와 HTTPS 요청을 대상으로 합니다. 다른 포트나 프로토콜을 외부에 노출하려면 일반적으로 NodePort나 LoadBalancer 타입의 Service 같은 다른 방식을 사용합니다. 현재 Kubernetes 프로젝트는 새로운 기능이 필요한 경우 Gateway API 사용을 권장하지만, Ingress API는 안정화된 상태로 계속 지원됩니다.
 
-## 3. Pod가 하나의 외부 요청을 처리하는 흐름
+## 4. Kubernetes API 접근 권한을 정하는 RBAC
+
+Service와 Ingress는 애플리케이션으로 들어오는 네트워크 요청의 경로를 만듭니다. 반면 **RBAC**(Role-Based Access Control, 역할 기반 접근 제어)은 사용자나 프로그램이 Kubernetes API에서 어떤 작업을 할 수 있는지를 제한하는 권한 체계입니다. 웹 애플리케이션 사용자의 로그인 권한을 관리하는 기능과는 목적이 다릅니다.
+
+RBAC 규칙은 **누가**, **어떤 API 리소스에**, **어떤 동작을 할 수 있는지**를 표현합니다. 권한을 받는 주체에는 사용자, 그룹, Pod가 사용하는 ServiceAccount가 있습니다. `get`, `list`, `watch`, `create`, `update`, `delete` 같은 API 동작을 리소스별로 허용할 수 있습니다.
+
+### 4.1 권한을 정의하는 Role과 ClusterRole
+
+**Role**은 특정 Namespace 안에서 사용할 권한을 정의합니다. 다음 Role은 `dev` Namespace의 Pod 목록과 개별 Pod 정보를 읽을 수 있도록 허용하지만, Pod를 만들거나 삭제할 권한은 포함하지 않습니다.
+
+```yaml
+# dev Namespace의 Pod를 읽을 수 있는 Role 예시
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+  namespace: dev
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+```
+
+**ClusterRole**은 Node처럼 Namespace에 속하지 않는 리소스의 권한이나 여러 Namespace에서 재사용할 권한 집합을 정의할 때 사용합니다. ClusterRole을 만들었다고 사용자에게 즉시 권한이 생기는 것은 아닙니다. Role과 ClusterRole은 권한 규칙만 정의하며, 실제 주체와 연결하는 Binding이 필요합니다.
+
+### 4.2 주체와 권한을 연결하는 RoleBinding과 ClusterRoleBinding
+
+**RoleBinding**은 Role 또는 ClusterRole의 권한을 특정 Namespace 안의 주체에게 부여합니다. 다음 예시는 `dev` Namespace의 `developer` ServiceAccount에 앞에서 만든 `pod-reader` Role을 연결합니다.
+
+```yaml
+# ServiceAccount에 dev Namespace의 Pod 읽기 권한을 부여하는 예시
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods
+  namespace: dev
+subjects:
+- kind: ServiceAccount
+  name: developer
+  namespace: dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: pod-reader
+```
+
+**ClusterRoleBinding**은 ClusterRole의 권한을 클러스터 전체 범위로 부여합니다. 이름이 비슷하지만 범위가 크게 다르므로, 한 Namespace에서만 필요한 권한이라면 RoleBinding을 우선 고려해야 합니다. 필요 이상의 읽기와 쓰기 권한을 넓게 부여하지 않는 **최소 권한 원칙**이 RBAC 설계의 기준입니다.
+
+Secret 권한은 특히 주의해야 합니다. Secret을 `list`하거나 `watch`할 수 있으면 해당 Namespace의 여러 민감한 값을 읽을 수 있으며, Pod를 생성할 권한도 Pod가 Secret을 참조하도록 만들어 간접적으로 값을 읽는 데 사용될 수 있습니다. 따라서 워크로드가 실제로 필요한 리소스와 동작만 허용해야 합니다.
+
+## 5. 애플리케이션 요청과 관리 요청의 흐름
 
 <div align="center">
 
@@ -311,8 +391,10 @@ Ingress는 HTTP와 HTTPS 요청을 대상으로 합니다. 다른 포트나 프�
 
 이 연결에서 가장 자주 헷갈리는 부분은 레이블과 셀렉터입니다. Deployment의 `spec.selector.matchLabels`는 Deployment가 관리할 Pod를 고르고, `spec.template.metadata.labels`는 새 Pod에 실제 레이블을 붙입니다. Service의 `spec.selector`는 요청을 전달할 Pod를 고릅니다. Deployment와 Service의 셀렉터는 대개 같은 Pod 레이블을 사용하지만, 두 셀렉터는 서로 다른 목적을 가집니다.
 
+애플리케이션 요청과 Kubernetes 관리 요청도 구분해야 합니다. 외부 사용자의 HTTP 요청은 `Ingress Controller → Service → Pod` 경로로 이동합니다. 개발자나 Pod의 ServiceAccount가 Deployment나 Secret을 조회하는 요청은 API Server로 들어가며, RBAC 권한 검사를 통과해야 합니다. Namespace는 이 리소스 이름과 권한이 적용되는 범위를 제공합니다.
+
 ## 다음 글로 넘어가기 전에
 
-이번 글에서 다룬 내용은 이렇습니다. Service는 Label과 Selector를 기준으로 변하는 Pod 집합을 찾고, 클라이언트에게 안정적인 이름과 가상 IP를 제공합니다. Ingress는 외부 HTTP와 HTTPS 요청을 호스트와 경로에 따라 Service로 나누며, Ingress Controller가 이 선언을 실제 프록시 설정과 요청 경로로 구현합니다.
+이번 글에서 다룬 내용은 이렇습니다. Namespace는 리소스 이름과 정책의 범위를 나눕니다. Service는 Label과 Selector를 기준으로 변하는 Pod 집합을 찾고, 클라이언트에게 안정적인 이름과 가상 IP를 제공합니다. Ingress는 외부 HTTP와 HTTPS 요청을 호스트와 경로에 따라 Service로 나누며, RBAC은 사용자와 ServiceAccount가 Kubernetes API에서 수행할 수 있는 동작을 제한합니다.
 
-다음 글에서는 로컬에 Kubernetes 실습 환경을 구성하고, 지금까지 살펴본 매니페스트와 명령을 실제 클러스터에 적용합니다.
+다음 글에서는 Deployment 선언이 실제 Pod 실행으로 이어지는 과정과 Pod 및 컨테이너의 상태를 구분하고, Probe, Kubelet, ReplicaSet, Scheduler가 장애 상황에서 어떤 역할을 맡는지 살펴봅니다.

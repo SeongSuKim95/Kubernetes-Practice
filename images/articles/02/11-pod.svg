@@ -50,7 +50,7 @@
   <text x="500" y="540" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">Kubernetes는 Container를 따로 배치하지 않고, 서로 협력하는 Container들을 Pod라는 하나의 실행 경계로 관리</text>
   <line x1="40" y1="565" x2="960" y2="565" stroke="#E2E8F0" stroke-width="1"/>
   <text x="500" y="595" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 5. Pod:</tspan>
+    <tspan font-weight="600">Fig 4. Pod:</tspan>
     <tspan> 함께 배치하고 자원을 공유하는 최소 실행 단위</tspan>
   </text>
 </svg>

@@ -41,7 +41,7 @@
 
   <line x1="40" y1="372" x2="920" y2="372" stroke="#E2E8F0"/>
   <text x="480" y="399" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 10. Deployment의 Label과 Selector:</tspan>
+    <tspan font-weight="600">Fig 7. Deployment의 Label과 Selector:</tspan>
     <tspan> Pod 이름과 무관한 관리 대상 선택</tspan>
   </text>
 </svg>

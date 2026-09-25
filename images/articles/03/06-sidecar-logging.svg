@@ -41,7 +41,7 @@
 
   <line x1="40" y1="375" x2="920" y2="375" stroke="#E2E8F0"/>
   <text x="480" y="405" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 6. 사이드카 패턴:</tspan>
+    <tspan font-weight="600">Fig 5. 사이드카 패턴:</tspan>
     <tspan> 같은 Pod의 공유 볼륨을 이용한 애플리케이션 로그 수집</tspan>
   </text>
 </svg>
