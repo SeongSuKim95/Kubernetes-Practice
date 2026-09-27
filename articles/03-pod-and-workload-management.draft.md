@@ -160,7 +160,7 @@ spec:
 
 위 매니페스트에서 두 컨테이너는 `app-logs`라는 같은 볼륨을 각자의 `/var/log/app` 경로에 연결합니다.
 
-Pod는 교체될 수 있는 실행 단위입니다. 한 번 Worker Node에 배치된 Pod가 다른 노드로 이동하는 것은 아닙니다. 기존 Pod를 대체해야 하면 Kubernetes는 새로운 이름과 IP를 가진 Pod를 만듭니다. 단독으로 만든 Pod를 삭제하면 Kubernetes가 같은 Pod를 자동으로 다시 만들지 않으므로, 장기간 운영할 애플리케이션에는 Pod 복제본 개수와 Pod 교체 과정을 관리하는 상위 리소스가 필요합니다.
+Pod는 교체될 수 있는 실행 단위입니다. 한 번 Worker Node에 배치된 Pod가 다른 노드로 이동하는 것은 아닙니다. 기존 Pod를 대체할 때는 새로운 UID를 가진 Pod가 만들어지며, 이름과 IP도 달라질 수 있습니다. 단독으로 만든 Pod를 삭제하면 Kubernetes가 같은 Pod를 자동으로 다시 만들지 않으므로, 장기간 운영할 애플리케이션에는 Pod 복제본 개수와 Pod 교체 과정을 관리하는 상위 리소스가 필요합니다.
 
 어떤 상위 리소스를 사용할지는 Pod를 유지하려는 목적에 따라 달라집니다. 웹 API처럼 같은 역할의 Pod를 원하는 개수만큼 유지하려면 Deployment를 사용합니다. 각 Pod에 안정적인 이름과 저장소가 필요하면 StatefulSet을 사용합니다. Node마다 로컬 기능을 제공해야 하면 DaemonSet을 사용합니다. 세 리소스 모두 Pod 템플릿을 사용하지만, 어떤 Pod 집합을 원하는 상태로 볼 것인지는 서로 다릅니다. 이제 이 세 가지 경우를 차례대로 살펴보겠습니다.
 
@@ -213,7 +213,7 @@ spec:
 
 여기서 **복제본**(replica)은 같은 Pod 템플릿으로 만든 독립적인 Pod 하나를 뜻합니다. `replicas: 3`은 한 Pod 안에서 컨테이너 세 개를 실행한다는 뜻이 아니라, 같은 역할을 하는 Pod 세 개를 유지한다는 뜻입니다. 세 Pod는 각자 다른 이름과 IP를 가지며, 장애가 발생하거나 배포 구성이 바뀌면 서로 독립적으로 교체됩니다. 복제본은 Pod의 역할을 설명하는 말이며, `Replica Pod`이라는 별도 리소스가 있는 것은 아닙니다.
 
-Deployment는 내부에서 **ReplicaSet**(레플리카셋, 같은 Label 조건을 가진 Pod의 복제본 개수를 유지하는 리소스)을 만들고 관리합니다. Deployment가 Pod 템플릿과 배포 변경 과정을 관리한다면, ReplicaSet은 Selector와 일치하는 Pod를 세어서 원하는 Pod 복제본 개수와 맞추는 일을 담당합니다. 원하는 Pod가 부족하면 ReplicaSet이 Pod 객체를 만들고, 원하는 Pod보다 많으면 ReplicaSet이 초과한 Pod를 줄입니다.
+Deployment는 내부에서 **ReplicaSet**(레플리카셋, 같은 Label 조건을 가진 Pod의 복제본 개수를 유지하는 리소스)을 만들고 관리합니다. Deployment가 Pod 템플릿과 배포 변경 과정을 관리한다면, ReplicaSet은 Selector와 소유 관계를 기준으로 자신이 관리하는 Pod의 유효한 복제본 수를 원하는 개수와 맞추는 일을 담당합니다. 원하는 Pod가 부족하면 ReplicaSet이 Pod 객체를 만들고, 원하는 Pod보다 많으면 ReplicaSet이 초과한 Pod를 줄입니다.
 
 이 관계는 Deployment, ReplicaSet, Pod 순서로 이어집니다. 사용자는 일반적으로 Deployment의 `replicas`와 Pod 템플릿을 변경하고, Deployment는 그 선언에 맞는 ReplicaSet을 관리합니다. Deployment가 관리하는 ReplicaSet의 복제본 개수를 직접 바꾸면 Deployment가 선언한 상태와 충돌할 수 있으므로, 배포 중인 애플리케이션의 복제본 개수와 Pod 템플릿은 Deployment를 통해 변경하는 편이 안전합니다.
 
@@ -225,11 +225,11 @@ ReplicaSet은 Pod 객체를 만들고 Pod 복제본 개수를 유지하지만, �
 
 </div>
 
-Pod의 이름과 IP가 계속 바뀔 수 있으므로 Deployment는 그 값을 기준으로 Pod 집합을 구분하지 않습니다. Deployment는 Selector에 적힌 Label 조건과 일치하는 Pod들을 자신이 관리할 집합으로 봅니다. 새 Pod를 만들 때도 Pod 템플릿에 같은 Label을 붙여, 새 Pod가 같은 관리 집합에 포함되도록 합니다.
+Pod의 이름과 IP가 계속 바뀔 수 있으므로 Deployment는 그 값을 기준으로 Pod 집합을 구분하지 않습니다. Deployment의 Selector는 관리할 집합을 구분하는 기준이며, 실제 Pod 관리는 하위 ReplicaSet을 통해 이루어집니다. ReplicaSet은 Pod의 Label뿐 아니라 자신을 소유자로 가리키는 관계도 확인합니다. 새 Pod를 만들 때도 Pod 템플릿에 같은 Label을 붙여, 새 Pod가 같은 관리 집합에 포함되도록 합니다.
 
-Label과 Selector를 사용하면 Deployment가 특정 Pod 이름을 미리 알지 않아도 Pod 집합을 계속 관리할 수 있습니다. 예를 들어 `app: web`이라는 Label을 관리 기준으로 삼으면, 기존 Pod가 사라지고 새로운 Pod가 만들어져도 같은 Label을 가진 Pod를 웹 애플리케이션의 복제본으로 셀 수 있습니다. 원하는 Pod 복제본 개수가 세 개인데 조건에 맞는 Pod가 두 개뿐이면 ReplicaSet이 새 Pod 하나를 만들고, 네 개이면 Pod 하나를 줄입니다. 삭제된 Pod 자체를 되살리는 대신 같은 역할을 하는 새 Pod로 원하는 상태를 회복하는 방식입니다.
+Label과 Selector를 사용하면 Deployment가 특정 Pod 이름을 미리 알지 않아도 Pod 집합을 계속 관리할 수 있습니다. 예를 들어 `app: web`이라는 Label을 관리 기준으로 삼으면, 기존 Pod가 사라지고 새로운 Pod가 만들어져도 같은 Label과 소유 관계를 가진 Pod를 웹 애플리케이션의 복제본으로 셀 수 있습니다. 원하는 Pod 복제본 개수가 세 개인데 관리 중인 유효한 Pod가 두 개뿐이면 ReplicaSet이 새 Pod 하나를 만들고, 네 개이면 Pod 하나를 줄입니다. 삭제된 Pod 자체를 되살리는 대신 같은 역할을 하는 새 Pod로 원하는 상태를 회복하는 방식입니다.
 
-Deployment는 개별 Pod 목록을 직접 보관하지 않고 Label 조건으로 관리할 Pod 집합을 선언합니다. 이 구조는 리소스들이 API의 공유 상태를 기준으로 느슨하게 연결되는 Kubernetes의 철학과도 이어집니다.
+Label과 Selector는 관리 대상 후보를 찾는 기준이고, `ownerReferences`는 객체의 소유 관계를 나타냅니다. 다른 Controller가 이미 소유한 Pod를 Label이 같다는 이유만으로 가져오지는 않습니다. Controller 소유자가 없는 Pod는 Selector가 일치하면 ReplicaSet이 인수할 수 있으며, 이 차이는 다음 장에서 자세히 살펴봅니다.
 
 Deployment는 Pod 복제본 개수만 유지하지 않습니다. 컨테이너 이미지처럼 Pod 구성이 바뀌면 기존 Pod 집합을 새 구성의 Pod 집합으로 점진적으로 교체하고, 배포 도중에도 사용 가능한 Pod를 유지하도록 변경 과정을 관리합니다. 따라서 Deployment의 핵심은 Pod를 한 번 생성하는 기능이 아니라 Pod 집합의 개수와 구성, 변경 과정을 원하는 상태로 계속 관리하는 것입니다.
 
@@ -404,4 +404,4 @@ spec:
 - DaemonSet은 모든 Node 또는 조건에 맞는 Node마다 필요한 Pod를 실행합니다.
 - ConfigMap과 Secret은 일반 설정과 민감한 설정을 컨테이너 이미지에서 분리합니다.
 
-다음 글에서는 리소스의 이름과 정책 범위를 나누는 Namespace, 변하는 Pod 집합에 고정 주소를 제공하는 Service, 외부 HTTP와 HTTPS 요청을 나누는 Ingress를 살펴봅니다.
+다음 글에서는 Deployment 선언이 Pod와 컨테이너 실행으로 이어지는 과정을 살펴봅니다. Pod와 컨테이너의 상태, Probe, 정상 종료를 구분하고, Kubelet과 ReplicaSet이 장애 상황에서 각각 무엇을 복구하는지 확인합니다.

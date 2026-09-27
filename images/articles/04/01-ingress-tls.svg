@@ -50,7 +50,7 @@
   <text x="755" y="274" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.5" fill="#1D4ED8">Controller가 관리하는 HTTPS 진입점에 설정 반영</text>
 
   <rect x="20" y="292" width="1160" height="276" rx="18" fill="#FFF7ED" stroke="#FDBA74" stroke-width="1.5"/>
-  <text x="45" y="323" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#C2410C" font-weight="600">HTTPS 요청과 TLS 종료 이후의 요청 경로</text>
+  <text x="45" y="323" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#C2410C" font-weight="600">TLS 종료와 Pod 엔드포인트 직접 연결의 예시</text>
 
   <rect x="45" y="365" width="220" height="125" rx="14" fill="#FFFFFF" stroke="#EA580C" stroke-width="2"/>
   <text x="155" y="397" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#C2410C" font-weight="600">외부 클라이언트</text>
@@ -59,7 +59,7 @@
   <text x="155" y="474" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.3" fill="#9A3412">검증 후 암호화된 연결 수립</text>
 
   <path d="M265 410 H370" fill="none" stroke="#EA580C" stroke-width="2.5" marker-end="url(#arrow-orange)"/>
-  <text x="317.5" y="391" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.5" fill="#C2410C">① HTTPS 요청과 SNI</text>
+  <text x="317.5" y="391" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.5" fill="#C2410C">① TLS 연결과 SNI</text>
   <path d="M370 450 C335 525 290 525 250 480" fill="none" stroke="#0D9488" stroke-width="2.2" marker-end="url(#arrow-green)"/>
   <text x="320" y="535" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.5" fill="#0F766E">② tls.crt 인증서 제시</text>
 
@@ -74,8 +74,8 @@
   <text x="715" y="406" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.5" fill="#C2410C">③ 복호화된 HTTP</text>
 
   <rect x="760" y="365" width="180" height="125" rx="14" fill="#FFFFFF" stroke="#0D9488" stroke-width="2"/>
-  <text x="850" y="402" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#0F766E" font-weight="600">Service: web</text>
-  <text x="850" y="433" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.8" fill="#0D9488">Service port: 80</text>
+  <text x="850" y="402" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#0F766E" font-weight="600">Pod 엔드포인트</text>
+  <text x="850" y="433" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.8" fill="#0D9488">web Service로 발견</text>
   <text x="850" y="459" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.8" fill="#0D9488">Ready Pod 선택</text>
 
   <path d="M940 427 H990" fill="none" stroke="#EA580C" stroke-width="2.5" marker-end="url(#arrow-orange)"/>
@@ -89,6 +89,6 @@
   <line x1="40" y1="592" x2="1160" y2="592" stroke="#E2E8F0" stroke-width="1"/>
   <text x="600" y="622" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
     <tspan font-weight="600">Fig 7. Ingress TLS:</tspan>
-    <tspan> Ingress가 TLS Secret의 인증서를 참조하고 HTTPS 요청을 Service로 전달하는 흐름</tspan>
+    <tspan> TLS Secret을 설정하고 선택된 백엔드로 요청을 전달하는 흐름</tspan>
   </text>
 </svg>

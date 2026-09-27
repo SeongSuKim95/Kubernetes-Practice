@@ -139,7 +139,7 @@ spec:
 
 In this manifest, both containers mount the same volume, `app-logs`, at their own `/var/log/app` paths.
 
-A Pod is a replaceable execution unit. A Pod already placed on one Worker Node does not move to another Node. When Kubernetes needs to replace it, Kubernetes creates a Pod with a new name and IP. If you delete a standalone Pod, Kubernetes does not automatically create the same Pod again. Long-running applications therefore need a higher-level resource that manages the number of Pod replicas and the Pod replacement process.
+A Pod is a replaceable execution unit. A Pod already placed on one Worker Node does not move to another Node. A replacement Pod has a new UID, and its name and IP may also change. If you delete a standalone Pod, Kubernetes does not automatically create the same Pod again. Long-running applications therefore need a higher-level resource that manages the number of Pod replicas and the Pod replacement process.
 
 The correct higher-level resource depends on why the Pods must be maintained. Use a Deployment when interchangeable Pods, such as web API Pods, must remain at a desired count. Use a StatefulSet when each Pod needs a stable name and storage. Use a DaemonSet when each Node must provide a local function. All three resources use Pod templates, but they differ in which Pod set they treat as desired state. We examine these three cases in order.
 
@@ -184,7 +184,7 @@ This manifest declares that three Pods with Label `app: web` must be maintained.
 
 Here, a **replica** means one independent Pod created from the same Pod template. `replicas: 3` does not run three containers inside one Pod; it maintains three Pods that perform the same role. Each Pod has a different name and IP, and each can be replaced independently when a failure occurs or deployment configuration changes. Replica describes a Pod's role; there is no separate resource kind named `Replica Pod`.
 
-Internally, a Deployment creates and manages a **ReplicaSet**, a resource that maintains the number of Pod replicas matching a Label condition. The Deployment manages the Pod template and rollout process, while the ReplicaSet counts Pods that match its Selector and aligns that count with the desired number of replicas. When too few Pods exist, the ReplicaSet creates Pod objects. When too many exist, it removes the excess Pods.
+Internally, a Deployment creates and manages a **ReplicaSet**, a resource that maintains the number of Pod replicas matching a Label condition. The Deployment manages the Pod template and rollout process, while the ReplicaSet uses its Selector and ownership relationships to identify the Pods it manages and aligns their active replica count with the desired count. When too few Pods exist, the ReplicaSet creates Pod objects. When too many exist, it removes the excess Pods.
 
 The relationship proceeds from Deployment to ReplicaSet to Pod. Users normally change the Deployment's `replicas` and Pod template, and the Deployment manages ReplicaSets that match that declaration. Directly changing the replica count of a ReplicaSet managed by a Deployment can conflict with the state declared by the Deployment. It is therefore safer to change a deployed application's replica count and Pod template through the Deployment.
 
@@ -192,11 +192,11 @@ A ReplicaSet creates Pod objects and maintains the Pod replica count, but it doe
 
 ![Deployment selecting a Pod set with Labels and a Selector](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/03/en/07-deployment-selector.svg)
 
-Because Pod names and IPs can change, a Deployment does not use those values to identify its Pod set. The Deployment treats Pods matching the Selector's Label condition as its managed set. It also attaches the same Label through the Pod template so a newly created Pod joins the same set.
+Because Pod names and IPs can change, a Deployment does not use those values to identify its Pod set. The Deployment's Selector identifies the managed set, while its ReplicaSets manage the Pods. A ReplicaSet checks both Pod Labels and the ownership relationship linking a Pod to that ReplicaSet. It also attaches the same Label through the Pod template so a newly created Pod joins the same set.
 
-Labels and Selectors let a Deployment continuously manage a Pod set without knowing exact Pod names in advance. If `app: web` is the management criterion, a newly created Pod remains a web application replica when it has that Label, even after an old Pod disappears. If three replicas are desired but only two matching Pods exist, the ReplicaSet creates one Pod. If four exist, it removes one. Desired state is restored by creating a new Pod for the same role, not by reviving the deleted Pod itself.
+Labels and Selectors let a Deployment continuously manage a Pod set without knowing exact Pod names in advance. If `app: web` is the management criterion, a replacement Pod can be counted as a web application replica when it has the matching Label and ownership relationship. If three replicas are desired but only two active managed Pods exist, the ReplicaSet creates one Pod. If four exist, it removes one. Desired state is restored by creating a new Pod for the same role, not by reviving the deleted Pod itself.
 
-A Deployment does not store a fixed list of individual Pods; it declares the managed Pod set through a Label condition. This design also reflects the Kubernetes model in which resources are loosely connected through shared API state.
+Labels and Selectors identify candidate Pods, while `ownerReferences` records object ownership. A ReplicaSet does not take over a Pod already owned by another Controller just because its Label matches. It can adopt a matching Pod that has no Controller owner. We will explore this distinction in the next chapter.
 
 A Deployment maintains more than the number of Pod replicas. When the Pod configuration changes, such as a container image update, the Deployment gradually replaces the old Pod set with a new one and manages the transition so usable Pods remain available during the rollout. The core purpose of a Deployment is therefore not to create Pods once, but to continuously manage the count, configuration, and change process of a Pod set as desired state.
 
@@ -355,4 +355,4 @@ Here is what we covered in this article. We followed how desired state and contr
 - A DaemonSet runs a required Pod on every Node or every matching Node.
 - ConfigMaps and Secrets separate ordinary and sensitive configuration from container images.
 
-In the next article, we look at Namespaces, which divide resource names and policy scopes; Services, which provide stable addresses for changing Pod sets; and Ingresses, which route external HTTP and HTTPS requests.
+In the next article, we follow a Deployment declaration through to running Pods and containers. We distinguish Pod and container states, Probes, and graceful termination, then examine what the Kubelet and ReplicaSet each recover when failures occur.

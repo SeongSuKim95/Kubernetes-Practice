@@ -20,11 +20,11 @@
   <text x="390" y="114" text-anchor="middle" font-family="Menlo, Consolas, monospace" font-size="11" fill="#DC2626">GET /healthz</text>
 
   <path d="M490 98 H575" fill="none" stroke="#DC2626" stroke-width="2.5" marker-end="url(#arrow-live)"/>
-  <text x="532.5" y="82" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#B91C1C">검사 실패</text>
+  <text x="532.5" y="82" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#B91C1C">실패 기준 도달</text>
 
   <rect x="575" y="63" width="320" height="70" rx="10" fill="#FFFFFF" stroke="#DC2626" stroke-width="2"/>
   <text x="735" y="91" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#B91C1C" font-weight="600">Kubelet이 컨테이너 재시작</text>
-  <text x="735" y="114" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#DC2626">동작하지 않는 프로세스 복구</text>
+  <text x="735" y="114" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#DC2626">컨테이너 종료 후 재시작 정책 적용</text>
 
   <rect x="35" y="175" width="890" height="105" rx="14" fill="#F0FDFA" stroke="#99F6E4" stroke-width="1.5"/>
   <rect x="60" y="193" width="155" height="70" rx="10" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
@@ -37,15 +37,15 @@
   <text x="390" y="244" text-anchor="middle" font-family="Menlo, Consolas, monospace" font-size="11" fill="#0D9488">GET /ready</text>
 
   <path d="M490 228 H575" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#arrow-ready)"/>
-  <text x="532.5" y="212" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E">검사 실패</text>
+  <text x="532.5" y="212" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E">실패 기준 도달</text>
 
   <rect x="575" y="193" width="320" height="70" rx="10" fill="#FFFFFF" stroke="#0D9488" stroke-width="2"/>
   <text x="735" y="221" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">Service 요청 전달 대상에서 Pod 제외</text>
-  <text x="735" y="244" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">컨테이너를 재시작하지 않고 요청만 차단</text>
+  <text x="735" y="244" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">준비 상태 반영 후 새 연결 대상에서 제외</text>
 
   <line x1="40" y1="325" x2="920" y2="325" stroke="#E2E8F0" stroke-width="1"/>
   <text x="480" y="353" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
     <tspan font-weight="600">Fig 12. Probe 실패 결과:</tspan>
-    <tspan> 컨테이너 재시작과 Service 요청 차단의 차이</tspan>
+    <tspan> 컨테이너 재시작과 요청 대상 제외의 차이</tspan>
   </text>
 </svg>

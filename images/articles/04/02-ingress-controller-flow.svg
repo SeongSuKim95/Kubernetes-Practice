@@ -33,7 +33,7 @@
   <text x="825" y="160" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">Controller가 없으면 Ingress만으로 요청을 처리하지 못함</text>
 
   <rect x="25" y="245" width="990" height="205" rx="16" fill="#FFFFFF" stroke="#99F6E4" stroke-width="2"/>
-  <text x="50" y="276" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#0F766E" font-weight="700">요청 흐름: Controller가 구현한 HTTP 경로</text>
+  <text x="50" y="276" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#0F766E" font-weight="700">요청 흐름: Pod 엔드포인트로 직접 연결하는 구현 예시</text>
 
   <rect x="55" y="315" width="170" height="75" rx="12" fill="#FFF7ED" stroke="#EA580C" stroke-width="2"/>
   <text x="140" y="345" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#C2410C" font-weight="700">외부 클라이언트</text>
@@ -43,15 +43,15 @@
   <text x="270" y="335" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E">HTTP 요청</text>
 
   <rect x="325" y="305" width="240" height="95" rx="12" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
-  <text x="445" y="336" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="700">Ingress Controller</text>
+  <text x="445" y="336" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="700">프록시 / 로드 밸런서</text>
   <text x="445" y="361" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">host와 path로 Service 선택</text>
-  <text x="445" y="381" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">web Service의 80번 포트로 전달</text>
+  <text x="445" y="381" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">Service에 연결된 엔드포인트 선택</text>
 
   <path d="M565 352.5 H655" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#green)"/>
 
   <rect x="665" y="315" width="150" height="75" rx="12" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
-  <text x="740" y="345" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="700">Service: web</text>
-  <text x="740" y="369" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">port: 80</text>
+  <text x="740" y="345" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="700">Pod 엔드포인트</text>
+  <text x="740" y="369" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">web Service로 발견</text>
 
   <path d="M815 352.5 H875" fill="none" stroke="#0D9488" stroke-width="2.5" marker-end="url(#green)"/>
 
@@ -62,6 +62,6 @@
   <line x1="40" y1="474" x2="1000" y2="474" stroke="#E2E8F0"/>
   <text x="520" y="504" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
     <tspan font-weight="600">Fig 5. Ingress Controller:</tspan>
-    <tspan> Ingress 상태 구독과 외부 HTTP 요청 처리</tspan>
+    <tspan> Controller의 설정 반영과 프록시의 요청 처리</tspan>
   </text>
 </svg>
