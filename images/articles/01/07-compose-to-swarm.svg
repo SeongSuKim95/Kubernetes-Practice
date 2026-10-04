@@ -32,7 +32,7 @@
   <text x="775" y="155" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#5B21B6" font-weight="600">Node B</text>
   <rect x="720" y="175" width="110" height="35" rx="6" fill="#DDD6FE" stroke="#7C3AED"/>
   <text x="775" y="198" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#5B21B6">app, db</text>
-  <text x="690" y="300" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#6D28D9">죽은 컨테이너를 다른 Node에 재기동</text>
+  <text x="690" y="300" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#6D28D9">필요한 복제본을 실행할 Node에 새로 배치</text>
 
   <line x1="40" y1="342" x2="880" y2="342" stroke="#E2E8F0" stroke-width="1"/>
   <text x="460" y="370" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">

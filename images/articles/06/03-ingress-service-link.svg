@@ -59,7 +59,7 @@
 
   <line x1="40" y1="440" x2="1000" y2="440" stroke="#E2E8F0"/>
   <text x="520" y="470" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 6. Ingress와 Service 연결:</tspan>
+    <tspan font-weight="600">Fig 3. Ingress와 Service 연결:</tspan>
     <tspan> Service 이름과 포트 참조 뒤 Pod Label과 targetPort로 이어지는 필드</tspan>
   </text>
 </svg>

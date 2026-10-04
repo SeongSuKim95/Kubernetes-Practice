@@ -14,7 +14,7 @@
   <text x="140" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#B91C1C" font-weight="600">App</text>
   <path d="M210 135 H270" fill="none" stroke="#DC2626" stroke-width="2" marker-end="url(#r)"/>
   <rect x="280" y="100" width="130" height="70" rx="10" fill="#FEE2E2" stroke="#DC2626"/>
-  <text x="345" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B91C1C">172.17.0.5</text>
+  <text x="345" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B91C1C">172.17.0.2</text>
   <text x="345" y="152" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#DC2626">DB</text>
   <text x="240" y="210" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#B91C1C">컨테이너를 다시 만들면</text>
   <text x="240" y="235" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#B91C1C">IP가 바뀌어 설정을 다시 고침</text>
@@ -28,7 +28,7 @@
   <text x="785" y="130" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E">mysql-db</text>
   <text x="785" y="152" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">이름 고정</text>
   <text x="680" y="210" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E">IP가 바뀌어도 이름은 그대로</text>
-  <text x="680" y="235" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0D9488">네트워크 연결은 사람이 준비</text>
+  <text x="680" y="235" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0D9488">SELECT 1 응답으로 연결 확인</text>
 
   <line x1="40" y1="322" x2="880" y2="322" stroke="#E2E8F0" stroke-width="1"/>
   <text x="460" y="350" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">

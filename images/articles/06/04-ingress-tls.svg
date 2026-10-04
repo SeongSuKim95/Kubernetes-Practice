@@ -88,7 +88,7 @@
 
   <line x1="40" y1="592" x2="1160" y2="592" stroke="#E2E8F0" stroke-width="1"/>
   <text x="600" y="622" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 7. Ingress TLS:</tspan>
+    <tspan font-weight="600">Fig 4. Ingress TLS:</tspan>
     <tspan> TLS Secret을 설정하고 선택된 백엔드로 요청을 전달하는 흐름</tspan>
   </text>
 </svg>

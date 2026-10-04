@@ -18,24 +18,24 @@
   <text x="430" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#0F766E" font-weight="600">Container web-server-2</text>
 
   <rect x="260" y="95" width="340" height="55" rx="10" fill="#CCFBF1" stroke="#0D9488" stroke-width="2"/>
-  <text x="430" y="120" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">docker ps: Up = 실행 중</text>
-  <text x="430" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">목록에는 정상으로 보임</text>
+  <text x="430" y="120" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">docker ps: Up (Paused)</text>
+  <text x="430" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">프로세스는 일시 정지 상태</text>
 
   <rect x="280" y="175" width="300" height="110" rx="12" fill="#FEF2F2" stroke="#DC2626" stroke-width="2" stroke-dasharray="7 4"/>
   <text x="430" y="210" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#B91C1C" font-weight="600">요청을 받던 웹 서버</text>
-  <text x="430" y="240" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="22" fill="#DC2626" font-weight="600">✕ 멈춤</text>
-  <text x="430" y="268" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#DC2626">강제 종료 후, 응답 불가</text>
+  <text x="430" y="240" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="22" fill="#DC2626" font-weight="600">일시 정지</text>
+  <text x="430" y="268" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#DC2626">일시 정지 중 HTTP 응답 없음</text>
 
   <rect x="680" y="80" width="210" height="200" rx="14" fill="#FFF7ED" stroke="#EA580C" stroke-width="2"/>
-  <text x="785" y="120" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#C2410C" font-weight="600">불일치</text>
-  <text x="785" y="155" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#EA580C">목록은 실행 중</text>
+  <text x="785" y="120" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#C2410C" font-weight="600">상태와 응답 확인</text>
+  <text x="785" y="155" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#EA580C">목록에 Paused 표시</text>
   <text x="785" y="185" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#EA580C">웹 서버는 멈춤</text>
   <text x="785" y="230" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#9A3412">사람이 컨테이너를</text>
-  <text x="785" y="252" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#9A3412">restart로 다시 살림</text>
+  <text x="785" y="252" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#9A3412">unpause로 다시 실행</text>
 
   <line x1="40" y1="360" x2="880" y2="360" stroke="#E2E8F0" stroke-width="1"/>
   <text x="460" y="392" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
     <tspan font-weight="600">Fig 22. 시나리오 7:</tspan>
-    <tspan> 실행 중으로 보이는 컨테이너와 멈춰 버린 웹 서버</tspan>
+    <tspan> 컨테이너 일시 정지와 HTTP 응답 확인</tspan>
   </text>
 </svg>

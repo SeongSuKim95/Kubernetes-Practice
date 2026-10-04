@@ -22,7 +22,7 @@
   <rect x="450" y="115" width="380" height="36" rx="8" fill="#FFEDD5" stroke="#FDBA74"/>
   <rect x="450" y="115" width="95" height="36" rx="8" fill="#FB923C"/>
   <text x="497" y="138" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#FFFFFF" font-weight="600">앱 사용</text>
-  <text x="700" y="138" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#C2410C" font-weight="600">비어 있음 (못 씀)</text>
+  <text x="700" y="138" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#C2410C" font-weight="600">남는 자원</text>
 
   <text x="640" y="180" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#9A3412">같은 서버에 다른 앱을 올리기 어려운 이유</text>
 
@@ -36,8 +36,8 @@
 
   <rect x="700" y="200" width="130" height="100" rx="10" fill="#FFFFFF" stroke="#FDBA74"/>
   <text x="765" y="240" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#C2410C" font-weight="600">장애</text>
-  <text x="765" y="265" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#EA580C">한 앱이 죽으면</text>
-  <text x="765" y="285" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#EA580C">같이 위험</text>
+  <text x="765" y="265" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#EA580C">한 앱의 자원 과점유</text>
+  <text x="765" y="285" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#EA580C">다른 앱에도 영향</text>
 
   <line x1="40" y1="375" x2="860" y2="375" stroke="#E2E8F0" stroke-width="1"/>
   <text x="450" y="408" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">

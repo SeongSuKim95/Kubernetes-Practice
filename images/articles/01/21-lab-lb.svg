@@ -16,17 +16,18 @@
   <text x="330" y="160" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">보낼 대상 목록</text>
   <text x="330" y="185" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#64748B">(사람이 직접 유지)</text>
 
-  <path d="M430 130 H500" fill="none" stroke="#0D9488" stroke-width="2" marker-end="url(#a)"/>
-  <path d="M430 160 H500" fill="none" stroke="#0D9488" stroke-width="2" marker-end="url(#a)"/>
-  <path d="M430 190 H500" fill="none" stroke="#0D9488" stroke-width="2" marker-end="url(#a)"/>
-
-  <rect x="510" y="50" width="140" height="70" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
-  <text x="580" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">웹 :8080</text>
-  <rect x="510" y="135" width="140" height="70" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
-  <text x="580" y="165" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">웹 :8081</text>
-  <rect x="510" y="220" width="140" height="70" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
-  <text x="580" y="250" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">웹 :8082</text>
-
+<path d="M430 115 H460 V60 H510" fill="none" stroke="#0D9488" stroke-width="2" marker-end="url(#a)"/>
+<rect x="510" y="30" width="140" height="60" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+<text x="580" y="65" text-anchor="middle" font-family="Apple SD Gothic Neo, sans-serif" font-size="13" fill="#0F766E">웹 :8080</text>
+<path d="M430 145 H468 V130 H510" fill="none" stroke="#0D9488" stroke-width="2" marker-end="url(#a)"/>
+<rect x="510" y="100" width="140" height="60" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+<text x="580" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, sans-serif" font-size="13" fill="#0F766E">웹 :8081</text>
+<path d="M430 175 H476 V200 H510" fill="none" stroke="#0D9488" stroke-width="2" marker-end="url(#a)"/>
+<rect x="510" y="170" width="140" height="60" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+<text x="580" y="205" text-anchor="middle" font-family="Apple SD Gothic Neo, sans-serif" font-size="13" fill="#0F766E">웹 :8082</text>
+<path d="M430 205 H484 V270 H510" fill="none" stroke="#0D9488" stroke-width="2" marker-end="url(#a)"/>
+<rect x="510" y="240" width="140" height="60" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
+<text x="580" y="275" text-anchor="middle" font-family="Apple SD Gothic Neo, sans-serif" font-size="13" fill="#0F766E">웹 :8083</text>
   <rect x="690" y="90" width="200" height="160" rx="12" fill="#FFF7ED" stroke="#EA580C" stroke-width="2"/>
   <text x="790" y="140" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#C2410C" font-weight="600">컨테이너 추가, 삭제 시</text>
   <text x="790" y="170" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#EA580C">목록 파일을</text>

@@ -55,8 +55,8 @@
   <text x="740" y="88" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="17" fill="#0F766E" font-weight="700">StatefulSet: 주문 내역을 저장하는 데이터베이스</text>
 
   <rect x="550" y="132" width="380" height="62" rx="12" fill="#FEF3C7" stroke="#FCD34D" stroke-width="1.5"/>
-  <text x="740" y="157" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#92400E" font-weight="700">“Pod가 교체되어도 기존 주문 내역이 사라지면 안 됩니다”</text>
-  <text x="740" y="179" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#475569">각 Pod는 구별되는 이름과 전용 저장소를 계속 사용한다</text>
+  <text x="740" y="157" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#92400E" font-weight="700">“Pod가 교체되어도 인스턴스를 이름으로 구분해야 합니다”</text>
+  <text x="740" y="179" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#475569">각 Pod는 순번이 있는 이름을 사용한다</text>
 
   <!-- database cabinet 0 -->
   <g>
@@ -67,7 +67,7 @@
     <circle cx="607" cy="305" r="6" fill="#0D9488"/>
     <line x1="622" y1="301" x2="694" y2="301" stroke="#0F766E" stroke-width="2"/>
     <line x1="622" y1="310" x2="676" y2="310" stroke="#0F766E" stroke-width="2"/>
-    <text x="650" y="364" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E">전용 주문 장부 0</text>
+    <text x="650" y="364" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E">첫 번째 인스턴스</text>
   </g>
 
   <!-- database cabinet 1 -->
@@ -79,16 +79,16 @@
     <circle cx="787" cy="305" r="6" fill="#0D9488"/>
     <line x1="802" y1="301" x2="874" y2="301" stroke="#0F766E" stroke-width="2"/>
     <line x1="802" y1="310" x2="856" y2="310" stroke="#0F766E" stroke-width="2"/>
-    <text x="830" y="364" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E">전용 주문 장부 1</text>
+    <text x="830" y="364" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0F766E">두 번째 인스턴스</text>
   </g>
 
   <rect x="558" y="382" width="364" height="64" rx="12" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1.5"/>
-  <text x="740" y="408" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#047857" font-weight="700">새 Pod도 기존 이름과 주문 내역을 이어받는다</text>
-  <text x="740" y="430" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#065F46">새 database-0 Pod는 database-0의 저장소에 다시 연결</text>
+  <text x="740" y="408" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#047857" font-weight="700">교체된 Pod도 같은 순번의 이름을 사용한다</text>
+  <text x="740" y="430" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#065F46">database-0을 대체하는 새 Pod의 이름도 database-0</text>
 
   <line x1="40" y1="515" x2="960" y2="515" stroke="#E2E8F0"/>
   <text x="500" y="547" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
     <tspan font-weight="600">Fig 9. Deployment와 StatefulSet의 사용 상황:</tspan>
-    <tspan> 교체 가능한 웹 서버와 정체성, 저장소를 이어 가는 데이터베이스</tspan>
+    <tspan> 교체 가능한 웹 서버와 이름, 순번을 유지하는 데이터베이스</tspan>
   </text>
 </svg>

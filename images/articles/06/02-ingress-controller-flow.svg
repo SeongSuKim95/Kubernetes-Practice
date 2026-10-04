@@ -61,7 +61,7 @@
 
   <line x1="40" y1="474" x2="1000" y2="474" stroke="#E2E8F0"/>
   <text x="520" y="504" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
-    <tspan font-weight="600">Fig 5. Ingress Controller:</tspan>
+    <tspan font-weight="600">Fig 2. Ingress Controller:</tspan>
     <tspan> Controller의 설정 반영과 프록시의 요청 처리</tspan>
   </text>
 </svg>

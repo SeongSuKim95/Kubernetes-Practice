@@ -20,10 +20,10 @@
   <text x="670" y="75" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#0F766E" font-weight="600">볼륨 마운트</text>
   <rect x="540" y="95" width="260" height="70" rx="10" fill="#CCFBF1" stroke="#0D9488"/>
   <text x="670" y="125" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">Container</text>
-  <text x="670" y="148" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">/var/lib/mysql</text>
+  <text x="670" y="148" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">/data/message.txt</text>
   <path d="M670 170 V195" fill="none" stroke="#0D9488" stroke-width="2" marker-end="url(#g)"/>
   <rect x="540" y="200" width="260" height="50" rx="10" fill="#A7F3D0" stroke="#0D9488"/>
-  <text x="670" y="230" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#065F46" font-weight="600">볼륨 db-data, 데이터 유지</text>
+  <text x="670" y="230" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#065F46" font-weight="600">볼륨 lab-file-data, 파일 유지</text>
 
   <line x1="40" y1="322" x2="860" y2="322" stroke="#E2E8F0" stroke-width="1"/>
   <text x="450" y="350" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">

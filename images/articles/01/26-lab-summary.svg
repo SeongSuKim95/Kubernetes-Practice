@@ -4,7 +4,7 @@
   <rect x="30" y="40" width="300" height="120" rx="12" fill="#FEF2F2" stroke="#DC2626"/>
   <text x="180" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#B91C1C" font-weight="600">컨테이너가 죽으면</text>
   <text x="180" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#B91C1C" font-weight="600">사람이 컨테이너를 다시 start</text>
-  <text x="180" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#DC2626">컨테이너 자동 복구 없음</text>
+  <text x="180" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#DC2626">재시작 정책 없이 실행한 예시</text>
 
   <rect x="340" y="40" width="300" height="120" rx="12" fill="#FFF7ED" stroke="#EA580C"/>
   <text x="490" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#C2410C" font-weight="600">컨테이너를 늘릴 때</text>
@@ -14,7 +14,7 @@
   <rect x="650" y="40" width="300" height="120" rx="12" fill="#FEF3C7" stroke="#D97706"/>
   <text x="800" y="80" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#92400E" font-weight="600">컨테이너가 실행 중이어도</text>
   <text x="800" y="105" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#92400E" font-weight="600">웹 서버가 멈춰 있을 수 있음</text>
-  <text x="800" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B45309">웹 서버 생존을 따로 확인</text>
+  <text x="800" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B45309">HTTP 응답을 따로 확인</text>
 
   <rect x="185" y="190" width="300" height="120" rx="12" fill="#DBEAFE" stroke="#2563EB"/>
   <text x="335" y="230" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#1D4ED8" font-weight="600">이미지 버전을 바꿀 때</text>

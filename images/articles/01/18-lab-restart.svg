@@ -31,8 +31,8 @@
   <text x="650" y="135" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">사람이 직접 start</text>
 
   <rect x="760" y="80" width="110" height="80" rx="10" fill="#FEF3C7" stroke="#D97706"/>
-  <text x="815" y="115" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#92400E" font-weight="600">자동 복구</text>
-  <text x="815" y="138" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B45309">없음</text>
+  <text x="815" y="115" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#92400E" font-weight="600">재시작 정책</text>
+  <text x="815" y="138" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B45309">미설정</text>
 
   <line x1="40" y1="242" x2="860" y2="242" stroke="#E2E8F0" stroke-width="1"/>
   <text x="450" y="270" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">

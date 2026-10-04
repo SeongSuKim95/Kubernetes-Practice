@@ -25,7 +25,7 @@
   <text x="595" y="192" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">외부 로그 저장소로 전송</text>
 
   <rect x="275" y="265" width="240" height="58" rx="12" fill="#FFF7ED" stroke="#EA580C" stroke-width="2"/>
-  <text x="395" y="289" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#C2410C" font-weight="700">공유 emptyDir 볼륨</text>
+  <text x="395" y="289" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="14" fill="#C2410C" font-weight="700">공유 볼륨</text>
   <text x="395" y="310" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#EA580C">app-logs</text>
 
   <path d="M195 215 V294 H275" fill="none" stroke="#2563EB" stroke-width="2.5" marker-end="url(#blue)"/>

@@ -13,7 +13,7 @@
   <!-- LEFT: Docker family -->
   <rect x="20" y="16" width="450" height="390" rx="14" fill="#FFFFFF" stroke="#FECACA" stroke-width="2"/>
   <text x="245" y="44" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#B91C1C" font-weight="700">Docker 계열</text>
-  <text x="245" y="64" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#EF4444">컨테이너를 만들고 실행하는 도구</text>
+  <text x="245" y="64" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#EF4444">이미지 실행부터 여러 서버의 운영까지</text>
 
   <rect x="55" y="84" width="380" height="58" rx="10" fill="#FEF2F2" stroke="#DC2626" stroke-width="2"/>
   <text x="245" y="108" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#991B1B" font-weight="600">Docker</text>
@@ -32,8 +32,8 @@
   <text x="245" y="292" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#B91C1C">여러 서버에 컨테이너 분산</text>
 
   <rect x="55" y="328" width="380" height="58" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.8"/>
-  <text x="245" y="352" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#92400E" font-weight="600">확장과 복구 판단을 사람이 직접 수행</text>
-  <text x="245" y="372" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#B45309">예: docker service scale / docker restart</text>
+  <text x="245" y="352" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#92400E" font-weight="600">Swarm은 복제본 유지와 장애 복구를 자동화</text>
+  <text x="245" y="372" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#B45309">수동 확장 예: docker service scale</text>
 
   <!-- RIGHT: Kubernetes -->
   <rect x="490" y="16" width="450" height="390" rx="14" fill="#FFFFFF" stroke="#99F6E4" stroke-width="2"/>
@@ -55,10 +55,10 @@
 
   <rect x="525" y="280" width="380" height="58" rx="10" fill="#ECFDF5" stroke="#0D9488" stroke-width="2"/>
   <text x="715" y="304" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#0F766E" font-weight="600">플랫폼이 원하는 상태에 맞춤</text>
-  <text x="715" y="324" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">확장, 복구, 배치를 자동으로 수행</text>
+  <text x="715" y="324" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">설정한 정책에 따라 확장, 복구, 배치</text>
 
   <rect x="525" y="358" width="380" height="28" rx="8" fill="#F0FDFA" stroke="#99F6E4" stroke-width="1.5"/>
-  <text x="715" y="377" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">사람이 매번 지시하지 않아도 운영이 이어짐</text>
+  <text x="715" y="377" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">선언한 상태를 유지하도록 운영을 자동화</text>
 
   <line x1="40" y1="426" x2="920" y2="426" stroke="#E2E8F0" stroke-width="1"/>
   <text x="480" y="452" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">
