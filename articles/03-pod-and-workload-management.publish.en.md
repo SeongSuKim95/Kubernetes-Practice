@@ -1,41 +1,34 @@
 <!--
-  English publish copy. Image paths use GitHub raw URLs. GFM Markdown (no HTML centering wrappers).
-  Diagram SVGs point to images/articles/03/en/.
-  Korean publish original: 03-pod-and-workload-management.publish.md
+  English publish copy based on 03-pod-and-workload-management.draft.md.
+  Image paths use GitHub raw URLs; diagrams use their English SVG variants.
   Image repository: https://github.com/SeongSuKim95/Kubernetes-Practice
 -->
 
-# Chap03. Pods and Workload Management
+# Chap03. Pods and Deployments: Application Execution Units and Deployment
 
-> This is the third article in a 15-week series. We look at Pods, the minimum unit in which Kubernetes runs containers, and at Deployments, StatefulSets, and DaemonSets, which manage Pods according to application requirements. We also cover ConfigMaps and Secrets, which separate runtime configuration from container images.
+> This is the third article in a 15-week series. We examine Pods, the smallest units Kubernetes deploys, and the Deployment, StatefulSet, and DaemonSet resources that manage them for different application needs. We also introduce ConfigMaps and Secrets for separating runtime configuration from container images.
 
 ## Introduction
 
 ![Official Kubernetes logo](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/en/01-k8s-logo.svg)
 
-In the previous article, we described Kubernetes not simply as a tool that places containers on multiple servers, but as a platform that continuously maintains an application's desired state. Users do not specify every command for creating containers or responding to failures. Instead, they declare the state in which the application should remain, and Kubernetes takes responsibility for bringing actual state in line with that declaration.
+Chapter 2 explored how Kubernetes brings actual state toward a user's declaration. Here, we examine the units in which containers run and the resources that manage the number and configuration of application instances.
 
-This declarative approach values continuously maintaining state over the success of a single command. When a running container disappears, or the actual number of containers differs from the desired number, Kubernetes does not treat the change only as a failed command. It sees a difference between desired and actual state, then repeatedly runs control loops to bring actual state back into alignment. The design aims to preserve declared state over time rather than execute an automation once and stop.
-
-The same philosophy explains why Kubernetes components observe shared state recorded in the API instead of issuing execution commands directly to one another. Each component observes the state changes for which it is responsible and performs work to reconcile actual state. If one component stops temporarily, desired state remains in the API, so the component can resume reconciliation when it starts again. Organizing the system around state reduces coupling between components and lets the platform continue responding to failures and changes.
-
-This article shows how that philosophy appears in application execution units and workload management. Kubernetes groups containers that must run together into Pods and manages Pod sets with Deployments, StatefulSets, or DaemonSets according to application requirements. It can also separate ordinary settings into ConfigMaps and sensitive values into Secrets so the same container image can be used across environments. We begin by distinguishing a manifest, where a user writes desired state, from a resource, which Kubernetes continuously manages.
+We begin by distinguishing manifests from resources, then introduce Pods. We focus on Deployments for replica management and deployment changes, compare situations that call for StatefulSets and DaemonSets, and finish with ConfigMaps and Secrets for separating configuration from images.
 
 ## 1. Resources and Manifests
 
-The declarative approach from Chapter 2 leaves desired state in the API, and Kubernetes continuously aligns actual state with it. First, two things must be distinguished: where a user writes desired state, and what Kubernetes stores and manages as that state.
+Deploying an application involves declaring desired state and submitting it to the API. First, we need to distinguish the manifest we write from the resource the API manages.
 
-If you do not distinguish a YAML file written by a user from an object managed inside a cluster, it is easy to call both of them resources or assume that editing a local file immediately changes a running application. Kubernetes control processes observe objects stored by the API Server, not YAML files on a user's machine. We therefore need to separate the manifest submitted to the API from the resource stored by the API and managed by Kubernetes.
+![Resources and manifests](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/03/en/01-resource-manifest.svg)
 
-![Relationship between a Kubernetes resource and a manifest](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/03/en/01-resource-manifest.svg)
+A **manifest** declares which resource should exist and what state it should have. Manifests are commonly written in YAML, although JSON is also supported. YAML describes the file format; “manifest” describes its role as a declaration submitted to the Kubernetes API.
 
-A **manifest** is a declaration of which resource you want and the state in which you want it. Manifests are commonly written in YAML, although JSON is also supported. YAML names the file format used to express the content; manifest names the role of the declaration submitted to the Kubernetes API.
+A **resource** is something managed through the API, such as a Pod or Deployment. An individual named instance is an **object**. Creating or changing a resource in this article means managing these objects through the API. A resource may have a `spec` describing desired state and a `status` recording observed state. Control processes observe resources stored in the API, not local manifest files, and perform the work needed to realize their `spec`. [[1]](#ref-1)
 
-A **resource** is an object that the Kubernetes API stores and manages after a manifest is submitted. A resource may have a `spec`, the desired state declared by the user, and a `status`, the current state observed by Kubernetes. Control processes observe resources stored in the API rather than local manifest files, then perform the work required to make each resource's `spec` real.
+One manifest file can contain several resource declarations, or an application's resources can be split across multiple files.
 
-In short, a manifest is input sent to the API, while a resource is the object continuously managed in the cluster. One manifest file may contain declarations for multiple resources, and multiple manifest files may collectively express the operating state of one application.
-
-Most manifests repeatedly use four fields. `apiVersion` identifies the API version, and `kind` identifies the resource type. `metadata` contains the resource name and classification information. `spec` contains the desired state. After creating a resource, Kubernetes records actual state in `status`; users rarely write `status` directly in a manifest.
+Manifests for resources such as Pods and Deployments use the following structure. Other resources, including ConfigMaps and Secrets, use fields other than `spec`.
 
 ```yaml
 # Common structure of a Kubernetes manifest
@@ -47,79 +40,84 @@ spec:
   <desired state>
 ```
 
-### 1.1 Why Manage Desired State with Manifests
+- `apiVersion`: the API group and version.
+- `kind`: the resource type to create.
+- `metadata.name`: the resource's name.
+- `spec`: the user's desired state.
 
-With manifests, operational configuration does not survive only as one-off commands entered in a terminal. The file records which resources are required and the state in which each resource should remain. Submitting the same manifest in another environment requests the same desired state again, reducing manual configuration that depends on an operator's memory.
+Kubernetes normally records `status`, so it is omitted from user-written manifests.
 
-Because manifests are files, they can be versioned in Git. A team can review manifest changes like application code and trace who changed which setting. If a problem occurs, an earlier manifest version also provides a baseline that can be submitted again to request the previous desired state.
+### 1.1 Benefits of Manifest-Based State Management
 
-Manifests can also serve as automation input. A deployment pipeline can submit a reviewed file to the Kubernetes API without a person reconstructing the same commands each time.
+Manifests keep operational configuration from existing only as one-time terminal commands. They record which resources are needed and how each should be configured. Submitting the same manifest in another environment requests the same desired state, reducing manual setup that depends on someone's memory.
 
-Here, **kubectl** is a command-line client that sends user commands and manifests to the Kubernetes API. kubectl does not run Pods or containers itself; it sends the desired state represented by a manifest to the API. Kubernetes control processes then observe the stored change and align actual state with desired state.
+Files can be versioned in Git. Teams can review manifest changes like application code and inspect who changed each setting. If a problem occurs, an earlier manifest provides a basis for requesting the desired state it described.
 
-A local manifest file and an API resource are not automatically linked. After editing the file, you must submit the manifest again with `kubectl apply`, or use a separate synchronization process such as a GitOps tool that detects file changes and submits them, before the cluster resource changes.
+Manifests also serve as automation inputs. A deployment pipeline can submit reviewed files to the API without a person repeatedly assembling commands.
 
-### 1.2 Submitting a Manifest with kubectl apply -f
+To affect the cluster, a manifest must be submitted with a command such as `kubectl apply`. Editing a local file alone does not change running resources.
 
-![Flow of submitting a manifest with kubectl apply](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/03/en/02-kubectl-apply.svg)
+### 1.2 Manifest Submission with kubectl apply
 
-You normally run `kubectl apply -f` in a terminal on a developer machine or CI server where kubectl and cluster access configuration are available. You do not need to log in to a Worker Node and run the command there. The machine running kubectl only needs network access to the API Server.
+![Submitting a manifest with kubectl apply](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/03/en/02-kubectl-apply.svg)
 
-`apply` is the subcommand that asks Kubernetes to apply manifest configuration to resources. `-f` is short for `--filename` and accepts the path to the manifest to apply. In the command below, `./app.yaml` is a local file resolved from the terminal's current directory. You may also provide an absolute path, a directory containing manifests, or a URL. In other words, `-f` selects the manifest to read, while the current kubeconfig context selects the cluster to which the manifest is submitted.
+`kubectl apply -f` is normally run in a terminal on a developer's computer or a CI server with kubectl and cluster access configured. It does not require logging in to a worker node. The machine running kubectl needs network access to the API Server.
+
+`apply` requests that manifest configuration be reflected in Kubernetes resources. `-f`, short for `--filename`, selects the manifest input. In the command below, `./app.yaml` is a local file relative to the terminal's current directory. Absolute paths, directories containing manifests, and URLs can also be used. The input is selected by `-f`; the destination cluster is selected by the current kubeconfig context. [[2]](#ref-2)
 
 ```bash
-# Submit a manifest in the current directory to the selected Kubernetes cluster
+# Submit a local manifest to the selected Kubernetes cluster
 kubectl apply -f ./app.yaml
 ```
 
-When you run the command, kubectl first reads the manifest in `app.yaml`. It then checks **kubeconfig** (the configuration that tells kubectl which cluster to contact and which user credentials to use) for the current API Server address and credentials. kubectl converts the manifest into an API request and sends that request to the selected API Server over the network.
+kubectl reads `app.yaml`, then obtains the selected cluster's API Server address and credentials from **kubeconfig**. It converts the manifest into API requests and sends them over the network to that server.
 
-The API Server checks the requesting user's identity and permissions, then validates the manifest fields against the API schema. If the request is valid, the API Server creates the resource when it does not exist or applies the manifest changes to the existing resource. Kubernetes determines whether it is the same resource from identifying information that includes resource kind and name.
+The API Server checks identity, permissions, and whether the fields satisfy the API schema. For a valid request, it creates a resource if it does not exist or applies changes to the existing resource. Resource identity includes its type and name.
 
-When the API Server stores the resource, that does not mean kubectl has directly run a container on a Worker Node. After the resource is stored, control processes observe the resource change and reduce the difference between the desired state in `spec` and actual state. Results such as `created`, `configured`, and `unchanged` therefore report how the API resource was applied; they do not mean the application is fully ready to run.
+The `created`, `configured`, and `unchanged` results mean that the API resource was created, modified, or needed no change. They do not mean the application is ready to run, so Pod status must be checked separately.
 
-We can now look at the Kubernetes resources that express declarations from manifests. We start with the Pod, the minimum unit in which containers actually run, then expand to workload resources that manage Pod sets for different purposes.
+We can now examine the resources these declarations describe, beginning with the Pod and then expanding to workload resources that manage groups of Pods for different purposes.
 
-## 2. Pods: Running Containers Together
+## 2. Pods for Containers That Run Together
 
-![Official Kubernetes Pod resource mark](https://raw.githubusercontent.com/kubernetes/community/main/icons/svg/resources/labeled/pod.svg)
+<img src="https://raw.githubusercontent.com/kubernetes/community/main/icons/svg/resources/labeled/pod.svg" alt="Official Kubernetes Pod resource icon" width="260">
 
-### 2.1 Kubernetes' Minimum Execution Unit
+### 2.1 The Smallest Deployable Unit
 
-![Kubernetes Pod](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/03/en/04-pod.svg)
+![Pod scheduling, execution, and shared environment](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/03/en/12-pod-scheduling-and-sharing.svg)
 
-A **Pod** is the minimum execution unit that Kubernetes creates and places on a Worker Node. Kubernetes does not place each container independently. The **Scheduler** is a control process that selects a suitable Worker Node for a Pod that does not yet have a Node. After the Scheduler selects a Worker Node, the **Kubelet** running on that Node starts the containers declared in the Pod. The Kubelet is an agent that observes Pods assigned to its Node and manages their containers so they run in the declared state. The boundary Kubernetes places and replaces is the Pod, not an individual container.
+A **Pod** groups one or more containers into the smallest unit Kubernetes creates and schedules onto a node. Containers in the same Pod, such as Container A and B in the diagram, are always placed on the same node. [[3]](#ref-3)
 
-A Pod can contain one or more containers. The most common arrangement has one application container. Even with a single container, Kubernetes can consistently manage placement, networking, storage, and lifecycle through the Pod.
+The **Scheduler** on the left runs in the control plane and selects a suitable worker node for a Pod that has not yet been assigned one. It records the assignment through the API Server. The assigned node's **kubelet** observes that Pod through the API Server and asks the container runtime to execute its containers. The runtime prepares images and actually runs container processes. The kubelet continues managing their state afterward.
 
-The ability to include multiple containers exists for processes that must cooperate closely as one execution unit. Containers belong in the same Pod when they must be placed together, share networking or files, and be cleaned up together when the Pod disappears. A Pod is therefore not merely a container wrapper. It defines which containers Kubernetes manages as one application execution unit.
+In practice, a Pod with one application container is the most common arrangement. Even then, the Pod gives Kubernetes a consistent unit for placement, networking, storage, and lifecycle management.
 
-![Learn Kubernetes with Seongsu: Pod character](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/characters/character-pod.png)
+Multiple containers belong in a Pod when they need to cooperate closely: they must be placed together, share networking or files, and be removed together when the Pod disappears. A Pod therefore defines which containers form one application execution unit, rather than merely acting as a container wrapper.
 
-The Pod character carries **Containers** in a front pouch like a kangaroo. The hexagon and cube marks suggest Kubernetes' minimum execution unit, while the two containers in the pouch show that one Pod can contain multiple containers.
+![A Pod groups containers](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/characters/character-pod.png)
 
-All containers in one Pod are always placed on the same Worker Node. They share the Pod lifecycle boundary: the Pod is created, placed on a Node, and deleted as a unit. Sharing that lifecycle boundary does not mean every container always restarts at the same time. If one container exits, the Kubelet may keep the Pod and restart only that container according to the configured restart policy.
+The two containers share an environment, but they do not necessarily restart simultaneously. If one exits, the kubelet can restart only that container under its restart policy while keeping the Pod.
 
-Networking is shared at the Pod level. Containers in the same Pod share one Pod IP and port space. Each container must use different ports, and a process in one container can reach a process in another through `localhost`. This shared network is also why callers reach processes through the Pod IP rather than locating an individual container directly.
+Networking is shared at the Pod level. Containers use the same Pod IP and port space. Processes listening on the same address and protocol need different ports, and containers can reach one another through `localhost`. This shared network is why external clients reach processes through the Pod IP rather than a separate address for each container. [[3]](#ref-3)
 
-Storage can also be shared within a Pod. A **volume** connects storage space for containers to a Pod. If a volume is declared once in the Pod and mounted into multiple containers at their own paths, those containers can read and write the same files. Their root filesystems are not merged; only the mounted volume paths are shared.
+Storage can also be shared. A **volume** connects storage to a Pod for its containers to use. Declare the volume once and mount it in multiple containers to let them read and write the same files. Their default filesystems remain separate; only the mounted paths share that storage.
 
-Because of these shared boundaries, unrelated applications should not be combined in one Pod. Applications with different release schedules and scaling criteria, such as a web server and a database, should use separate Pods. Put containers in the same Pod only when they must be placed and deleted together and must closely share networking or files.
+Because of these shared boundaries, unrelated applications should not be grouped in one Pod. A web server and a database with different deployment schedules and scaling needs generally belong in separate Pods. Group only containers that need joint placement and deletion and close sharing of networking or files.
 
 ### 2.2 The Sidecar Pattern
 
-![Sidecar collecting application logs](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/03/en/05-sidecar-logging.svg)
+![A sidecar collecting application logs](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/03/en/06-sidecar-logging.svg)
 
-The **sidecar pattern** is a common use of a Pod's shared boundaries. It places a helper container beside the container that runs the application's primary function. Sidecars are useful for functions such as log collection, proxying, or configuration refresh that need to share the application's execution environment.
+The **sidecar pattern** takes advantage of these shared boundaries. A supporting container runs alongside the main application container to provide a function such as log collection, proxying, or configuration updates within the same environment. [[4]](#ref-4)
 
-For example, an application container can write logs to a file while a log collection container reads that file and sends it to external storage. Because both containers are placed in the same Pod and mount the same log volume, they can share log files without a separate network file share. The following manifest shows that arrangement.
+For example, an application writes logs to a file while a log collector reads that file and sends it to external storage. Both containers share a log volume in the same Pod, without needing a separate network filesystem. The following manifest illustrates this arrangement.
 
 ```yaml
-# Two containers in one Pod sharing a temporary volume
+# Share a temporary volume between two containers in one Pod
 apiVersion: v1
 kind: Pod
 metadata:
-  name: api-server
+  name: api-app
 spec:
   containers:
   - name: api
@@ -137,28 +135,34 @@ spec:
     emptyDir: {}
 ```
 
-In this manifest, both containers mount the same volume, `app-logs`, at their own `/var/log/app` paths.
+- `spec.containers`: the application and log collector that run together.
+- `volumeMounts`: the volumes each container uses.
+- `mountPath`: where the volume is mounted inside a container.
+- `spec.volumes`: the volumes available to the Pod.
+- `emptyDir: {}`: temporary storage that lasts for the lifetime of the Pod.
 
-A Pod is a replaceable execution unit. A Pod already placed on one Worker Node does not move to another Node. A replacement Pod has a new UID, and its name and IP may also change. If you delete a standalone Pod, Kubernetes does not automatically create the same Pod again. Long-running applications therefore need a higher-level resource that manages the number of Pod replicas and the Pod replacement process.
+Both containers mount `app-logs` at `/var/log/app`. This example demonstrates volume sharing; actual collection also requires the application to write log files and the collector to configure its inputs and destinations.
 
-The correct higher-level resource depends on why the Pods must be maintained. Use a Deployment when interchangeable Pods, such as web API Pods, must remain at a desired count. Use a StatefulSet when each Pod needs a stable name and storage. Use a DaemonSet when each Node must provide a local function. All three resources use Pod templates, but they differ in which Pod set they treat as desired state. We examine these three cases in order.
+Pods are replaceable execution units. A Pod assigned to one worker node does not move to another node. A replacement is a new Pod with a different unique identifier (UID), and it may have a different name and IP. Deleting a standalone Pod does not cause Kubernetes to recreate it automatically. Long-running applications therefore need a higher-level resource to manage Pod counts and replacement.
 
-## 3. Deployments: Managing Pod Replicas and Rollouts
+Kubernetes provides **Deployments**, **StatefulSets**, and **DaemonSets** for these purposes. A Deployment maintains a desired number of interchangeable Pods, such as web API instances. A StatefulSet provides distinct names and creation order. A DaemonSet provides a local function on each eligible node. All three use Pod templates, but they describe different desired Pod populations. We will examine them in that order.
 
-![Official Kubernetes Deployment resource mark](https://raw.githubusercontent.com/kubernetes/community/main/icons/svg/resources/labeled/deploy.svg)
+## 3. Deployments for Replicas and Application Updates
 
-![Kubernetes Deployment](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/03/en/06-deployment.svg)
+<img src="https://raw.githubusercontent.com/kubernetes/community/main/icons/svg/resources/labeled/deploy.svg" alt="Official Kubernetes Deployment resource icon" width="260">
 
-A Pod is the minimum unit in which an application runs, but Kubernetes operations generally do not aim to preserve one Pod's name and IP forever. A Pod may disappear during a failure or rollout and be replaced by a Pod with a new name and IP. Operations must preserve the state of a set of Pods performing the same role, not the identity of one particular Pod.
+![Kubernetes Deployment](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/en/12-deployment.svg)
 
-A **Deployment** is a higher-level resource that declares and maintains desired state for that Pod set. Users declare which Pod configuration to maintain, how many Pods to keep, and how to replace the Pod configuration. A Deployment continually checks the difference between the current and desired Pod sets, then creates required Pods or reduces excess Pods to reconcile that difference. This is the declarative approach and control loop from Chapter 2 applied to application delivery.
+When several Pods serve the same role, maintaining the application's Pod population matters more than preserving one Pod's name or IP. Pods can disappear during failures or deployments and be replaced under new names and addresses. The operational goal is the state of the group, rather than the identity of one particular Pod.
 
-### 3.1 Declaring a Deployment with a Manifest
+A **Deployment** declares and maintains the desired state of this group. Users specify how many Pods of a given configuration should exist and how that configuration should be replaced. Controllers read the declaration and adjust the group's count and configuration. This applies Chapter 2's control loop to application deployment.
 
-A **Label** is key-value classification information attached to a Kubernetes resource. A **Selector** identifies managed resources by Label conditions. A Deployment manifest declares both the number of Pods to maintain and the common configuration to apply to new Pods. `replicas` specifies the Pod count, while `template` contains settings such as the container image and port. `selector` specifies the Label condition used to find managed Pods, and the Pod template must attach the same Label.
+### 3.1 Deployment Declarations and Pod Replicas
+
+The following Deployment maintains three web application Pods. `replicas` specifies the count, and the **Pod template**, `template`, supplies the image and common settings for new Pods. The two occurrences of `app: web` identify the group managed by this Deployment.
 
 ```yaml
-# Deployment declaring three Pod replicas and a Pod template
+# Declare three Pod replicas and their common template
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -180,62 +184,64 @@ spec:
         - containerPort: 8080
 ```
 
-This manifest declares that three Pods with Label `app: web` must be maintained. `spec.template` contains the common configuration the Deployment uses to create a new Pod. `spec.selector.matchLabels` is the criterion for finding Pods created from that configuration. The Selector and Pod template Label must therefore match.
+- `metadata.name: web`: the Deployment's name.
+- `spec.replicas: 3`: the number of Pods to maintain.
+- `spec.selector.matchLabels`: the **selector**, which identifies the managed group by its labels; here it selects `app: web`.
+- `spec.template`: the common configuration for new Pods.
+- `spec.template.metadata.labels`: key-value classification information called **labels**, attached to new Pods. Here every new Pod receives `app: web` to match the selector.
+- `spec.template.spec.containers`: the containers to run in each Pod.
+- `image: my-web:1.0`: an example application image name.
+- `containerPort: 8080`: the port the container uses. Declaring it does not make the application listen or create an external access path.
 
-Here, a **replica** means one independent Pod created from the same Pod template. `replicas: 3` does not run three containers inside one Pod; it maintains three Pods that perform the same role. Each Pod has a different name and IP, and each can be replaced independently when a failure occurs or deployment configuration changes. Replica describes a Pod's role; there is no separate resource kind named `Replica Pod`.
+Replace the example image with your own application image.
 
-Internally, a Deployment creates and manages a **ReplicaSet**, a resource that maintains the number of Pod replicas matching a Label condition. The Deployment manages the Pod template and rollout process, while the ReplicaSet uses its Selector and ownership relationships to identify the Pods it manages and aligns their active replica count with the desired count. When too few Pods exist, the ReplicaSet creates Pod objects. When too many exist, it removes the excess Pods.
+A **replica** is one independent Pod created from the same Pod template. `replicas: 3` means maintaining three Pods serving the same role, not running three containers inside one Pod. Each Pod has its own name and IP and can be replaced independently after a failure or configuration change. “Replica” describes the Pod's role; there is no separate resource kind called `Replica Pod`.
 
-The relationship proceeds from Deployment to ReplicaSet to Pod. Users normally change the Deployment's `replicas` and Pod template, and the Deployment manages ReplicaSets that match that declaration. Directly changing the replica count of a ReplicaSet managed by a Deployment can conflict with the state declared by the Deployment. It is therefore safer to change a deployed application's replica count and Pod template through the Deployment.
+A Deployment creates a **ReplicaSet** to maintain the Pod count. The ReplicaSet creates Pods when its managed population is too small and removes extras when it is too large. Users normally express desired changes through the Deployment's `replicas` and Pod template rather than editing the ReplicaSet directly. [[5]](#ref-5)
 
-A ReplicaSet creates Pod objects and maintains the Pod replica count, but it does not decide which Worker Node will run each Pod. The Scheduler examines each Pod without an assigned Node and selects the Worker Node on which that Pod will run.
+![Labels and selectors identify a managed Pod group](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/03/en/07-deployment-selector.svg)
 
-![Deployment selecting a Pod set with Labels and a Selector](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/03/en/07-deployment-selector.svg)
+A cluster runs Pods for different roles, such as web applications, databases, and log collectors. To fulfill “maintain three web Pods,” Kubernetes needs a way to distinguish those Pods from the rest. Individual names differ and can change during replacement, so maintaining a list of names is impractical.
 
-Because Pod names and IPs can change, a Deployment does not use those values to identify its Pod set. The Deployment's Selector identifies the managed set, while its ReplicaSets manage the Pods. A ReplicaSet checks both Pod Labels and the ownership relationship linking a Pod to that ReplicaSet. It also attaches the same Label through the Pod template so a newly created Pod joins the same set.
+A **label** attaches shared classification information to resources so they can be grouped by application or role. Web Pods might carry `app: web`, while log collectors carry `app: log-agent`. Here, `app` is the key and `web` is its value. These values are chosen by users; Kubernetes does not infer the application's role from a Pod name or container image. Labels alone do not create Pods or maintain a replica count.
 
-Labels and Selectors let a Deployment continuously manage a Pod set without knowing exact Pod names in advance. If `app: web` is the management criterion, a replacement Pod can be counted as a web application replica when it has the matching Label and ownership relationship. If three replicas are desired but only two active managed Pods exist, the ReplicaSet creates one Pod. If four exist, it removes one. Desired state is restored by creating a new Pod for the same role, not by reviving the deleted Pod itself.
+A **selector** reads labels as conditions that define which resources to manage or query. Even when Pods have labels, a Deployment needs a condition identifying its target group. `selector.matchLabels.app: web` selects Pods whose `app` value is `web`. Pods labeled `app: log-agent` do not match and are not counted as web replicas. Labels classify the targets; selectors choose targets using that classification. [[6]](#ref-6)
 
-Labels and Selectors identify candidate Pods, while `ownerReferences` records object ownership. A ReplicaSet does not take over a Pod already owned by another Controller just because its Label matches. It can adopt a matching Pod that has no Controller owner. We will explore this distinction in the next chapter.
+This explains why `app: web` appears twice. `spec.selector.matchLabels` declares **the selection condition**, while `spec.template.metadata.labels` declares **the information attached to new Pods**. One locates targets; the other ensures new targets satisfy the condition. A Deployment's Pod template labels must satisfy its selector, or the API rejects the manifest.
 
-A Deployment maintains more than the number of Pod replicas. When the Pod configuration changes, such as a container image update, the Deployment gradually replaces the old Pod set with a new one and manages the transition so usable Pods remain available during the rollout. The core purpose of a Deployment is therefore not to create Pods once, but to continuously manage the count, configuration, and change process of a Pod set as desired state.
+If a deleted web Pod is replaced by one with a new name and IP, the new Pod still receives `app: web` from its template. It satisfies the existing selector without changes to a name list. Applications that must be managed independently should use distinct label conditions so their management scopes do not overlap.
 
-![Learn Kubernetes with Seongsu: Deployment character](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/characters/character-deployment.png)
+![A Deployment manages Pods and rollout state](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/characters/character-deployment.png)
 
-The Deployment character watches several **Pods** like an operator with a hard hat and checklist. The identical Pods and the act of caring for a failed Pod illustrate how a Deployment continuously manages the desired Pod replica count and rollout state.
+Changing the image version in the Deployment requires replacing the illustrated Pods with the new configuration. Next, we will examine how ReplicaSets support that change.
 
-### 3.2 ReplicaSets and Rollout Changes
+### 3.2 ReplicaSets and Deployment Changes
 
-A Deployment does not maintain Pods one by one directly. The Deployment creates a **ReplicaSet**, and the ReplicaSet maintains the specified number of Pod replicas. If the Deployment manifest says `replicas: 3`, the ReplicaSet aligns state so that three Pods using the same template are running.
+Suppose a web application's image changes while its Pod count must be maintained. Existing and new-version Pods need to be distinguished, and replacement should preserve availability.
 
-![Deployment replacing a Pod template through ReplicaSets](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/03/en/08-deployment-replicaset-update.svg)
+![Pod template replacement through ReplicaSets](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/03/en/09-deployment-replicaset-update.svg)
 
-One ReplicaSet represents a Pod template at a particular point in time. When a Deployment's container image changes from `my-web:1.0` to `my-web:1.1`, the Deployment does not modify existing Pods in place. It creates a ReplicaSet with the new Pod template. The Deployment reduces the old ReplicaSet's Pod replica count while increasing the new ReplicaSet's count, gradually replacing Pods. This process is called a **rolling update**. If the previous ReplicaSet's rollout history remains available, the Deployment can also roll back to an earlier Pod template.
+A ReplicaSet represents a Pod template at a particular point in time. When the Deployment image changes from `my-web:1.0` to `my-web:1.1`, it creates a ReplicaSet for the new template rather than modifying existing Pods directly. It reduces the old ReplicaSet's count while increasing the new one's. This gradual replacement is the default **rolling update** strategy. If an earlier ReplicaSet's revision remains available, users can request a **rollback** to that Pod template. [[7]](#ref-7)
 
-A ReplicaSet creating a new Pod to replace a missing Pod and a Kubelet restarting an exited container are separate control actions.
+## 4. StatefulSets for Stable Pod Identity
 
-## 4. StatefulSets: Preserving Pod Identity for Stateful Applications
+![Deployments and StatefulSets for web servers and databases](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/03/en/10-deployment-vs-statefulset-scenarios.svg)
 
-![Deployment and StatefulSet use cases](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/03/en/09-deployment-vs-statefulset-scenarios.svg)
+Deployment Pods are assumed to serve the same role and be interchangeable. If a web server Pod disappears, another created from the same template can replace it, and clients do not need to distinguish which instance handles a request. Not all applications fit that model.
 
-Deployment Pods are assumed to perform the same role and be interchangeable. If one web server Pod disappears, a new Pod from the same template can replace it, and clients do not need to distinguish which Pod handles a request. Not every application can operate this way.
+A **StatefulSet** manages stateful applications whose Pods need distinct identities. Its Pods have ordered names such as `database-0` and `database-1`. A replacement reuses the name associated with that ordinal, allowing the application to distinguish instances.
 
-A **StatefulSet** is a workload resource for stateful applications whose Pods require distinct identities. Pods created by a StatefulSet receive ordered names such as `database-0` and `database-1`. A replacement Pod reuses the same ordinal name, allowing the application to distinguish each instance.
+This is useful for databases and messaging applications that identify instances by name and require an ordered startup. [[8]](#ref-8)
 
-A StatefulSet is also used to connect a different persistent volume to each Pod. If `database-0` is replaced, the existing volume for `database-0` can be reattached to the newly created `database-0` Pod. The Pod changes, but the relationship between that Pod's role and its data store continues.
-
-By default, a StatefulSet creates and terminates Pods in order and proceeds to the next Pod after the earlier ordinal is ready. This behavior is useful for databases and message brokers that need startup ordering or stable network identity between instances.
-
-To provide stable network names for individual Pods, you also prepare a **Headless Service** connected to the StatefulSet. Instead of proxying requests through one virtual IP, a Headless Service makes the network address of each StatefulSet Pod discoverable through DNS, the system that resolves names to network addresses. In the following manifest, `serviceName: database` identifies the Headless Service connected to the StatefulSet.
+The following is a **partial StatefulSet manifest** focused on Pod naming and replica count. It illustrates the management difference from Deployment rather than providing every setting needed for deployment.
 
 ```yaml
-# StatefulSet managing three distinct Pod identities
+# Partial StatefulSet manifest illustrating Pod names and replica count
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: database
 spec:
-  serviceName: database
   replicas: 3
   selector:
     matchLabels:
@@ -250,18 +256,30 @@ spec:
         image: my-database:1.0
 ```
 
-A StatefulSet does not automatically configure database replication or failover. Kubernetes preserves each Pod's identity and storage attachment, but the database itself or a separate operations tool must handle functions such as data replication and leader election.
+- `kind: StatefulSet`: selects a resource that maintains distinct Pod names and ordinals.
+- `metadata.name: database`: the prefix of the generated Pod names.
+- `replicas: 3`: maintains `database-0`, `database-1`, and `database-2`.
+- `selector.matchLabels`: the label condition for managed Pods.
+- `template.metadata.labels`: labels attached to new Pods; these must match the selector.
+- `template.spec.containers`: the common container configuration for each Pod.
+- `image: my-database:1.0`: an example database image name.
 
-## 5. DaemonSets: Placing the Same Role on Every Node
+Like a Deployment, a StatefulSet declares a Pod template and replica count, but it handles names differently. If `database-1` is deleted, a new Pod is created with that name. Reusing a name does not revive the old Pod: the new one has a different UID, and its IP can change.
 
-![ReplicaSet application Pods and DaemonSet Pods on every Node](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/03/en/10-daemonset-node-agents.svg)
+The default creation order is `database-0`, `database-1`, then `database-2`. Each preceding Pod must be running and ready before the next is created. Reducing the replica count from three to two removes the highest ordinal, `database-2`, first. StatefulSets suit applications that require this identity and ordering. [[8]](#ref-8)
 
-A **DaemonSet** is a workload resource that manages one Pod on every Node, or on every Node matching specified conditions. Unlike a Deployment, which declares a fixed count through `replicas`, a DaemonSet's Pod count follows the number of target Nodes. When a new Node is added, Kubernetes creates the Pod on that Node. When a Node is removed, Kubernetes cleans up its Pod.
+A StatefulSet does not configure database replication or leader election. The database itself or separate operational tooling handles those responsibilities.
 
-Collecting Node logs or monitoring Node state requires the same agent to run on every Node. Components such as network plugins or storage drivers also need to provide functionality close to each Node. If you run only a fixed number of these programs through a Deployment, some Nodes may have no agent while another Node may have more than one. A DaemonSet matches this requirement.
+## 5. DaemonSets for a Function on Every Node
+
+![DaemonSet agents on each node](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/03/en/11-daemonset-node-agents.svg)
+
+A **DaemonSet** maintains one Pod on every node, or on each node that matches its conditions. Unlike a Deployment's fixed `replicas` count, its Pod count follows the number of eligible nodes. Adding a node creates a Pod there; removing a node also removes its associated Pod. [[9]](#ref-9)
+
+Node log collection and monitoring require the same agent on each node. Network plugins and storage drivers can have similar needs. Running only a fixed number of these agents as a Deployment can leave one node without an agent and another with several, so a DaemonSet is a better fit.
 
 ```yaml
-# DaemonSet running one app=log-agent Pod on every target Node
+# Run one app=log-agent Pod on each eligible node
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -280,16 +298,25 @@ spec:
         image: my-log-agent:1.0
 ```
 
-## 6. Separating Runtime Configuration with ConfigMaps and Secrets
+- `metadata.name: log-agent`: the DaemonSet's name.
+- `spec.selector.matchLabels`: the label condition for managed Pods.
+- `spec.template`: the common Pod configuration for each eligible node.
+- `image: my-log-agent:1.0`: an example log collector image name.
 
-If development and production addresses, log levels, and passwords are all placed inside a container image, every configuration change requires rebuilding the image. Sensitive values may also remain exposed in the image or manifest. Kubernetes provides ConfigMaps and Secrets to separate application code from environment-specific configuration.
+This example illustrates per-node placement only. Collecting actual node logs also requires access to the log paths and collector configuration.
 
-### 6.1 ConfigMaps for Ordinary Configuration
+## 6. Runtime Configuration with ConfigMaps and Secrets
 
-A **ConfigMap** stores non-secret configuration as key-value data. The same container image can receive a development address in a development environment and a production address in production. A Pod can consume ConfigMap values as environment variables, command arguments, or configuration files mounted through a volume.
+So far, we have examined how Pods are placed and maintained. We now turn to separating configuration so the same image can run in different environments.
+
+Embedding development and production addresses, log levels, and passwords in an image requires rebuilding it whenever settings change. Sensitive values can also remain exposed in images or manifests. ConfigMaps and Secrets separate application code from environment-specific configuration.
+
+### 6.1 ConfigMaps for General Settings
+
+A **ConfigMap** stores nonconfidential settings as key-value pairs. The same image can receive development addresses in one environment and production addresses in another. Pods can consume these values through environment variables, command arguments, or configuration files in a volume. [[10]](#ref-10)
 
 ```yaml
-# ConfigMap storing ordinary application configuration
+# Store general application settings in a ConfigMap
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -299,14 +326,19 @@ data:
   DATABASE_HOST: database
 ```
 
-A ConfigMap does not provide confidentiality. Do not store values such as passwords or tokens that must remain private in a ConfigMap.
+- `metadata.name: web-config`: the name referenced by the Pod.
+- `data`: the configuration values supplied to the application.
+- `LOG_LEVEL`: an example logging level.
+- `DATABASE_HOST`: an example database address.
+
+ConfigMaps provide no confidentiality. Do not use them for passwords or tokens that must remain private.
 
 ### 6.2 Secrets for Sensitive Values
 
-A **Secret** is a resource intended for sensitive data such as passwords, tokens, and certificates. Like a ConfigMap, a Pod can consume Secret values as environment variables or volume files. It is a separate resource kind so that permissions and handling appropriate for sensitive values can be applied.
+A **Secret** stores sensitive data such as passwords, tokens, and certificates. Like ConfigMaps, Secrets can supply environment variables or volume files. They are a separate resource type to support permissions and handling appropriate for sensitive values. [[11]](#ref-11)
 
 ```yaml
-# Secret storing a database username and password
+# Store an example database username and password in a Secret
 apiVersion: v1
 kind: Secret
 metadata:
@@ -317,42 +349,69 @@ stringData:
   password: "change-me"
 ```
 
-Using a Secret does not automatically make a value completely secure. Values under `data` use Base64 encoding, which represents binary data as text; Base64 encoding is not encryption. In the default configuration, a Secret may be stored unencrypted in **etcd**, the database that stores Kubernetes API resources. In production, minimize permission to read Secrets and also consider encryption at rest and an external secrets-management approach.
+- `metadata.name: database-credentials`: the name referenced by the Pod.
+- `type: Opaque`: the general-purpose Secret type for user-defined key-value data.
+- `stringData`: accepts unencoded strings that the API converts and stores in `data`.
+- `username` and `password`: example credentials; `change-me` is a placeholder, not a real password.
 
-### 6.3 Using ConfigMaps and Secrets from a Pod
+Using a Secret does not automatically make a value fully protected. With `stringData`, the manifest still contains plaintext; files holding real credentials must not be committed to a public repository. The `data` field uses Base64 to represent binary data as text, and Base64 is not encryption. In a default configuration, Secrets may be stored unencrypted in **etcd**, the database holding Kubernetes API resources. Production setups should restrict Secret read access and consider encryption at rest and external secret management. [[11]](#ref-11)
 
-The following example shows a Deployment Pod template reading ConfigMap and Secret values into environment variables.
+### 6.3 ConfigMap and Secret References in Pods
+
+The following Deployment Pod-template excerpt reads values from a ConfigMap and a Secret into environment variables.
 
 ```yaml
-# Pod template fragment consuming ConfigMap and Secret values as environment variables
+# Deployment Pod-template excerpt using ConfigMap and Secret values
 spec:
-  containers:
-  - name: web
-    image: my-web:1.0
-    env:
-    - name: LOG_LEVEL
-      valueFrom:
-        configMapKeyRef:
-          name: web-config
-          key: LOG_LEVEL
-    - name: DATABASE_PASSWORD
-      valueFrom:
-        secretKeyRef:
-          name: database-credentials
-          key: password
+  template:
+    spec:
+      containers:
+      - name: web
+        image: my-web:1.0
+        env:
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: web-config
+              key: LOG_LEVEL
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: password
 ```
 
-When ConfigMap or Secret values are passed as environment variables, changing the resource does not automatically update an already running process. You generally need to recreate the Pod to apply the new value. Values mounted through a volume can be updated, but you must separately verify whether the application reloads the changed files.
+- `env[].name`: the environment variable passed to the container.
+- `valueFrom.configMapKeyRef`: reads a value from a ConfigMap.
+- `valueFrom.secretKeyRef`: reads a value from a Secret.
+- Each reference's `name`: the ConfigMap or Secret to read.
+- Each reference's `key`: the entry to retrieve from that resource.
 
-## Before Moving to the Next Article
+The example reads `LOG_LEVEL` from `web-config` and `password` from `database-credentials`. Updating a ConfigMap or Secret does not automatically change environment variables in an already running process, so applying new values generally requires recreating the Pod. Mounted values can be updated, but the application must also reread the changed files. [[10]](#ref-10) [[11]](#ref-11)
 
-Here is what we covered in this article. We followed how desired state and control loops from Chapter 2 apply to Pods, workload resources, and runtime-configuration resources.
+## Before the Next Article
 
-- A manifest is input that sends desired state to the API, while a resource is an object that Kubernetes stores in the API and manages.
-- A Pod is the minimum execution unit in which containers share a Node, networking, and volumes.
-- A Deployment manages the number of equivalent Pod replicas and changes to the Pod template.
-- A StatefulSet manages Pods for stateful applications that need distinct names and storage.
-- A DaemonSet runs a required Pod on every Node or every matching Node.
-- ConfigMaps and Secrets separate ordinary and sensitive configuration from container images.
+We applied Chapter 2's desired-state and control-loop model to execution units, workload resources, and configuration resources:
 
-In the next article, we follow a Deployment declaration through to running Pods and containers. We distinguish Pod and container states, Probes, and graceful termination, then examine what the Kubelet and ReplicaSet each recover when failures occur.
+- A manifest is input that submits desired state; resources are the objects Kubernetes stores and manages through its API.
+- A Pod is the smallest deployable unit. Its containers share a node and networking and can mount common volumes.
+- A Deployment manages the count of interchangeable Pod replicas and changes to their template.
+- A StatefulSet preserves Pod names and ordinals for stateful applications.
+- A DaemonSet runs the required Pod on every eligible node.
+- ConfigMaps and Secrets separate general and sensitive configuration from images.
+
+The next article follows a Deployment declaration through Pod and container execution. We will distinguish Pod and container states, examine probes and graceful termination, and see how Kubernetes responds to failures within a Pod and failures of an entire node.
+
+## References
+
+- <a id="ref-1"></a>[1] [Kubernetes objects and manifests](https://kubernetes.io/docs/concepts/overview/working-with-objects/)
+- <a id="ref-2"></a>[2] [kubectl apply reference](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_apply/)
+- <a id="ref-3"></a>[3] [Pods](https://kubernetes.io/docs/concepts/workloads/pods/)
+- <a id="ref-4"></a>[4] [Sidecar containers](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/)
+- <a id="ref-5"></a>[5] [ReplicaSets](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/)
+- <a id="ref-6"></a>[6] [Labels and selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
+- <a id="ref-7"></a>[7] [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+- <a id="ref-8"></a>[8] [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/)
+- <a id="ref-9"></a>[9] [DaemonSets](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/)
+- <a id="ref-10"></a>[10] [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
+- <a id="ref-11"></a>[11] [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)

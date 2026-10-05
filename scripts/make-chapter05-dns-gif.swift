@@ -1,9 +1,9 @@
-// First render 03-clusterip-topology.svg with qlmanage; pass its PNG path as the first argument.
+// Run from repository root: swift -module-cache-path /tmp/ch05-swift-cache scripts/make-chapter05-dns-gif.swift
 import AppKit
 import ImageIO
 import UniformTypeIdentifiers
-let width = 1200, height = 980
-let output = "images/articles/05/03-clusterip-traffic.gif"
+let width = 1600, height = 1200
+let output = "images/articles/05/09-coredns-stable-entry.gif"
 let ink = NSColor(calibratedRed:0.12,green:0.20,blue:0.30,alpha:1)
 let gray = NSColor(calibratedRed:0.40,green:0.46,blue:0.54,alpha:1)
 let blue = NSColor(calibratedRed:0.12,green:0.36,blue:0.85,alpha:1)
@@ -12,19 +12,34 @@ func p(_ x:CGFloat,_ y:CGFloat)->CGPoint {CGPoint(x:x,y:y)}
 struct Stage {let section:String;let sentence:String;let color:NSColor;let paths:[[CGPoint]];let control:Bool}
 let purple = NSColor(calibratedRed:0.48,green:0.26,blue:0.72,alpha:1)
 // Every connection attaches to the midpoint of a component edge.
-let configA=[p(280,515),p(280,620)]
-let incoming=[p(280,390),p(280,420),p(70,420),p(70,670),p(90,670)]
-let target=[p(470,670),p(730,670)]
+let dnsOut=[p(240,610),p(240,650),p(375,650),p(375,690)]
+let dnsToPod=[p(680,815),p(800,815),p(800,612.5),p(950,612.5)]
+let httpOut=dnsOut
+let httpToPod=[p(680,815),p(800,815),p(800,915),p(950,915)]
+let syncDNS=[p(800,335),p(800,355),p(1570,355),p(1570,612.5),p(1470,612.5)]
+let syncRules=[p(800,335),p(800,355),p(20,355),p(20,460),p(555,460),p(555,500)]
+let setRules=[p(555,580),p(555,625),p(720,625),p(720,980),p(375,980),p(375,940)]
+let connectedBoxes=[CGRect(x:50,y:70,width:1500,height:265),CGRect(x:70,y:500,width:340,height:110),CGRect(x:430,y:500,width:250,height:80),CGRect(x:70,y:690,width:610,height:250),CGRect(x:950,y:500,width:520,height:225),CGRect(x:950,y:860,width:520,height:110)]
+let midpoints=connectedBoxes.flatMap {r in [p(r.midX,r.minY),p(r.midX,r.maxY),p(r.minX,r.midY),p(r.maxX,r.midY)]}
+for path in [dnsOut,dnsToPod,httpOut,httpToPod,syncDNS,syncRules,setRules] {
+ precondition(midpoints.contains(path.first!) && midpoints.contains(path.last!),"Connection must use edge midpoints")
+ for (a,b) in zip(path,path.dropFirst()) {
+  for r in connectedBoxes {
+   let alongHorizontal=a.y == b.y && (a.y == r.minY || a.y == r.maxY) && min(max(a.x,b.x),r.maxX)>max(min(a.x,b.x),r.minX)
+   let alongVertical=a.x == b.x && (a.x == r.minX || a.x == r.maxX) && min(max(a.y,b.y),r.maxY)>max(min(a.y,b.y),r.minY)
+   precondition(!alongHorizontal && !alongVertical,"Route must not run along a component border")
+  }
+ }
+}
 let stages:[Stage] = [
- Stage(section:"규칙 준비",sentence:"1. kube-proxy가 API에서 받은 정보를 바탕으로 Node의 네트워크 규칙을 설정합니다.",color:gray,paths:[configA],control:true),
- Stage(section:"내부 요청",sentence:"2. 클라이언트 Pod가 web의 Service IP로 요청을 보냅니다.",color:blue,paths:[incoming],control:false),
- Stage(section:"대상 선택",sentence:"3. Node A의 규칙이 준비된 웹 Pod를 선택하고 목적지를 해당 Pod IP로 바꾸어 전달합니다.",color:blue,paths:[target],control:false),
- Stage(section:"응답",sentence:"4. 웹 Pod의 응답이 같은 연결을 따라 클라이언트 Pod로 돌아갑니다.",color:blue,paths:[Array(target.reversed()),Array(incoming.reversed())],control:false)
+Stage(section:"Service 정보 반영",sentence:"1. CoreDNS가 API Server에서 web의 이름과 IP 정보를 받아 조회에 사용할 정보를 준비합니다.",color:gray,paths:[syncDNS],control:true),
+Stage(section:"전달 규칙 준비",sentence:"2. kube-proxy가 API 정보를 받아 kube-dns와 web의 실제 Pod로 연결할 규칙을 설정합니다.",color:gray,paths:[syncRules,setRules],control:false),
+Stage(section:"DNS 조회",sentence:"3. 클라이언트가 DNS용 Service인 kube-dns의 IP로 web의 주소를 묻습니다.",color:purple,paths:[dnsOut],control:false),
+Stage(section:"CoreDNS에 전달",sentence:"4. Node의 전달 규칙이 kube-dns의 IP를 CoreDNS Pod의 IP로 바꾸어 조회를 전달합니다.",color:purple,paths:[dnsToPod],control:false),
+Stage(section:"DNS 응답",sentence:"5. CoreDNS가 web의 Service IP를 찾아 조회를 보낸 클라이언트에 응답합니다.",color:purple,paths:[Array(dnsToPod.reversed()),Array(dnsOut.reversed())],control:false),
+Stage(section:"웹 요청",sentence:"6. 클라이언트가 응답받은 web의 IP로 요청하면 Node의 규칙을 거쳐 웹 Pod에 도달합니다.",color:blue,paths:[httpOut,httpToPod],control:false),
+
 ]
-let pngPath=CommandLine.arguments.count>1 ? CommandLine.arguments[1] : "/tmp/03-clusterip-topology.svg.png"
-let pngSource=CGImageSourceCreateWithURL(URL(fileURLWithPath:pngPath) as CFURL,nil)!
-let cropped=CGImageSourceCreateImageAtIndex(pngSource,0,nil)!.cropping(to:CGRect(x:0,y:0,width:1200,height:850))!
-let backdrop=NSImage(cgImage:cropped,size:NSSize(width:1200,height:850))
 var icons:[String:NSImage]=[:]
 for (key,path) in ["node":"images/characters/refs/node-official.png","pod":"images/characters/refs/pod-official.png","svc":"images/characters/refs/svc.png","deploy":"images/characters/refs/deploy-unlabeled.png","ing":"images/characters/refs/ing.png","k8s":"images/k8s-icon-color.png"] {icons[key]=NSImage(contentsOfFile:path)!}
 func box(_ x:CGFloat,_ y:CGFloat,_ w:CGFloat,_ h:CGFloat,_ fill:NSColor = .white){
@@ -68,12 +83,73 @@ func route(_ pts:[CGPoint],_ color:NSColor,_ progress:CGFloat,_ square:Bool,_ sh
  _=angle
 }
 func background(_ idx:Int,_ progress:CGFloat){
+ let dnsReady = idx > 0 || progress >= 1
+ let rulesReady = idx > 1 || (idx == 1 && progress >= 1)
  NSColor.white.setFill();NSRect(x:0,y:0,width:width,height:height).fill()
- backdrop.draw(in:CGRect(x:0,y:0,width:1200,height:850),from:.zero,operation:.sourceOver,fraction:1,respectFlipped:true,hints:nil)
+ let serviceIP="10.96.10.20"
+ let webIP="10.244.3.8"
+ let dnsIP="10.244.2.3"
+ text("DNS 조회와 가상 IP를 통한 Pod 통신",30,15,1540,29,ink,true)
+ box(50,70,1500,265,NSColor(calibratedRed:0.95,green:0.97,blue:1,alpha:1))
+ icon("node",65,82);text("Control Plane / API Server가 제공하는 정보",110,85,1380,24,ink,true)
+ // Two actual tables: stable Service addresses and the Pods selected behind them.
+ for (x,title,left,right,rows) in [
+ (75.0,"Service 이름과 가상 IP","Service 이름","가상 IP",[("kube-dns","10.96.0.10"),("web",serviceIP)]),
+ (825.0,"Service와 실제 Pod의 매핑 정보","Service 이름","Pod IP와 포트",[("kube-dns",dnsIP+":53"),("web",webIP+":80")])] {
+ text(title,x,130,680,21,ink,true)
+ box(x,166,680,132)
+ NSColor(calibratedRed:0.89,green:0.93,blue:0.99,alpha:1).setFill()
+ NSRect(x:x+1,y:167,width:678,height:42).fill()
+ let grid=NSBezierPath()
+ for y in [210.0,254.0] {grid.move(to:p(x,y));grid.line(to:p(x+680,y))}
+ grid.move(to:p(x+260,166));grid.line(to:p(x+260,298))
+ NSColor(calibratedWhite:0.75,alpha:1).setStroke();grid.lineWidth=1;grid.stroke()
+ text(left,x+5,176,250,19,ink,true);text(right,x+265,176,410,19,ink,true)
+ for (i,row) in rows.enumerated(){let y=CGFloat(220+i*44);text(row.0,x+5,y,250,21);text(row.1,x+265,y,410,21)}
+ }
+ text("Deployment: coredns / web-app → 각 Pod 유지",75,307,1430,17,gray)
+ for (x,y,w,h,name) in [(50.0,375.0,690.0,630.0,"A"),(900.0,375.0,620.0,380.0,"B"),(900.0,785.0,620.0,220.0,"C")] {
+ box(x,y,w,h,NSColor(calibratedRed:0.93,green:0.97,blue:0.94,alpha:1));icon("node",x+15,y+15)
+ text("Worker Node \(name)",x+60,y+21,w-80,25,ink,true)
+ }
+ card(70,500,340,110,"클라이언트 Pod","DNS 서버: 10.96.0.10","pod")
+ card(430,500,250,80,"kube-proxy","규칙 설정 프로세스")
+ box(70,690,610,250)
+ text("Node 운영체제의 Service 전달 규칙",80,703,590,22,ink,true)
+ if rulesReady {
+ text("DNS 조회 전달 규칙 (kube-dns)",80,749,590,20,purple,true)
+ text("10.96.0.10:53 → \(dnsIP):53",80,782,590,22,purple,true)
+ text("웹 요청 전달 규칙 (web)",80,840,590,20,blue,true)
+ text("\(serviceIP):80 → \(webIP):80",80,875,590,22,blue,true)
+ text(idx == 1 ? "전달 규칙 반영 완료":"web IP: \(serviceIP)",80,910,590,18,gray)
+ } else {
+ text("아직 전달 규칙이 없습니다",80,797,590,23,gray)
+ text(idx == 1 && progress >= 0.5 ? "kube-proxy가 받은 정보로 규칙 설정 중":"API 정보 반영 대기",80,875,590,19,gray)
+ }
+ box(950,500,520,225);icon("pod",965,512)
+ text("CoreDNS Pod / \(dnsIP)",1010,515,450,23,ink,true)
+ text("이름과 IP 대응 정보",975,558,470,21,ink,true)
+ if dnsReady {
+ text("web → \(serviceIP)",975,613,470,25,purple,true)
+ if idx == 0 {text("이름과 IP 정보 반영 완료",975,677,470,18,gray)}
+ } else {
+ text("아직 조회 정보가 없습니다",975,613,470,23,gray)
+ text("API에서 Service 정보 수신 중",975,677,470,18,gray)
+ }
+ card(950,860,520,110,"웹 Pod / app: web","IP: \(webIP):80","pod")
 }
 func emphasis(_ idx:Int){
+ let regions:[CGRect]
+ switch idx {
+ case 0: regions=[CGRect(x:950,y:500,width:520,height:225)]
+ case 1: regions=[CGRect(x:430,y:500,width:250,height:80),CGRect(x:70,y:690,width:610,height:250)]
+ case 2: regions=[CGRect(x:70,y:500,width:340,height:110)]
+ case 3,4: regions=[CGRect(x:950,y:500,width:520,height:225)]
+ default: regions=[CGRect(x:950,y:860,width:520,height:110)]
+ }
+ for r in regions {let outline=NSBezierPath(roundedRect:r.insetBy(dx:-3,dy:-3),xRadius:14,yRadius:14);stages[idx].color.setStroke();outline.lineWidth=4;outline.stroke()}
  for i in 0..<stages.count {
- let r=NSBezierPath(roundedRect:CGRect(x:40+i*280,y:955,width:264,height:6),xRadius:3,yRadius:3)
+ let r=NSBezierPath(roundedRect:CGRect(x:40+i*254,y:1153,width:238,height:6),xRadius:3,yRadius:3)
  (i==idx ? stages[idx].color:NSColor(calibratedWhite:0.88,alpha:1)).setFill();r.fill()
  }
 }
@@ -96,8 +172,9 @@ for (idx,stage) in stages.enumerated(){
    let fraction=stage.control ? progress : min(1,max(0,progress*CGFloat(stage.paths.count)-CGFloat(i)))
    if stage.control || fraction>0 {route(points,stage.color,fraction,stage.control,stage.control || (fraction < 1 || i == stage.paths.count-1))}
   }
-  box(30,860,1140,75,stage.color.withAlphaComponent(0.07))
-  text(stage.sentence,45,888,1110,20,stage.color,true)
+  box(30,1070,1540,75,stage.color.withAlphaComponent(0.07))
+  text(stage.sentence,45,1092,1510,22,stage.color,true)
+  text("Fig 2. DNS 조회와 가상 IP를 통한 Pod 통신",30,1163,1540,22)
   NSGraphicsContext.restoreGraphicsState()
   let image=bitmap.cgImage!
   let delay = f == framesPerStage-1 ? 1.6 : 0.09
@@ -117,7 +194,7 @@ for i in 0..<CGImageSourceGetCount(src){
  let gif=props[kCGImagePropertyGIFDictionary] as! NSDictionary
  duration += gif[kCGImagePropertyGIFDelayTime] as! Double
  if i%framesPerStage == 0 || i%framesPerStage == framesPerStage-1 {
-  let out=CGImageDestinationCreateWithURL(URL(fileURLWithPath:"/tmp/ch05-clusterip-stage-\(i/framesPerStage+1)-\(i%framesPerStage == 0 ? "before":"after").png") as CFURL,UTType.png.identifier as CFString,1,nil)!
+  let out=CGImageDestinationCreateWithURL(URL(fileURLWithPath:"/tmp/ch05-dns-stage-\(i/framesPerStage+1)-\(i%framesPerStage == 0 ? "before":"after").png") as CFURL,UTType.png.identifier as CFString,1,nil)!
   CGImageDestinationAddImage(out,frame,nil);precondition(CGImageDestinationFinalize(out))
  }
 }

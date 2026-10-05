@@ -45,5 +45,5 @@
 <path d="M465,643 H545" stroke="#526680" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
 <path d="M795,643 H875" stroke="#526680" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
 <text x="680" y="705" text-anchor="middle" font-size="16">요청 전달이 아닌 DNS 별칭 응답</text>
-<text x="550" y="765" text-anchor="middle" font-size="20">Fig 1. 네 가지 Service 타입: 접근점과 DNS 별칭</text>
+<text x="550" y="765" text-anchor="middle" font-size="20">Fig 4. 네 가지 Service 타입: 접근점과 DNS 별칭</text>
 </g></svg>
