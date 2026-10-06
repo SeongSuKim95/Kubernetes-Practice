@@ -1,4 +1,4 @@
-# Chap05. Service와 클러스터 통신: 이름을 통한 연결부터 네 가지 접근 방식까지
+# Chap05. Service와 클러스터 통신
 
 > 15주 연재의 다섯째 글입니다. Pod끼리 통신하는 방법과 Service가 필요한 이유를 먼저 살펴봅니다. Service 이름으로 접속할 IP 주소를 찾고 요청이 실제 Pod에 도달하는 과정을 이해한 뒤, 네 가지 Service 타입의 접근 범위를 비교합니다.
 
@@ -148,7 +148,7 @@ Fig 2에서는 CoreDNS Pod가 Worker Node B에 배치되어 있습니다. 모든
 
 그렇다면 CoreDNS는 `web`의 주소를 어떻게 알까요? **API Server를 통해 Service의 이름과 IP 정보를 받아 두고, Service가 생성되거나 변경되면 그 정보를 반영합니다.** [[6]](#ref-6) 주소를 물을 때마다 API Server가 대신 답하는 것이 아니라, CoreDNS가 받아 둔 정보를 이용해 응답합니다.
 
-일반적인 Pod에는 클러스터 DNS를 사용할 수 있도록 DNS 서버 주소가 설정됩니다. CoreDNS 앞에도 `kube-dns`라는 Service가 있어, CoreDNS Pod가 교체되더라도 다른 Pod들이 일정한 주소로 DNS 조회를 보낼 수 있습니다. 애플리케이션은 CoreDNS Pod의 위치를 직접 관리하지 않고 `web`이라는 이름으로 접속하면 됩니다. [[5]](#ref-5) CoreDNS의 배치 관계에 이어, 3.2절에서는 이 DNS용 Service를 거쳐 주소를 조회하고 웹 요청을 보내는 과정을 살펴봅니다.
+일반적인 Pod에는 클러스터 DNS를 사용할 수 있도록 DNS 서버 주소가 설정됩니다. CoreDNS 앞에도 `kube-dns`라는 Service가 있어, CoreDNS Pod가 교체되더라도 다른 Pod들이 일정한 주소로 DNS 조회를 보낼 수 있습니다. 애플리케이션은 CoreDNS Pod의 위치를 직접 관리하지 않고 `web`이라는 이름으로 접속하면 됩니다. [[5]](#ref-5) 3.1절의 Fig 2는 이름 조회에 관여하는 구성요소의 관계를 보여 줍니다. DNS용 Service를 거치는 전달 과정과 주소를 알아낸 뒤의 웹 요청은 3.2절에서 살펴봅니다.
 
 실제 클러스터에서도 다음 명령으로 CoreDNS Pod와 실행 중인 Node를 확인할 수 있습니다. `-n kube-system`은 Kubernetes 운영 구성요소가 모여 있는 영역을 조회하는 옵션입니다.
 
@@ -234,18 +234,22 @@ Fig 4에서는 웹 Pod의 IP가 `10.244.3.8`에서 `10.244.3.9`로 바뀝니다.
 
 Kubernetes의 Service는 `spec.type`에 지정할 수 있는 값으로 **ClusterIP, NodePort, LoadBalancer, ExternalName** 네 가지를 지원합니다. 지금까지 살펴본 내부 통신을 바탕으로, 각 타입이 어디에서 들어오는 요청에 어떤 접근점을 제공하는지 비교하겠습니다.
 
-## 4. 접근 범위에 따른 Service 타입
+## 4. 클러스터 내부와 외부의 통신을 위한 Service 타입
 
-Service 타입은 누가 어디에서 접속하는지에 따라 선택합니다. 네 타입은 모두 `kind: Service`로 선언하며, `spec.type`으로 접근 방식을 정합니다.
+Service 타입은 **클라이언트가 어디에서 어떤 주소로 접근할지**를 기준으로 선택합니다. 네 타입은 모두 `kind: Service`로 선언하며, `spec.type`으로 접근 방식을 정합니다.
 
-- **ClusterIP**: 클러스터 내부의 애플리케이션이 다른 Pod에 접근할 때 사용합니다. 지금까지 살펴본 이름과 가상 IP를 통한 내부 접근점입니다.
-- **NodePort**: 외부 클라이언트가 접근 가능한 Node의 IP와 지정된 포트로 접속할 수 있게 합니다.
-- **LoadBalancer**: 외부 로드 밸런서를 연결해 외부 클라이언트가 사용할 접속 주소를 제공합니다.
-- **ExternalName**: 내부에서 사용하는 Service 이름을 외부 시스템의 DNS 이름에 연결합니다. 앞의 세 타입처럼 Pod를 선택하거나 요청을 전달하는 방식이 아니라, 이름 조회에 별칭으로 응답합니다.
+- **ClusterIP**: 클러스터 내부 애플리케이션끼리 통신할 때 먼저 검토합니다. 지금까지 살펴본 이름과 가상 IP를 통한 내부 접근점입니다.
+- **NodePort**: 외부 클라이언트가 Node의 IP와 지정된 포트로 직접 접속해야 할 때 사용합니다. 사용할 Node 주소의 선택과 해당 Node의 장애에 대한 대응은 별도로 준비해야 합니다.
+- **LoadBalancer**: 외부 로드 밸런서의 접속 주소가 필요하고, 이를 생성할 클라우드 연동 등의 구현이 갖춰져 있을 때 사용합니다.
+- **ExternalName**: 기존 외부 시스템을 클러스터 내부의 Service 이름으로 찾을 때 사용합니다. 외부 DNS 이름을 별칭으로 알려 주며, Pod를 선택하거나 요청을 중계하지 않습니다.
+
+이 접근 방식들은 일부 기능을 함께 사용합니다. NodePort는 ClusterIP의 내부 접근점에 Node의 포트를 추가하고, 일반적인 LoadBalancer 구현은 여기에 외부 로드 밸런서를 연결합니다. 다만 구현에 따라 로드 밸런서가 NodePort를 거치지 않고 Pod로 직접 전달할 수도 있습니다.
+
+접근 경로를 정하는 것과 접근 권한을 제한하는 것은 별개입니다. ClusterIP가 내부 주소를 제공하더라도 인증과 권한 검사가 자동으로 적용되지는 않으며, NodePort와 LoadBalancer를 사용할 때도 방화벽, TLS, 애플리케이션 인증은 별도로 구성해야 합니다.
 
 ClusterIP, NodePort, LoadBalancer는 같은 웹 Pod 집합에 연결하는 상황을 기준으로 비교합니다. 이 세 타입의 매니페스트는 하나의 `web` Service를 서로 다른 방식으로 선언한 예시입니다. ExternalName에서는 내부 Pod가 외부 API를 호출하는 상황을 살펴봅니다.
 
-### 4.1 내부 접근점을 제공하는 ClusterIP
+### 4.1 ClusterIP: 클러스터 내부에서 Pod에 접속
 
 **ClusterIP**는 클러스터 내부에서 사용하는 Service 이름과 가상 IP를 제공합니다. `spec.type`을 생략했을 때 적용되는 기본 타입입니다. 내부 애플리케이션 간 통신에서는 먼저 ClusterIP를 검토합니다.
 
@@ -261,7 +265,7 @@ Fig 5는 내부 클라이언트의 요청이 Node의 전달 규칙을 거쳐 선
 
 일반적인 클러스터 외부 컴퓨터에는 ClusterIP로 가는 경로가 없습니다. 외부에서 들어올 경로가 필요하면 다음 절의 NodePort나 LoadBalancer 같은 진입점을 함께 검토합니다. 다만 내부 주소라는 사실만으로 인증과 접근 제어까지 제공되는 것은 아닙니다.
 
-### 4.2 Node의 포트를 여는 NodePort
+### 4.2 NodePort: 클러스터 외부에서 Node의 포트로 Pod에 접속
 
 **NodePort**는 ClusterIP의 내부 접근점을 유지하면서 Node의 지정된 포트에도 진입점을 추가합니다. 클라이언트는 접근 가능한 `Node IP:nodePort`로 요청합니다.
 
@@ -306,7 +310,7 @@ spec:
 
 기본 외부 트래픽 정책인 `externalTrafficPolicy: Cluster`에서는 요청을 받은 Node에 대상 Pod가 없어도 다른 Node의 준비된 Pod로 전달할 수 있습니다. NodePort는 여러 Node에 진입점을 제공하지만 클라이언트가 사용할 Node 주소를 자동으로 선택해 주지는 않습니다. 특정 Node 주소만 사용하다가 해당 Node에 장애가 나면 다른 Node의 Pod가 정상이어도 그 주소로는 접속할 수 없습니다.
 
-### 4.3 외부 로드 밸런서를 연결하는 LoadBalancer
+### 4.3 LoadBalancer: 외부 로드 밸런서를 통해 Pod에 접속
 
 **LoadBalancer**는 외부 로드 밸런서 구현에 Service 진입점 생성을 요청하는 타입입니다. 클라우드 연동이나 MetalLB 같은 구현이 준비되어 있어야 하며, 타입만 선언한다고 모든 클러스터에 외부 주소가 생기지는 않습니다.
 
@@ -345,7 +349,7 @@ spec:
 
 LoadBalancer와 Ingress도 구분해야 합니다. LoadBalancer Service는 외부에서 클러스터로 들어오는 접근점을 제공합니다. Ingress는 HTTP와 HTTPS 요청의 도메인이나 URL 경로를 해석해 여러 백엔드 Service로 나누는 규칙입니다. Ingress Controller의 진입점을 LoadBalancer Service로 제공하고, 애플리케이션은 ClusterIP Service로 연결하는 구성이 가능합니다.
 
-### 4.4 외부 이름을 연결하는 ExternalName
+### 4.4 ExternalName: Service 이름으로 외부 시스템의 주소 조회
 
 **ExternalName**은 Service 이름을 외부 DNS 이름의 별칭으로 연결합니다. 외부 사용자가 클러스터 안의 Pod에 들어오는 진입점을 만드는 타입이 아닙니다. 클러스터 안의 애플리케이션이 기존 외부 API를 일관된 내부 이름으로 찾을 때 사용할 수 있습니다.
 
@@ -379,20 +383,7 @@ spec:
 
 ExternalName은 포트를 변환하거나 HTTP 요청을 프록시하지 않습니다. 외부 서버까지의 네트워크 경로도 별도로 준비되어야 합니다. 특히 HTTP `Host` 헤더나 HTTPS 인증서의 이름은 클라이언트가 사용한 Service 별칭과 외부 서버의 실제 이름이 달라 문제가 생길 수 있습니다. DNS 별칭만으로 외부 서버의 호스트 설정이나 인증서 이름이 바뀌지는 않습니다.
 
-## 5. 접근 목적에 따른 Service 타입 선택
-
-Service 타입은 Pod를 실행하는 방식이 아니라 클라이언트가 사용할 접근 경로를 결정합니다. 다음 순서로 선택하면 목적을 분명히 할 수 있습니다.
-
-- 클러스터 내부 애플리케이션끼리 통신한다면 ClusterIP부터 검토합니다.
-- Node의 주소와 포트로 직접 연결해야 한다면 NodePort를 사용합니다. Node 주소 선택과 장애 대응은 별도로 준비해야 합니다.
-- 외부 로드 밸런서의 안정적인 접근점이 필요하고 이를 처리할 구현이 있다면 LoadBalancer를 사용합니다.
-- 기존 외부 시스템을 클러스터 내부의 Service 이름으로 참조하려면 ExternalName을 검토합니다.
-
-ClusterIP, NodePort, LoadBalancer는 계층적으로 겹치는 접근점을 가질 수 있습니다. NodePort는 ClusterIP를 포함하고, 일반적인 LoadBalancer 구현은 ClusterIP와 NodePort도 함께 사용합니다. 그러나 실제 외부 전달 경로는 구현에 따라 NodePort를 생략할 수 있습니다.
-
-네트워크 노출 범위만 보고 보안을 단정해서도 안 됩니다. ClusterIP는 보통 클러스터 외부에서 직접 접근할 수 없지만 인증이나 권한 검사를 제공하지 않습니다. NodePort와 LoadBalancer는 접근점을 추가할 뿐 방화벽, TLS, 애플리케이션 인증을 자동으로 완성하지 않습니다.
-
-## 6. Service 연결 문제의 진단 순서
+## 5. Service 연결 문제의 진단 순서
 
 요청 실패는 Pod에서 바깥 방향으로 확인하면 범위를 좁히기 쉽습니다. 내부 호출도 실패한다면 먼저 Service와 Pod의 연결을 확인하고, 내부 호출이 성공할 때 외부 진입점을 확인합니다. [[13]](#ref-13)
 
@@ -403,7 +394,7 @@ ClusterIP, NodePort, LoadBalancer는 계층적으로 겹치는 접근점을 가�
 
 이 순서는 Service 타입이 달라도 공통으로 적용할 수 있습니다. 각 단계의 명령과 출력 예시는 선택 실습에 모았습니다.
 
-## 7. 선택 실습: Service 접근 경로 확인
+## 6. 선택 실습: Service 접근 경로 확인
 
 [Service 선택 실습](labs/05-service-types.lab.md)에서는 nginx Pod를 준비한 뒤 ClusterIP 내부 호출과 NodePort 외부 호출을 비교합니다. 지원되는 환경에서는 LoadBalancer 주소 생성도 확인할 수 있습니다. 환경 준비, 매니페스트 적용, 출력 확인, 문제 진단, 리소스 정리를 실행 순서대로 모았습니다.
 

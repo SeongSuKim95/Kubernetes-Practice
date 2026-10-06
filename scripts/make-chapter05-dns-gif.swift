@@ -16,9 +16,9 @@ let dnsOut=[p(240,610),p(240,650),p(375,650),p(375,690)]
 let dnsToPod=[p(680,815),p(800,815),p(800,612.5),p(950,612.5)]
 let httpOut=dnsOut
 let httpToPod=[p(680,815),p(800,815),p(800,915),p(950,915)]
-let syncDNS=[p(800,335),p(800,355),p(1570,355),p(1570,612.5),p(1470,612.5)]
-let syncRules=[p(800,335),p(800,355),p(20,355),p(20,460),p(555,460),p(555,500)]
-let setRules=[p(555,580),p(555,625),p(720,625),p(720,980),p(375,980),p(375,940)]
+let syncDNS=[p(800,335),p(800,460),p(1210,460),p(1210,500)]
+let syncRules=[p(800,335),p(800,460),p(555,460),p(555,500)]
+let setRules=[p(555,580),p(555,650),p(375,650),p(375,690)]
 let connectedBoxes=[CGRect(x:50,y:70,width:1500,height:265),CGRect(x:70,y:500,width:340,height:110),CGRect(x:430,y:500,width:250,height:80),CGRect(x:70,y:690,width:610,height:250),CGRect(x:950,y:500,width:520,height:225),CGRect(x:950,y:860,width:520,height:110)]
 let midpoints=connectedBoxes.flatMap {r in [p(r.midX,r.minY),p(r.midX,r.maxY),p(r.minX,r.midY),p(r.maxX,r.midY)]}
 for path in [dnsOut,dnsToPod,httpOut,httpToPod,syncDNS,syncRules,setRules] {

@@ -4,15 +4,15 @@
 <text x="218" y="73" text-anchor="middle" font-size="24">Control Plane Node</text>
 <rect x="55" y="130" width="300" height="110" rx="14" fill="#fff" stroke="#a7bacd" stroke-width="2"/>
 <text x="205" y="170" text-anchor="middle" font-size="24">Scheduler</text>
-<text x="205" y="207" text-anchor="middle" font-size="19" textLength="218.5" lengthAdjust="spacingAndGlyphs">Select a node for the Pod</text>
+<text x="205" y="207" text-anchor="middle" font-size="19">Select a node for the Pod</text>
 <rect x="55" y="380" width="300" height="120" rx="14" fill="#fff" stroke="#a7bacd" stroke-width="2"/>
 <text x="205" y="426" text-anchor="middle" font-size="24">API Server</text>
-<text x="205" y="465" text-anchor="middle" font-size="18" textLength="234.9" lengthAdjust="spacingAndGlyphs">Pod specs and node assignments</text>
+<text x="205" y="465" text-anchor="middle" font-size="18">Pod specs and node assignments</text>
 <path d="M125 380V240" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#a)"/>
-<text x="78" y="310" text-anchor="middle" font-size="16" textLength="67.2" lengthAdjust="spacingAndGlyphs">Read Pods</text>
+<text x="78" y="310" text-anchor="middle" font-size="16">Read Pods</text>
 <path d="M285 240V380" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#a)"/>
-<text x="332" y="295" text-anchor="middle" font-size="16" textLength="72.8" lengthAdjust="spacingAndGlyphs">Assignment</text>
-<text x="332" y="320" text-anchor="middle" font-size="16" textLength="32.0" lengthAdjust="spacingAndGlyphs">Record</text>
+<text x="332" y="295" text-anchor="middle" font-size="16">Assignment</text>
+<text x="332" y="320" text-anchor="middle" font-size="16">Record</text>
 <text x="205" y="607" text-anchor="middle" font-size="18">Scheduler selects the node;</text>
 <text x="205" y="640" text-anchor="middle" font-size="18">The node executes containers</text>
 <rect x="495" y="30" width="680" height="770" rx="14" fill="#eef7f0" stroke="#a7bacd" stroke-width="2"/>
@@ -22,13 +22,13 @@
 <text x="662" y="171" text-anchor="middle" font-size="24">Kubelet</text>
 <text x="662" y="205" text-anchor="middle" font-size="18">Manage assigned Pods</text>
 <rect x="875" y="130" width="275" height="110" rx="14" fill="#fff" stroke="#a7bacd" stroke-width="2"/>
-<text x="1012" y="171" text-anchor="middle" font-size="23" textLength="173.7" lengthAdjust="spacingAndGlyphs">Container runtime</text>
-<text x="1012" y="205" text-anchor="middle" font-size="17" textLength="188.7" lengthAdjust="spacingAndGlyphs">Run container processes</text>
+<text x="1012" y="171" text-anchor="middle" font-size="23">Container runtime</text>
+<text x="1012" y="205" text-anchor="middle" font-size="17">Run container processes</text>
 <path d="M355 440H435V185H525" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#a)"/>
-<text x="439" y="486" text-anchor="middle" font-size="17" textLength="71.4" lengthAdjust="spacingAndGlyphs">Assign Pod</text>
-<text x="439" y="510" text-anchor="middle" font-size="17" textLength="77.3" lengthAdjust="spacingAndGlyphs">Read state</text>
+<text x="439" y="486" text-anchor="middle" font-size="17">Assign Pod</text>
+<text x="439" y="510" text-anchor="middle" font-size="17">Read state</text>
 <path d="M800 185H875" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#a)"/>
-<text x="837" y="119" text-anchor="middle" font-size="16" textLength="72.8" lengthAdjust="spacingAndGlyphs">Request execution</text>
+<text x="837" y="119" text-anchor="middle" font-size="16">Request execution</text>
 <path d="M1012 240V340" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#a)"/>
 <text x="1083" y="302" text-anchor="middle" font-size="17">Run</text>
 <rect x="525" y="340" width="625" height="400" rx="14" fill="#eff6ff" stroke="#a7bacd" stroke-width="2"/>
@@ -43,12 +43,12 @@
 <path d="M780 465H895" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#a)"/>
 <text x="838" y="443" text-anchor="middle" font-size="16">localhost</text>
 <rect x="550" y="550" width="575" height="65" rx="14" fill="#ecfdf5" stroke="#a7bacd" stroke-width="2"/>
-<text x="837" y="578" text-anchor="middle" font-size="21" textLength="137.5" lengthAdjust="spacingAndGlyphs">Shared network</text>
+<text x="837" y="578" text-anchor="middle" font-size="21">Shared network</text>
 <text x="837" y="603" text-anchor="middle" font-size="17">One Pod IP and port space</text>
 <rect x="550" y="640" width="575" height="65" rx="14" fill="#ecfdf5" stroke="#a7bacd" stroke-width="2"/>
-<text x="837" y="668" text-anchor="middle" font-size="21" textLength="95.5" lengthAdjust="spacingAndGlyphs">Shared volume</text>
+<text x="837" y="668" text-anchor="middle" font-size="21">Shared volume</text>
 <text x="837" y="693" text-anchor="middle" font-size="17">Each container mounts the same storage</text>
 <text x="837" y="776" text-anchor="middle" font-size="17">One exited container can restart independently</text>
 <text x="600" y="842" text-anchor="middle" font-size="18">Placement and execution components / all containers in a Pod run on one node</text>
-<text x="600" y="884" text-anchor="middle" font-size="23" textLength="577.3" lengthAdjust="spacingAndGlyphs">Fig 4. Pod scheduling, execution, and shared environment</text>
+<text x="600" y="884" text-anchor="middle" font-size="23">Fig 4. Pod scheduling, execution, and shared environment</text>
 </g></svg>
