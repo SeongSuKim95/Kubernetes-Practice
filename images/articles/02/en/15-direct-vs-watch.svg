@@ -51,7 +51,7 @@
   <text x="715" y="62" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#14B8A6">Each process watches shared state and does its own job</text>
 
   <rect x="540" y="80" width="350" height="56" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
-  <text x="715" y="103" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#1D4ED8" font-weight="600">Shared state store</text>
+  <text x="715" y="103" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#1D4ED8" font-weight="600">State shared through the API</text>
   <text x="715" y="122" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#3B82F6">Desired containers: 3 / Current: 2</text>
 
   <text x="715" y="152" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#0D9488">Subscribe to state changes (Watch)</text>
@@ -78,12 +78,12 @@
   <!-- write-back: from process box bottoms, around sides, into store box sides -->
   <path d="M580 274 V305 H505 V108 H540" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arr-blue)"/>
   <path d="M850 274 V305 H925 V108 H890" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arr-blue)"/>
-  <text x="715" y="322" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#2563EB">Write container state back to shared store</text>
+  <text x="715" y="322" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#2563EB">Write container state back through the API</text>
 
   <rect x="520" y="332" width="390" height="80" rx="10" fill="#ECFDF5" stroke="#99F6E4" stroke-width="1.5"/>
-  <text x="715" y="356" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">Even if the choose-server process stops,</text>
-  <text x="715" y="376" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">the match-count process and</text>
-  <text x="715" y="396" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">the run-containers process keep working</text>
+  <text x="715" y="356" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0F766E" font-weight="600">While the node-selection process is stopped:</text>
+  <text x="715" y="376" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">Replica counts and existing containers stay managed</text>
+  <text x="715" y="396" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#0D9488">New Node assignments wait for its recovery</text>
 
   <line x1="40" y1="452" x2="920" y2="452" stroke="#E2E8F0" stroke-width="1"/>
   <text x="480" y="478" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#475569">

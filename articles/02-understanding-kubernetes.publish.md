@@ -1,12 +1,11 @@
 <!--
-  게시용 복사본입니다. GitHub Flavored Markdown용이며, 이미지 경로는 GitHub raw URL입니다.
-  원본(로컬 미리보기용): 02-understanding-kubernetes.draft.md
-  이미지 저장소: https://github.com/SeongSuKim95/Kubernetes-Practice
+  Korean publication based on 02-understanding-kubernetes.draft.md.
+  GitHub Flavored Markdown; figures use GitHub raw URLs.
 -->
 
 # Chap02. Kubernetes의 설계 철학
 
-> 15주 연재의 둘째 글입니다. Kubernetes의 설계 철학인 선언형, 제어 루프, Watch 기반 통신을 중심으로, 그 철학이 API와 클러스터에서 어떻게 이어지는지를 개략적으로 정리합니다.
+> 16장 연재의 둘째 글입니다. Kubernetes의 설계 철학인 선언형, 제어 루프, Watch 기반 통신을 중심으로, 그 철학이 API와 클러스터에서 어떻게 이어지는지를 개략적으로 정리합니다.
 
 ## 들어가며
 
@@ -26,7 +25,9 @@ Kubernetes는 **컨테이너 오케스트레이션**(Container Orchestration) �
 
 ![Kubernetes 주변 생태계](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/02-k8s-ecosystem.svg)
 
-인기의 배경에는 이식성도 있습니다. Kubernetes를 전제로 만든 애플리케이션은 환경이 바뀌어도 같은 선언 방식으로 배포를 시도할 수 있습니다. 동시에 배포, 모니터링, 네트워크를 돕는 도구들이 Kubernetes 주변에 모여, 운영에 필요한 기능을 제공합니다. 패키징 도구, 배포 파이프라인, 모니터링 도구 등이 그 생태계를 이룹니다.
+Fig 2는 Kubernetes를 중심으로 배포 자동화, 모니터링, 네트워크, 저장소와 보안 도구가 연결되는 관계를 보여 줍니다. 애플리케이션 실행을 넘어 운영에 필요한 기능을 이러한 도구들과 함께 구성할 수 있습니다.
+
+인기의 배경에는 이식성도 있습니다. Kubernetes를 전제로 만든 애플리케이션은 환경이 바뀌어도 같은 선언 방식으로 배포를 시도할 수 있습니다. 운영 도구들도 이 공통된 선언과 API를 기반으로 연결됩니다.
 
 그렇다고 배우기 쉽다는 뜻은 아닙니다. 처음에는 이름과 설정 파일이 많아 “왜 이렇게 복잡하지?”가 먼저 나오기 쉽습니다. 조금 익숙해지면 “이런 것까지 되는구나” 쪽으로 질문이 바뀌는 경우가 많습니다. 이 글은 그 순서에 맞춰, 곧바로 모든 이름을 외우기보다 **필요성, 설계 철학, 핵심 개념, 선언이 실제로 실행되기까지, 명령어로 살펴보기**를 따라갑니다.
 
@@ -47,6 +48,8 @@ docker run -p 8080:80 my-app:1.0
 > Docker는 “컨테이너를 실행하는 도구”이고, Kubernetes는 “컨테이너가 실행되는 전체 시스템을 관리하는 **오케스트레이션 플랫폼**”입니다.
 
 ![Docker 계열과 Kubernetes](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/21-docker-tools-vs-k8s.svg)
+
+Fig 3의 왼쪽은 Docker의 컨테이너 실행에서 Compose의 단일 서버 구성, Swarm의 여러 서버 운영으로 관리 범위가 넓어지는 모습을 보여 줍니다. 오른쪽 Kubernetes는 원하는 상태와 운영 정책을 선언하고, 플랫폼이 그 기준에 맞춰 배치와 복구를 수행하는 구조입니다.
 
 Compose나 Swarm으로 운영 요구를 충족한다면 Kubernetes가 반드시 필요한 것은 아닙니다. 차이를 이해하려면 컨테이너를 늘리는 기능뿐 아니라, 언제 얼마나 늘릴지를 누가 판단하는지 살펴봐야 합니다.
 
@@ -91,6 +94,8 @@ replicas: 3
 
 이 선언의 핵심은 **원하는 상태**(Desired State)입니다. “지금은 무엇이 몇 개 떠 있는가”가 아니라 **“이렇게 되어 있기를 바란다”**를 적어 둔 목표입니다. Docker Compose의 YAML처럼 목표를 적고 플랫폼에 넘깁니다. 차이는 설정을 넘긴 뒤의 책임에 있습니다. [[2]](#ref-2)
 
+Fig 4에서는 원하는 복제본 세 개와 현재 개수를 비교해 하나가 부족함을 발견하고, 다시 세 개가 되도록 맞춥니다. 원하는 상태는 실행 명령이 끝난 뒤에도 비교 기준으로 남습니다.
+
 한 번의 실행 방법을 지시하는 대신 “앞으로도 복제본 세 개를 유지한다”는 목표를 남기는 방식이 **선언형**(Declarative)입니다.
 
 설정을 파일로 남기면 변경 내용을 검토하고 이전 설정과 비교하기도 쉽습니다. 예를 들어 복제본 개수를 3에서 5로 바꾸는 작업을 Git에 기록하면, 누가 어떤 운영 설정을 바꾸었는지 확인할 수 있습니다. 파일을 수정한 뒤에는 변경된 선언을 클러스터에 제출해야 실제 설정에 반영됩니다.
@@ -103,7 +108,7 @@ replicas: 3
 
 제어 루프는 상태를 한 번 확인하고 끝내지 않습니다. 필요한 변경을 요청한 뒤 그 결과를 다시 관찰하므로, 이후에 장애나 설정 변경이 발생해도 새로운 차이를 발견할 수 있습니다. [[3]](#ref-3)
 
-예를 들어 복제본 세 개를 유지하는 설정에서 하나가 사라지면, 복제본을 관리하는 프로세스가 부족한 실행 단위 하나의 생성을 요청합니다. 실행할 서버가 선택되고 해당 서버에서 새 복제본이 실행되면 개수가 다시 세 개가 됩니다. 장애로 달라진 상태를 자동으로 복구하는 이런 동작을 **셀프 힐링**(self-healing)이라고 합니다.
+Fig 5에서 API에 기록된 원하는 개수는 세 개이고 현재 개수는 두 개입니다. 복제본을 관리하는 프로세스는 이 차이를 확인해 부족한 하나의 생성을 API에 요청하고, 변경된 결과를 다시 관찰합니다. 실행할 서버가 선택되고 해당 서버에서 새 복제본이 실행되면 개수가 다시 세 개가 됩니다. 장애로 달라진 상태를 자동으로 복구하는 이런 동작을 **셀프 힐링**(self-healing)이라고 합니다.
 
 ### 3.3 이벤트 기반 통신
 
@@ -127,7 +132,7 @@ replicas: 3
 
 ![Kubernetes API와 클러스터](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/03-k8s-cluster.svg)
 
-실무에서 가장 자주 만나는 핵심은 두 가지입니다.
+Fig 7에서 사용자의 선언은 API Server를 거쳐 여러 Node로 이루어진 클러스터에 전달됩니다. 이 관계에서 요청을 받는 창구인 API와, 실제 실행 범위인 클러스터를 구분해 보겠습니다.
 
 첫째는 **API**입니다. API는 사용자가 클러스터에 “원하는 상태”를 전달하는 **진입점**입니다. “웹 컨테이너를 세 개 유지해 달라”, “이 이미지로 애플리케이션을 돌려 달라” 같은 요청을 API로 보냅니다. 진입점이 하나라는 점이 중요합니다. 서버마다 따로 접속하지 않아도, 같은 API로 클러스터 운영을 요청할 수 있습니다.
 
@@ -153,19 +158,25 @@ replicas: 3
 
 ![Kubernetes 구성 요소](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/06-k8s-components.svg)
 
+Fig 8의 위쪽 Control Plane은 선언을 저장하고 필요한 작업을 판단하며, 아래쪽 Worker Node들은 Pod의 컨테이너를 실행합니다. Worker Node의 Kubelet과 kube-proxy도 API Server를 통해 필요한 정보를 확인합니다. 실행을 맡는 쪽부터 이 관계를 살펴보겠습니다.
+
 ### 4.1 Worker Node
+
+<img src="https://raw.githubusercontent.com/kubernetes/community/main/icons/svg/infrastructure_components/labeled/node.svg" alt="Kubernetes 공식 Node 리소스 마크" width="260">
 
 Worker Node에서는 아래 프로세스들이 컨테이너 실행과 네트워크 설정을 담당합니다.
 
-**Kubelet**은 각 노드에서 실행되는 **에이전트**(API와 통신하며 해당 노드의 Pod 실행을 관리하는 프로세스)입니다. “이 노드에서 실행해야 할 Pod”를 API에서 받아오고, 아래에서 볼 Container Runtime을 호출해 컨테이너를 만들고 시작하거나 중지합니다. Pod와 노드 상태는 다시 API Server에 보고합니다.
+각 Node의 **Kubelet**은 API Server에서 자신에게 배정된 Pod를 확인하고 실행 상태를 관리하는 에이전트입니다. 컨테이너를 시작해야 하면 같은 Node의 **컨테이너 런타임**(Container Runtime)에 실행을 요청합니다. 런타임은 이미지를 내려받고 컨테이너 프로세스를 실제로 실행하거나 종료하는 소프트웨어이며, containerd와 CRI-O 등이 여기에 해당합니다.
 
-**Container Runtime**은 이미지를 내려받고 컨테이너 프로세스를 **실제로 실행하고 종료하는** 소프트웨어입니다. containerd, CRI-O 등이 여기에 해당하며, Kubelet은 **CRI**(Container Runtime Interface, 런타임과 대화하는 표준 규격)로 런타임과 통신합니다.
+Kubelet이 여러 종류의 런타임에 같은 방식으로 실행을 요청할 수 있도록 정한 통신 규약이 **CRI**(Container Runtime Interface)입니다. Kubelet은 이 규약으로 컨테이너의 실행과 중지를 요청하고 실행 상태를 확인한 뒤, Pod와 Node의 상태를 API Server에 보고합니다. [[5]](#ref-5)
+
+1장에서 사용한 Docker Engine을 Node의 실행 기반으로 사용하는 구성에서는 **cri-dockerd**가 이 연결을 맡습니다. Kubelet의 CRI 요청을 Docker Engine이 처리할 수 있도록 전달하는 어댑터입니다. 따라서 containerd를 사용하는 구성은 Kubelet에서 containerd의 CRI 기능으로, Docker Engine을 사용하는 구성은 Kubelet에서 cri-dockerd를 거쳐 Docker Engine으로 실행 요청이 이어집니다. [[6]](#ref-6)
 
 **kube-proxy**는 **안정적인 진입점**(변하는 Pod 집합 앞에 두는 고정 이름과 주소)을 실제 네트워크 규칙으로 구현합니다. 그 진입점에 연결된 Pod 주소 정보를 받아, 고정 주소로 들어온 요청이 실제 Pod IP로 전달되도록 설정합니다.
 
 ### 4.2 Control Plane
 
-Control Plane은 클러스터를 **제어하는 구성 요소**입니다. Desired State를 해석하고 유지하며, Pod를 어느 노드에 둘지 결정하는 등의 판단을 담당합니다. 대표적으로 API Server, Scheduler, Controller Manager, etcd가 여기서 동작합니다. [[5]](#ref-5)
+Control Plane은 클러스터를 **제어하는 구성 요소**입니다. Desired State를 해석하고 유지하며, Pod를 어느 노드에 둘지 결정하는 등의 판단을 담당합니다. 대표적으로 API Server, Scheduler, Controller Manager, etcd가 여기서 동작합니다. [[7]](#ref-7)
 
 **API Server**는 Kubernetes의 **중앙 API**입니다. 앞에서 본 `kubectl`의 호출과, Worker의 Kubelet, kube-proxy를 포함한 다른 구성 요소의 요청이 모두 이곳을 거쳐야 합니다. 그래야 클러스터 상태를 조회하거나 바꿀 수 있습니다. 누가 요청했는지, 무엇을 할 수 있는지(인증과 인가)와 형식 검사를 수행한 뒤, 변경 내용을 아래의 상태 저장소에 반영합니다.
 
@@ -184,6 +195,8 @@ Control Plane은 클러스터를 **제어하는 구성 요소**입니다. Desire
 ### 5.1 kubectl의 API 연결
 
 ![kubectl과 kubeconfig](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/09-kubectl-kubeconfig.svg)
+
+Fig 9에서 사용자가 터미널로 실행한 `kubectl`은 **kubeconfig**에서 접속할 API Server와 인증 정보를 찾고, 해당 서버에 HTTPS 요청을 보냅니다. 요청을 전달할 위치와 사용할 사용자 정보를 다음과 같이 연결해 둡니다.
 
 ```yaml
 # kubectl이 어느 클러스터에 어떤 사용자로 붙을지 정하는 kubeconfig 예시
@@ -205,14 +218,12 @@ contexts:
 current-context: my-context
 ```
 
-위 **kubeconfig**는 kubectl이 접속할 클러스터와 사용자 인증 정보를 지정하는 설정 파일입니다.
-
 - `clusters`: 접속할 클러스터의 API Server 주소를 지정합니다.
 - `users`: 접속할 때 사용할 사용자 인증 정보를 지정합니다.
 - `contexts`: 사용할 클러스터와 사용자를 하나의 연결 설정으로 묶습니다.
 - `current-context`: 현재 사용할 연결 설정의 이름입니다.
 
-kubectl은 이 설정을 읽어 선택된 API Server에 HTTPS 요청을 보냅니다. [[6]](#ref-6)
+kubectl은 이 설정을 읽어 선택된 API Server에 HTTPS 요청을 보냅니다. [[8]](#ref-8)
 
 선언이 Pod 실행으로 이어지는 과정을 이해하려면 상태를 저장하고 공유하는 구조를 먼저 알아야 합니다. Kubernetes는 상태를 저장하고, 각 구성 요소는 그 상태의 변화를 구독합니다.
 
@@ -220,7 +231,7 @@ kubectl은 이 설정을 읽어 선택된 API Server에 HTTPS 요청을 보냅�
 
 ![상태 저장과 Watch](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/10-state-and-watch.svg)
 
-위 그림은 API Server가 요청 내용을 저장하고, 각 구성요소가 Watch로 변경 정보를 받는 관계를 보여 줍니다. 이제 복제본 수를 유지하는 선언이 제출된 상황을 기준으로, 누가 어떤 정보를 확인하는지 순서대로 살펴보겠습니다. [[7]](#ref-7)
+위 그림은 API Server가 요청 내용을 저장하고, 각 구성요소가 Watch로 변경 정보를 받는 관계를 보여 줍니다. 이제 복제본 수를 유지하는 선언이 제출된 상황을 기준으로, 누가 어떤 정보를 확인하는지 순서대로 살펴보겠습니다. [[9]](#ref-9)
 
 ![구성 요소 동작 시퀀스](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/09-pod-creation-sequence.svg)
 
@@ -241,19 +252,19 @@ kubectl은 이 설정을 읽어 선택된 API Server에 HTTPS 요청을 보냅�
 
 운영에서는 API와 상태 저장소가 **한곳에만** 있으면, 그 한곳이 멈출 때 클러스터 운영 자체가 흔들릴 수 있습니다. 그래서 **고가용성**(HA, High Availability, 일부 구성요소가 중단되어도 전체가 멈추지 않게 하는 구성)을 두는 경우가 많습니다. 이 절에서는 요청 처리와 상태 저장을 여러 구성 요소가 나누어 맡는 구조를 살펴봅니다.
 
-API Server를 여러 대 두고, 사용자는 **하나의 주소**로 요청을 보냅니다. 그중 일부가 중단되어도 나머지 API Server가 요청을 이어받습니다. 상태를 담는 etcd도 보통 여러 대(흔히 3대처럼 홀수)로 둡니다. **과반**(쿼럼, quorum)이 남아 있으면 읽기와 쓰기를 이어갑니다. Worker Node는 그 아래 여러 대가 Pod를 나눠 받습니다. Control Plane을 한 대가 아니라 여러 대가 역할을 이어받도록 구성합니다. [[8]](#ref-8)
+Fig 12에서 사용자는 **하나의 주소**로 요청하지만, 그 뒤에는 API Server 세 대가 있습니다. 그중 일부가 중단되어도 나머지 API Server가 요청을 이어받습니다. 상태를 담는 etcd도 보통 여러 대(흔히 3대처럼 홀수)로 둡니다. **과반**(쿼럼, quorum)이 남아 있으면 읽기와 쓰기를 이어갑니다. Worker Node는 그 아래 여러 대가 Pod를 나눠 받습니다. Control Plane을 한 대가 아니라 여러 대가 역할을 이어받도록 구성합니다. [[10]](#ref-10)
 
 ## 7. Docker 운용 한계와 Kubernetes 명령
 
 이전 글에서는 Docker로 컨테이너가 종료되거나, 개수와 구성이 바뀌거나, 다른 컨테이너에 연결할 때 **사람이 직접 반복하는 작업**을 시나리오로 확인했습니다. 이번 절은 클러스터를 설치하거나 명령을 실행하는 실습이 아닙니다. 같은 운영 문제와 요청 전달 문제가 Kubernetes에서는 **어떤 명령과 선언으로 바뀌는지**만, 시나리오마다 표로 짧게 살펴봅니다.
 
-아래 표에는 **Deployment**와 **Service** 이름이 나옵니다. 지금은 각각 “원하는 Pod 개수를 유지하는 선언”, “변하는 Pod 앞의 고정 진입점” 정도로만 이해하면 됩니다. [[9]](#ref-9) [[10]](#ref-10)
+아래 표에는 **Deployment**와 **Service** 이름이 나옵니다. 지금은 각각 “원하는 Pod 개수를 유지하는 선언”, “변하는 Pod 앞의 고정 진입점” 정도로만 이해하면 됩니다. [[11]](#ref-11) [[12]](#ref-12)
 
 ### 7.1 멈춘 컨테이너 복구
 
 ![멈춘 컨테이너 복구 비교](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/16-scenario-recovery.svg)
 
-이전 글에서 컨테이너를 멈추면 사람이 `docker start`를 다시 실행해야 했습니다.
+Fig 13의 왼쪽은 중지된 컨테이너를 사람이 `docker start`로 다시 실행하는 상황입니다. 오른쪽에서는 두 개를 유지하던 Pod 중 하나를 삭제하면, 플랫폼이 부족한 개수를 채우도록 새 Pod를 생성합니다. 실행 중이던 컨테이너를 직접 다시 켜는 작업이 Pod 집합의 개수를 유지하는 방식으로 바뀝니다.
 
 | Docker만 사용                                             | Kubernetes                                                    |
 | ------------------------------------------------------ | ------------------------------------------------------------- |
@@ -264,7 +275,7 @@ API Server를 여러 대 두고, 사용자는 **하나의 주소**로 요청을 
 
 ![컨테이너 개수 스케일 아웃 비교](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/17-scenario-scale.svg)
 
-이전 글에서는 컨테이너를 늘릴 때마다 이름과 포트를 직접 골랐습니다. 여러 컨테이너로 요청을 나누려면 앞단의 전달 대상도 관리해야 합니다.
+Fig 14의 왼쪽에서는 컨테이너를 늘릴 때마다 이름과 포트를 정해 실행 명령을 반복합니다. 오른쪽에서는 Deployment의 원하는 개수를 두 개에서 다섯 개로 바꾸면, 플랫폼이 부족한 Pod를 생성합니다. 늘어난 Pod에 요청을 전달할 방법은 뒤의 Service 예시에서 이어서 살펴봅니다.
 
 | Docker만 사용                                                                                                                                   | Kubernetes                                                                |
 | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
@@ -275,7 +286,7 @@ API Server를 여러 대 두고, 사용자는 **하나의 주소**로 요청을 
 
 ![컨테이너 이미지 버전 업데이트 비교](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/18-scenario-update.svg)
 
-이전 글에서는 컨테이너마다 중지, 삭제, 실행 명령을 반복했습니다.
+Fig 15의 왼쪽은 컨테이너마다 중지, 삭제, 실행을 반복해 버전을 바꾸는 과정입니다. 오른쪽에서는 Deployment에 새 이미지를 지정하면 기존 버전의 Pod와 새 버전의 Pod가 잠시 함께 실행되면서 점진적으로 교체됩니다. 표의 `rollout status`로 진행 상황을 확인하고, 이전 구성으로 돌아가야 하면 `rollout undo`를 사용합니다.
 
 | Docker만 사용                                                                                                                  | Kubernetes                                                                                                                        |
 | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
@@ -288,7 +299,7 @@ API Server를 여러 대 두고, 사용자는 **하나의 주소**로 요청을 
 
 ![요청 부하 분산과 서비스 이름 찾기 비교](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/19-scenario-service.svg)
 
-여러 웹 서버에 요청을 나누려면 전달할 서버 목록이 필요합니다. 컨테이너의 IP를 직접 사용하면 교체 시 주소 변경도 관리해야 합니다.
+Fig 16의 왼쪽에서는 앞단의 서버 목록에 컨테이너별 주소를 적으므로, 컨테이너가 바뀌면 목록도 수정해야 합니다. 오른쪽에서는 클라이언트가 `web`이라는 Service 이름을 계속 사용하고, 플랫폼이 그 뒤의 요청 대상 Pod 정보를 갱신합니다. 고정된 접근점과 바뀌는 실행 대상을 분리하는 방식입니다.
 
 | Docker만 사용                                                                      | Kubernetes                                                                       |
 | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
@@ -298,6 +309,8 @@ API Server를 여러 대 두고, 사용자는 **하나의 주소**로 요청을 
 ### 7.5 배포한 컨테이너와 진입점의 삭제
 
 ![배포한 컨테이너와 진입점을 정리하며 지우기 비교](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/20-scenario-cleanup.svg)
+
+Fig 17의 왼쪽은 실행했던 컨테이너 이름을 하나씩 찾아 삭제하는 방식입니다. 오른쪽에서는 Deployment를 삭제해 관리하던 Pod들을 정리하고, Service를 별도로 삭제해 요청 진입점을 정리합니다. 실행할 Pod 집합과 그 집합에 접근할 방법을 각각의 선언 단위로 거두는 것입니다.
 
 | Docker만 사용                                                | Kubernetes                                               |
 | --------------------------------------------------------- | -------------------------------------------------------- |
@@ -317,9 +330,11 @@ API Server를 여러 대 두고, 사용자는 **하나의 주소**로 요청을 
 - <a id="ref-2"></a>[2] [Kubernetes 객체와 원하는 상태 공식 문서](https://kubernetes.io/docs/concepts/overview/working-with-objects/)
 - <a id="ref-3"></a>[3] [컨트롤러와 제어 루프 공식 문서](https://kubernetes.io/docs/concepts/architecture/controller/)
 - <a id="ref-4"></a>[4] [Pod 공식 문서](https://kubernetes.io/docs/concepts/workloads/pods/)
-- <a id="ref-5"></a>[5] [Kubernetes 구성 요소 공식 문서](https://kubernetes.io/docs/concepts/overview/components/)
-- <a id="ref-6"></a>[6] [kubeconfig 공식 문서](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)
-- <a id="ref-7"></a>[7] [Kubernetes API의 Watch 공식 문서](https://kubernetes.io/docs/reference/using-api/api-concepts/#efficient-detection-of-changes)
-- <a id="ref-8"></a>[8] [고가용성 구성 공식 문서](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/ha-topology/)
-- <a id="ref-9"></a>[9] [Deployment 공식 문서](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
-- <a id="ref-10"></a>[10] [Service 공식 문서](https://kubernetes.io/docs/concepts/services-networking/service/)
+- <a id="ref-5"></a>[5] [CRI 공식 문서](https://kubernetes.io/docs/concepts/containers/cri/)
+- <a id="ref-6"></a>[6] [컨테이너 런타임과 cri-dockerd 공식 문서](https://kubernetes.io/docs/setup/production-environment/container-runtimes/)
+- <a id="ref-7"></a>[7] [Kubernetes 구성 요소 공식 문서](https://kubernetes.io/docs/concepts/overview/components/)
+- <a id="ref-8"></a>[8] [kubeconfig 공식 문서](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)
+- <a id="ref-9"></a>[9] [Kubernetes API의 Watch 공식 문서](https://kubernetes.io/docs/reference/using-api/api-concepts/#efficient-detection-of-changes)
+- <a id="ref-10"></a>[10] [고가용성 구성 공식 문서](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/ha-topology/)
+- <a id="ref-11"></a>[11] [Deployment 공식 문서](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+- <a id="ref-12"></a>[12] [Service 공식 문서](https://kubernetes.io/docs/concepts/services-networking/service/)

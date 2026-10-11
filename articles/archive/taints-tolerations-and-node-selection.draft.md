@@ -1,6 +1,6 @@
 # 후속 초안. Taint, Toleration과 Node 선택
 
-> 이 글은 7장에서 분리한 후속 주제 초안이며 장 번호는 아직 정하지 않았습니다. Node Label과 선택 조건, Taint와 Toleration을 조합해 전용 Node 배치를 구성합니다.
+> 이 글은 Namespace와 RBAC 글에서 분리한 후속 주제 초안이며 장 번호는 아직 정하지 않았습니다. Node Label과 선택 조건, Taint와 Toleration을 조합해 전용 Node 배치를 구성합니다.
 
 ## 들어가며
 

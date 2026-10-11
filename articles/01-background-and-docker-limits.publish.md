@@ -1,16 +1,15 @@
 <!--
-  게시용 복사본입니다. GitHub Flavored Markdown용이며, 이미지 경로는 GitHub raw URL입니다.
-  원본(로컬 미리보기용): 01-background-and-docker-limits.draft.md
-  이미지 저장소: https://github.com/SeongSuKim95/Kubernetes-Practice
+  Korean publication based on 01-background-and-docker-limits.draft.md.
+  GitHub Flavored Markdown; figures use GitHub raw URLs.
 -->
 
 # Chap01. Container의 등장 배경과 Docker
 
-> 15주 연재의 첫 글입니다. Container가 왜 등장했는지 Bare Metal과 VM을 거친 배경을 정리하고, Docker로 컨테이너를 운용할 때 사람이 직접 반복하는 작업을 겪어 봅니다. Docker를 처음 듣는 분도 따라올 수 있도록, 컨테이너가 무엇인지부터 풀어 씁니다.
+> 16장 연재의 첫 글입니다. Container가 왜 등장했는지 Bare Metal과 VM을 거친 배경을 정리하고, Docker로 컨테이너를 운용할 때 사람이 직접 반복하는 작업을 겪어 봅니다. Docker를 처음 듣는 분도 따라올 수 있도록, 컨테이너가 무엇인지부터 풀어 씁니다.
 
 ## 들어가며
 
-![Kubernetes 공식 로고](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/01-k8s-logo.svg)
+![Docker 공식 로고](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/00-docker-intro-logo.svg)
 
 컨테이너와 Docker는 오늘날 애플리케이션의 개발과 배포에서 널리 사용하는 기술입니다. 컨테이너는 애플리케이션과 필요한 실행 환경을 묶어 격리된 공간에서 실행하는 방식이고, Docker는 컨테이너를 만들고 실행하도록 돕는 대표적인 도구입니다. Stack Overflow의 2025년 개발자 설문에서는 클라우드 개발 및 인프라 기술 문항에 응답한 사람 중 약 71%가 지난 1년 동안 Docker를 사용했다고 답했습니다. 컨테이너를 다루는 일이 많은 개발자의 일상적인 작업이 되었음을 보여 주는 수치입니다. [[1]](#ref-1)
 
@@ -28,11 +27,11 @@
 
 ![가상화에서 Kubernetes까지의 발전 흐름](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/01-journey.svg)
 
-위 그림은 애플리케이션을 실행하고 관리하는 범위가 확장되는 흐름을 보여 줍니다. Bare Metal은 물리 서버 한 대에 애플리케이션을 직접 배치하고, Virtual Machine은 한 서버의 자원을 여러 Guest OS로 나눕니다. Container는 Host OS를 공유하면서 애플리케이션 프로세스를 격리하고, Docker Compose는 한 서버의 여러 컨테이너를 함께 구성합니다. Docker Swarm과 Kubernetes에서는 관리 범위가 여러 서버로 넓어지고, 컨테이너 배치와 복구를 플랫폼에 맡깁니다.
+Fig 1은 애플리케이션을 실행하고 관리하는 범위가 확장되는 흐름을 보여 줍니다. Bare Metal은 물리 서버 한 대에 애플리케이션을 직접 배치하고, Virtual Machine은 한 서버의 자원을 여러 Guest OS로 나눕니다. Container는 Host OS를 공유하면서 애플리케이션 프로세스를 격리하고, Docker Compose는 한 서버의 여러 컨테이너를 함께 구성합니다. Docker Swarm과 Kubernetes에서는 관리 범위가 여러 서버로 넓어지고, 컨테이너 배치와 복구를 플랫폼에 맡깁니다.
 
 ![Bare Metal 구조](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/02-physical-server.svg)
 
-이 흐름의 출발점은 **Bare Metal**(베어메탈, 가상화 계층 없이 운영체제가 물리 하드웨어 위에 바로 올라가는 서버)입니다. 가상 컴퓨터를 중간에 두지 않고, **Hardware** 위에 **Host OS**를 올리고, 그 위에 애플리케이션을 설치하는 구성입니다.
+이 흐름의 출발점은 **Bare Metal**(베어메탈, 가상화 계층 없이 운영체제가 물리 하드웨어 위에 바로 올라가는 서버)입니다. Fig 2의 왼쪽처럼 **Hardware** 위에 **Host OS**를 올리고, 그 위에 애플리케이션을 설치합니다. 오른쪽은 남는 자원이 있어도 포트나 라이브러리 충돌 때문에 다른 앱을 함께 올리기 어려운 상황을 보여 줍니다.
 
 한동안은 이런 물리 서버 한 대에 애플리케이션 하나를 두는 일이 보통이었습니다. 구조가 단순해서 이해하기 쉽고, 성능도 직관적입니다. 서버에 설치한 OS와 앱이 하드웨어를 직접 사용하기 때문입니다.
 
@@ -44,11 +43,11 @@
 
 ![Virtual Machine 구조](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/03-vm.svg)
 
-Virtual Machine(가상 머신, VM)은 Bare Metal로 쓰이던 물리 하드웨어 위에 **Hypervisor**(하이퍼바이저)를 두고, 그 위에 **Guest OS**(게스트 운영체제)를 가진 가상 컴퓨터를 여러 대 올리는 방식입니다. Hypervisor는 한 대의 하드웨어를 여러 가상 컴퓨터에 나누어 주는 관리 계층이고, Guest OS는 각 가상 컴퓨터 안에 따로 설치되는 운영체제입니다.
+Fig 3의 Virtual Machine(가상 머신, VM)은 물리 하드웨어 위에 **Hypervisor**(하이퍼바이저)를 두고, 그 위에 **Guest OS**(게스트 운영체제)를 가진 가상 컴퓨터를 여러 대 올리는 방식입니다. Hypervisor는 한 대의 하드웨어를 여러 가상 컴퓨터에 나누어 주는 관리 계층이고, Guest OS는 각 가상 컴퓨터 안에 따로 설치되는 운영체제입니다.
 
 ![Virtual Machine 구조 보충](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/13-vm-houses.svg)
 
-각 VM은 자신만의 운영체제와 **Kernel**(커널, 운영체제의 핵심)을 가집니다. 물리 서버 하나를 여러 대의 가상 컴퓨터로 나누는 방식입니다.
+Fig 4에서는 한 물리 서버 안의 VM 세 대에 쇼핑몰 웹, 결제 API, 상품 DB를 나누어 배치했습니다. 각 VM은 자신만의 Guest OS와 **Kernel**(커널, 운영체제의 핵심)을 가지므로, 애플리케이션마다 별도의 운영체제 환경을 구성할 수 있습니다.
 
 VM은 실행 환경을 강하게 격리합니다. 한 VM의 문제가 다른 VM으로 쉽게 번지지 않습니다. 물리 서버 한 대에 쇼핑몰 웹용 VM, 결제 API용 VM, 상품 DB용 VM을 나눠 두면, Bare Metal 시절처럼 “이 서버 하나에 앱을 하나만” 올리는 낭비를 줄일 수 있습니다. 자원 활용은 Bare Metal 때보다 나아졌습니다.
 
@@ -64,13 +63,15 @@ VM은 실행 환경을 강하게 격리합니다. 한 VM의 문제가 다른 VM�
 
 ## 3. 실행 환경의 일관성과 Container 및 Docker
 
+애플리케이션을 실행할 때마다 Guest OS까지 준비해야 한다면, 작은 앱 하나를 배포하는 데에도 많은 자원이 듭니다. **Container**(컨테이너)는 호스트의 운영체제를 공유하면서 애플리케이션을 격리된 프로세스로 실행하는 방식입니다.
+
 <img src="https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/characters/character-container.png" alt="애플리케이션의 실행 환경을 묶는 Container" width="40%" />
 
-Container는 위 그림처럼 애플리케이션과 필요한 실행 환경을 하나의 실행 단위로 묶습니다.
+위 그림의 코드 표시가 붙은 상자는 애플리케이션이 필요한 실행 환경 안에서 동작하는 모습을 나타냅니다. 이 환경을 같은 구성으로 다시 실행할 수 있도록, 애플리케이션과 필요한 파일을 **Image**(이미지)에 담아 둡니다. 이미지는 실행에 사용할 파일 묶음이고, 컨테이너는 그 이미지로 실행한 환경입니다.
 
 ![VM과 Container 비교](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/04-vm-vs-container.svg)
 
-Container(컨테이너)는 Guest OS를 복제하지 않습니다. 애플리케이션과 그에 필요한 파일을 **Image**(이미지, 실행에 필요한 파일을 묶어 둔 설계도)에 담습니다. 그 이미지로 실행한 프로세스를 **Container**라고 부릅니다. 컨테이너가 실행되는 실제 컴퓨터의 운영체제는 **Host**(호스트) OS입니다. 컨테이너들은 Host의 Kernel을 공유한 채 프로세스만 격리합니다. Container는 VM보다 가볍고, 같은 Host 위에서 프로세스 단위로 앱을 격리합니다. [[2]](#ref-2)
+Fig 5의 왼쪽에서 VM은 각각 Guest OS를 갖지만, 컨테이너들은 실행 중인 컴퓨터의 운영체제인 **Host**(호스트) OS의 Kernel을 공유합니다. 별도의 Guest OS를 기동하는 부담을 줄이면서, 같은 Host에서 애플리케이션을 프로세스 단위로 격리하는 구조입니다. [[2]](#ref-2)
 
 로컬에 nginx(웹 서버 프로그램)를 직접 설치하면 OS 버전이나 패키지, 설정 경로가 사람마다 달라집니다. 대신 nginx 실행에 필요한 파일을 Image로 묶어 두면, 그 Image로 실행한 Container 안에서는 같은 경로와 구성으로 웹 서버가 실행됩니다. 로컬과 테스트 서버, 운영 서버가 달라도 **같은 Image**를 쓰려는 것이 컨테이너의 매력입니다.
 
@@ -80,19 +81,19 @@ Container(컨테이너)는 Guest OS를 복제하지 않습니다. 애플리케�
 
 ![docker run 흐름](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/05-docker-flow.svg)
 
+Fig 7에서 사용자는 Docker Client(명령줄 도구)로 `docker run` 같은 명령을 보냅니다. 백그라운드에서 실행되는 Docker Daemon(데몬, 상주 관리 프로세스)은 이 요청을 받아 컨테이너 런타임을 통해 격리와 자원, 파일 시스템을 준비하고 컨테이너를 실행합니다. 사용자가 커널 기능을 하나씩 직접 설정할 필요가 없도록 Docker가 실행 과정을 관리합니다. [[3]](#ref-3)
+
 컨테이너를 서로 분리하려면 각 프로세스가 볼 수 있는 대상과 사용할 자원을 제한해야 합니다. 컨테이너마다 사용할 파일도 준비해야 합니다. Docker는 다음 Linux 기능을 이용해 이 실행 환경을 구성합니다.
 
 프로세스 목록과 네트워크 등 각 컨테이너에서 볼 수 있는 범위를 분리하는 기능이 Linux의 **Namespace**(네임스페이스)입니다. 같은 커널을 사용하더라도 컨테이너마다 분리된 실행 환경을 제공할 수 있습니다. 여기서 말하는 Linux Namespace는 Kubernetes에서 리소스를 묶는 Namespace와 다른 개념입니다.
 
-CPU와 메모리 사용량을 제어하는 기능은 **cgroups**(컨트롤 그룹)입니다. 컨테이너별로 메모리 등의 사용 한도를 설정할 때 사용합니다. [[3]](#ref-3)
+CPU와 메모리 사용량을 제어하는 기능은 **cgroups**(컨트롤 그룹)입니다. 컨테이너별로 메모리 등의 사용 한도를 설정할 때 사용합니다. [[4]](#ref-4)
 
 이미지의 파일과 실행 중에 변경한 파일을 하나의 파일 시스템처럼 제공하는 방법도 필요합니다. **OverlayFS**(오버레이 파일 시스템)는 여러 파일 계층을 겹쳐 이 기능을 제공하는 방식 중 하나입니다. 여기서는 내부 구현보다, 이미지에 담긴 파일을 바탕으로 컨테이너마다 사용할 파일 시스템을 구성한다는 점이 중요합니다.
 
-사용자는 Docker Client(명령줄 도구)로 `docker run` 같은 명령을 보냅니다. 백그라운드에서 실행되는 Docker Daemon(데몬, 상주 관리 프로세스)은 이 요청을 받아 컨테이너 런타임을 통해 격리와 자원, 파일 시스템을 준비하고 컨테이너를 실행합니다. 사용자가 커널 기능을 하나씩 직접 설정할 필요가 없도록 Docker가 실행 과정을 관리합니다. [[4]](#ref-4)
-
 ![Image와 Container](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/06-image-vs-container.svg)
 
-Docker에서는 **Dockerfile**(이미지를 만드는 절차를 적은 파일)로 실행 환경을 정의하고, 그 결과인 이미지로 컨테이너를 실행합니다. 그림처럼 같은 nginx 이미지로도 서로 다른 이름과 호스트 포트를 가진 웹 서버 컨테이너를 여러 개 실행할 수 있습니다.
+Docker에서는 **Dockerfile**(이미지를 만드는 절차를 적은 파일)로 실행 환경을 정의하고, 그 결과인 이미지로 컨테이너를 실행합니다. Fig 8처럼 같은 nginx 이미지로도 서로 다른 이름과 호스트 포트를 가진 웹 서버 컨테이너를 여러 개 실행할 수 있습니다.
 
 지금까지 Image에 담긴 실행 환경과 실제로 실행되는 Container를 구분했습니다. 실습으로 넘어가기 전에 한 가지만 더 설명합니다. 웹 서버 컨테이너를 실행했다면, 브라우저나 `curl`로 접속할 방법이 필요합니다. 이때 요청을 전달할 **포트**(port)를 지정해야 합니다.
 
@@ -100,7 +101,7 @@ Docker에서는 **Dockerfile**(이미지를 만드는 절차를 적은 파일)�
 
 포트는 한 컴퓨터 안에서 네트워크 요청을 받을 프로세스(또는 서비스)를 가리키는 **번호**입니다. 같은 서버에 웹, DB, 캐시가 함께 있어도, 포트가 다르면 요청이 서로 다른 대상으로 들어갑니다. 예를 들어 많은 웹 서버는 컨테이너 **안**에서 80번 포트에서 요청을 받고, 데이터베이스는 3306번 포트에서 요청을 받는 식으로 역할이 갈립니다.
 
-컨테이너는 호스트와 네트워크 공간이 나뉘어 있습니다. 그래서 컨테이너 안에서 nginx가 80번 포트에서 요청을 받고 있어도, 호스트(내 컴퓨터)의 브라우저가 곧바로 그 80번에 접속한다고 연결되지는 않습니다. Docker에서는 `-p 호스트포트:컨테이너포트`로 호스트 포트와 컨테이너 포트를 연결합니다. `-p 8080:80`이면 “내 컴퓨터의 8080번으로 들어온 요청을, 컨테이너 안의 80번으로 넘겨라”는 뜻입니다. 호스트에서는 8080을 열고, 컨테이너 안에서는 그대로 80을 유지하는 셈입니다. [[5]](#ref-5)
+컨테이너는 호스트와 네트워크 공간이 나뉘어 있습니다. 그래서 컨테이너 안에서 nginx가 80번 포트에서 요청을 받고 있어도, 호스트(내 컴퓨터)의 브라우저가 곧바로 그 80번에 접속한다고 연결되지는 않습니다. Docker에서는 `-p 호스트포트:컨테이너포트`로 호스트 포트와 컨테이너 포트를 연결합니다. Fig 9의 `-p 8080:80`은 “내 컴퓨터의 8080번으로 들어온 요청을, 컨테이너 안의 80번으로 넘겨라”는 뜻입니다. 호스트에서는 8080을 열고, 컨테이너 안에서는 그대로 80을 유지하는 셈입니다. [[5]](#ref-5)
 
 실습에서는 이 내용을 명령으로 확인합니다. 이미지를 받아 컨테이너를 만들고, 포트를 연결한 뒤, 컨테이너 목록을 보고, 컨테이너를 중지한 뒤 다시 실행하는 과정을 확인합니다. 각 명령의 옵션은 해당 시나리오에서 설명합니다.
 
@@ -116,7 +117,7 @@ Docker에서는 **Dockerfile**(이미지를 만드는 절차를 적은 파일)�
 
 ![Docker Compose](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/14-compose-menu.svg)
 
-매번 긴 `docker run`을 여러 줄 치면 실수하기 쉽고, “어떤 컨테이너를 어떤 순서로 올렸는지”도 남기기 어렵습니다. 그림의 `compose.yaml`에는 웹, 애플리케이션, 데이터베이스의 구성이 함께 기록됩니다. **YAML**은 들여쓰기로 구조를 적는 설정 파일 형식입니다. `docker compose up`을 실행하면 이 파일에 적힌 구성으로 컨테이너들을 생성하고 시작하므로, 같은 조합을 다시 재현하기 쉽습니다. [[6]](#ref-6)
+매번 긴 `docker run`을 여러 줄 치면 실수하기 쉽고, “어떤 컨테이너를 어떤 순서로 올렸는지”도 남기기 어렵습니다. Fig 11의 `compose.yaml`에는 웹, 애플리케이션, 데이터베이스의 구성이 함께 기록됩니다. **YAML**은 들여쓰기로 구조를 적는 설정 파일 형식입니다. `docker compose up`을 실행하면 이 파일에 적힌 구성으로 컨테이너들을 생성하고 시작하므로, 같은 조합을 다시 재현하기 쉽습니다. [[6]](#ref-6)
 
 다만 Docker Compose는 기본적으로 **단일 호스트**(서버 한 대)를 전제로 합니다. 한 서버 안의 컨테이너 구성을 정리하는 도구이지, 여러 서버를 하나의 클러스터로 운영하는 도구는 아닙니다. 서버 한 대가 장애를 내면 Docker Compose로 묶은 서비스도 함께 위험해집니다.
 
@@ -126,7 +127,7 @@ Docker에서는 **Dockerfile**(이미지를 만드는 절차를 적은 파일)�
 
 서버가 여러 대가 되면 한 서버 안의 실행 설정뿐 아니라, 각 컨테이너를 어느 서버에 배치하고 장애가 난 서버의 작업을 어디서 다시 실행할지도 결정해야 합니다.
 
-그림처럼 서버 A와 C에는 웹, 앱, DB 컨테이너가 실행 중이고, 서버 B만 장애로 멈춘 상황을 가정해 보겠습니다. 운영자는 다음 항목을 직접 결정해야 합니다. 어느 서버에 웹 컨테이너를 둘지, 웹 컨테이너 복제본을 몇 개 실행할지, 종료된 컨테이너를 누가 다시 실행할지입니다. 요청을 여러 웹 컨테이너에 나누거나, 컨테이너 IP가 바뀌어도 서비스 이름으로 컨테이너를 찾는 일도 같은 부담입니다.
+Fig 12처럼 서버 A와 C에는 웹, 앱, DB 컨테이너가 실행 중이고, 서버 B만 장애로 멈춘 상황을 가정해 보겠습니다. 운영자는 다음 항목을 직접 결정해야 합니다. 어느 서버에 웹 컨테이너를 둘지, 웹 컨테이너 복제본을 몇 개 실행할지, 종료된 컨테이너를 누가 다시 실행할지입니다. 요청을 여러 웹 컨테이너에 나누거나, 컨테이너 IP가 바뀌어도 서비스 이름으로 컨테이너를 찾는 일도 같은 부담입니다.
 
 이 운영을 플랫폼에 맡기는 계층이 **Container Orchestration**(컨테이너 오케스트레이션)입니다. 여러 서버에 걸친 컨테이너의 배치와 복구, 연결을 자동으로 조율합니다.
 
@@ -140,11 +141,11 @@ Docker에서는 **Dockerfile**(이미지를 만드는 절차를 적은 파일)�
 
 여러 **Node**(노드, 클러스터에 참여하는 서버)를 **Cluster**(클러스터, 여러 서버를 하나의 논리 단위로 묶은 것)로 묶고, 어느 노드에 컨테이너를 둘지, 컨테이너가 종료되면 컨테이너를 어떻게 다시 실행할지를 플랫폼이 조율합니다. [[7]](#ref-7)
 
-Compose로 관리하던 서버가 여러 대로 늘어나면, Swarm 같은 오케스트레이션을 통해 서버 사이의 배치와 복구까지 관리 범위를 넓힐 수 있습니다.
+Fig 14의 왼쪽에서는 Compose가 한 서버의 웹, 앱, DB 컨테이너를 함께 실행합니다. 오른쪽에서는 Swarm이 Node A와 B에 컨테이너를 나누어 배치하고 필요한 복제본을 유지합니다. 서버가 늘어나면서 관리 범위가 한 서버의 실행 설정에서 서버 사이의 배치와 복구로 넓어지는 것입니다.
 
 ![Docker Swarm과 Kubernetes](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/16-complex-vs-city.svg)
 
-**Kubernetes**도 Docker Swarm과 같은 종류의 **컨테이너 오케스트레이션**입니다. Swarm도 서비스 배포와 규모 조절, 점진적인 버전 교체를 지원합니다. Kubernetes는 자동 확장, 통신 범위, 저장소와 권한처럼 운영 정책을 더 세밀하게 선언할 수 있으며, 이러한 기능을 지원하는 주변 도구도 풍부합니다.
+Fig 15는 Docker Swarm과 **Kubernetes**가 공통으로 제공하는 오케스트레이션과, Kubernetes에서 선언할 수 있는 운영 정책을 비교합니다. Swarm도 서비스 배포와 규모 조절, 점진적인 버전 교체를 지원합니다. Kubernetes는 자동 확장, 통신 범위, 저장소와 권한처럼 운영 정책을 더 세밀하게 선언할 수 있으며, 이러한 기능을 지원하는 주변 도구도 풍부합니다.
 
 이제 오케스트레이션 기능을 사용하지 않고 Docker 명령으로 직접 운영할 때 어떤 작업이 필요한지 확인하겠습니다.
 
@@ -158,7 +159,7 @@ Docker를 설치하고 실행해 두어야 합니다. 아직 준비되지 않았
 
 ![이미지로 웹 서버를 실행하고 포트를 연결하는 흐름](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/17-lab-run.svg)
 
-nginx 웹 서버를 실행합니다. 이미지가 로컬에 없으면 Docker가 먼저 내려받습니다.
+Fig 16에서는 이미지 저장소에서 받은 nginx 이미지로 웹 서버 컨테이너를 실행하고, 호스트의 8080번 포트를 컨테이너의 80번 포트에 연결합니다. 이후 `localhost:8080`으로 요청하면 컨테이너 안의 nginx가 응답합니다. 먼저 다음 명령으로 실행하며, 이미지가 로컬에 없으면 Docker가 내려받습니다.
 
 ```bash
 # nginx 컨테이너를 실행하고 목록에서 확인
@@ -193,7 +194,7 @@ Server: nginx/...
 
 ![컨테이너 종료와 수동 재실행](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/18-lab-restart.svg)
 
-컨테이너를 중지하고 상태를 확인합니다. `docker ps -a`는 중지된 컨테이너도 보여 줍니다.
+Fig 17은 실행 중인 컨테이너가 `stop`으로 종료되어 요청에 응답하지 못하다가, 사람이 `start`를 실행한 뒤 다시 응답하는 흐름입니다. 먼저 컨테이너를 중지하고 `docker ps -a`로 종료된 상태를 확인합니다.
 
 ```bash
 # 실행 중인 컨테이너를 중지하고 종료 상태 확인
@@ -226,7 +227,7 @@ Docker에도 종료된 컨테이너를 같은 서버에서 다시 실행하는 �
 
 ![여러 웹 서버의 이미지를 하나씩 교체하는 흐름](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/33-lab-image-replacement.svg)
 
-같은 웹 서버를 세 개 더 실행합니다. 컨테이너 안의 포트는 모두 80번이지만, 같은 호스트에서 연결할 포트와 컨테이너 이름은 각각 다르게 지정합니다.
+Fig 18에서는 같은 역할의 웹 서버 네 개 중 첫 번째 컨테이너를 중지하고 삭제한 뒤, 다른 이미지로 새로 실행합니다. 교체 중에는 해당 포트의 요청이 끊기고, 나머지 컨테이너도 같은 절차를 반복해야 합니다. 이 상황을 확인하기 위해 먼저 웹 서버를 세 개 더 실행합니다. 컨테이너 안의 포트는 모두 80번이지만, 호스트 포트와 컨테이너 이름은 각각 다르게 지정합니다.
 
 ```bash
 # 같은 이미지로 웹 서버 세 개를 추가 실행
@@ -281,8 +282,8 @@ Kubernetes는 사용자가 원하는 운영 상태를 선언하면 각 구성요
 
 - <a id="ref-1"></a>[1] [Stack Overflow 2025 개발자 설문 결과 발표: Docker 사용 비율](https://stackoverflow.co/company/press/archive/stack-overflow-2025-developer-survey/)
 - <a id="ref-2"></a>[2] [컨테이너와 VM 비교 공식 문서](https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/)
-- <a id="ref-3"></a>[3] [Docker 자원 제한 공식 문서](https://docs.docker.com/engine/containers/resource_constraints/)
-- <a id="ref-4"></a>[4] [Docker 구조 공식 문서](https://docs.docker.com/get-started/docker-overview/#docker-architecture)
+- <a id="ref-3"></a>[3] [Docker 구조 공식 문서](https://docs.docker.com/get-started/docker-overview/#docker-architecture)
+- <a id="ref-4"></a>[4] [Docker 자원 제한 공식 문서](https://docs.docker.com/engine/containers/resource_constraints/)
 - <a id="ref-5"></a>[5] [Docker 포트 공개 공식 문서](https://docs.docker.com/get-started/docker-concepts/running-containers/publishing-ports/)
 - <a id="ref-6"></a>[6] [Docker Compose 공식 문서](https://docs.docker.com/compose/)
 - <a id="ref-7"></a>[7] [Docker Swarm 공식 문서](https://docs.docker.com/engine/swarm/)

@@ -1,16 +1,15 @@
 <!--
-  English publish copy based on 01-background-and-docker-limits.draft.md.
-  Image paths use GitHub raw URLs; diagrams use their English SVG variants.
-  Image repository: https://github.com/SeongSuKim95/Kubernetes-Practice
+  English publication based on 01-background-and-docker-limits.draft.md.
+  GitHub Flavored Markdown; figures use GitHub raw URLs.
 -->
 
 # Chap01. The Origins of Containers and Docker
 
-> This is the first article in a 15-week series. We trace the need for containers through bare metal servers and virtual machines, then explore the manual work involved in operating containers with Docker. We start with the basics so readers new to Docker can follow along.
+> This is the first article in a 16-chapter series. We trace the need for containers through bare metal servers and virtual machines, then explore the manual work involved in operating containers with Docker. We start with the basics so readers new to Docker can follow along.
 
 ## Introduction
 
-![Official Kubernetes logo](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/02/en/01-k8s-logo.svg)
+![Official Docker logo](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/00-docker-intro-logo.svg)
 
 Containers and Docker are widely used in application development and deployment. Containers package an application with the environment it needs and run it in isolation; Docker is a major tool for building and running them. In Stack Overflow's 2025 Developer Survey, about 71% of respondents to the cloud development and infrastructure technology question reported using Docker during the previous year. Working with containers has become part of many developers' everyday work. [[1]](#ref-1)
 
@@ -28,11 +27,11 @@ This article follows the expansion of runtime environments and operational scope
 
 ![From virtualization to Kubernetes](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/01-journey.svg)
 
-The diagram shows how the scope of application execution and management expands. Bare metal runs applications directly on a physical server. Virtual machines divide a server's resources among guest operating systems. Containers isolate application processes while sharing the host OS, and Docker Compose describes multiple containers on one server. Docker Swarm and Kubernetes extend management across servers, delegating container placement and recovery to a platform.
+Fig 1 shows how the scope of application execution and management expands. Bare metal runs applications directly on physical servers. Virtual machines divide one server into separate guest operating systems. Containers isolate application processes while sharing the host OS, and Docker Compose configures multiple containers on one server. Docker Swarm and Kubernetes extend management across servers, delegating container placement and recovery to the platform.
 
 ![Bare metal architecture](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/02-physical-server.svg)
 
-The starting point is **bare metal**: a server whose operating system runs directly on physical hardware, without a virtualization layer. The stack consists of **hardware**, a **host OS**, and applications installed on that OS.
+The starting point is **bare metal**: a server whose operating system runs directly on physical hardware, without a virtualization layer. On the left of Fig 2, the **host OS** sits above the **hardware**, with the application installed above it. The right side shows why spare resources can be difficult to share with another application when ports or library versions conflict.
 
 For a long time, running one application on each physical server was common. The structure is simple, and performance is straightforward because the OS and application use the hardware directly.
 
@@ -44,11 +43,11 @@ This simplicity raises a question: can the unused resources on a server be share
 
 ![Virtual machine architecture](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/03-vm.svg)
 
-A **virtual machine** (VM) runs above a **hypervisor** on physical hardware. The hypervisor divides the hardware among virtual computers, each with its own **guest OS**.
+The **virtual machines** (VMs) in Fig 3 run above a **hypervisor** on physical hardware. Each virtual computer has its own **guest OS**. The hypervisor divides one machine’s hardware among the virtual computers, while each guest OS provides a separate operating system environment.
 
 ![Separate guest operating systems](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/13-vm-houses.svg)
 
-Each VM has its own operating system and **kernel**, the core of that operating system. One physical machine acts as several separate computers.
+Fig 4 places the shopping website, payment API, and product database in three VMs on one physical server. Each VM has its own guest OS and **kernel**, the core of an operating system, so each application can have a separate OS environment.
 
 VMs provide strong isolation between runtime environments. A problem in one VM is less likely to spread to another. A shopping site's web frontend, payment API, and product database can run in separate VMs on one server, reducing the waste of dedicating an entire physical server to each application.
 
@@ -64,13 +63,15 @@ VMs solve resource sharing, but remain relatively heavy for **lightweight applic
 
 ## 3. Consistent Environments with Containers and Docker
 
+Preparing a guest OS every time an application starts consumes substantial resources even for a small application. A **container** runs an application as an isolated process while sharing the host operating system.
+
 <img src="https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/characters/character-container.png" alt="A container packages an application environment" width="40%" />
 
-A container groups an application and its required runtime environment into one execution unit, as illustrated above.
+The box with the code symbol represents an application running within the environment it needs. To reproduce that environment, the application and required files are packaged in an **image**. An image is the bundle of files used for execution; a container is the environment running from that image.
 
 ![VMs and containers](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/04-vm-vs-container.svg)
 
-Containers do not duplicate a guest OS. Application files and dependencies are packaged into an **image**, a blueprint containing the files needed for execution. A **container** runs processes from that image. The operating system of the computer running the containers is the **host OS**. Containers share the host's kernel while isolating their processes, making them lighter than VMs. [[2]](#ref-2)
+On the left of Fig 5, each VM has its own guest OS. Containers instead share the kernel of the **host OS**, the operating system of the computer running them. This avoids booting a separate guest OS while isolating applications as processes on the same host. [[2]](#ref-2)
 
 Installing nginx, a web server, directly on different computers can produce differences in OS versions, packages, and configuration paths. Packaging its required files in an image gives containers created from that image the same paths and configuration. Using **the same image** across local, test, and production environments is a major benefit of containers.
 
@@ -80,19 +81,19 @@ Installing nginx, a web server, directly on different computers can produce diff
 
 ![The docker run execution path](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/05-docker-flow.svg)
 
+In Fig 7, the user sends a command such as `docker run` through the Docker client, a command-line tool. The Docker daemon, a background management process, receives the request and uses the container runtime to prepare isolation, resources, and the filesystem before starting the container. Docker manages this process so users do not have to configure each kernel feature themselves. [[3]](#ref-3)
+
 Isolating containers requires limiting what each process can see and which resources it can use. Each container also needs its own files. Docker builds this environment using Linux features.
 
 Linux **namespaces** separate views of resources such as processes and networks. They allow containers to have isolated environments while sharing a kernel. Linux namespaces are different from Kubernetes Namespaces, which group Kubernetes resources.
 
-**cgroups**, or control groups, govern resource usage such as CPU and memory. They are used to set limits on a container's resource consumption. [[3]](#ref-3)
+**cgroups**, or control groups, govern resource usage such as CPU and memory. They are used to set per-container limits, including memory limits. [[4]](#ref-4)
 
 A container also needs a filesystem that combines image files with changes made while running. **OverlayFS** is one way to combine several filesystem layers. The key point here is that each container gets a filesystem built on the files in its image; the internal implementation is beyond this introduction.
 
-Users send commands such as `docker run` through the Docker client. The **Docker daemon**, a background management process, receives them and uses the container runtime to prepare isolation, resources, and filesystems, then run containers. Docker manages this process so users do not have to configure each kernel feature themselves. [[4]](#ref-4)
-
 ![Images and containers](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/06-image-vs-container.svg)
 
-A **Dockerfile** records the instructions for building an image. Containers run from the resulting image. As the diagram shows, the same nginx image can produce several web server containers with different names and host ports.
+A **Dockerfile** records the instructions for building an image. Docker runs containers from the resulting image. As Fig 8 shows, the same nginx image can start several web server containers with different names and host ports.
 
 We have distinguished the environment stored in an image from a running container. Before the exercise, we need one more concept: reaching a web server container from a browser or `curl` requires a **port** through which to send requests.
 
@@ -100,7 +101,7 @@ We have distinguished the environment stored in an image from a running containe
 
 A port is a **number** identifying a process or service that receives network traffic on a computer. Web servers, databases, and caches can share a machine while listening on different ports. A web server might listen on port **80 inside its container**, while a database uses port 3306.
 
-Containers have a separate network environment from the host. nginx listening on port 80 inside a container does not automatically make it reachable on the host's port 80. Docker's `-p HOST_PORT:CONTAINER_PORT` connects the two. With `-p 8080:80`, requests to port 8080 on your computer are forwarded to port 80 in the container. [[5]](#ref-5)
+Containers have a separate network environment from the host. Even if nginx listens on port 80 inside a container, connecting to port 80 on the host does not automatically reach it. Docker maps a host port to a container port with `-p host-port:container-port`. In Fig 9, `-p 8080:80` forwards requests arriving at port 8080 on the host to port 80 inside the container. The host exposes 8080 while nginx continues listening on 80. [[5]](#ref-5)
 
 The exercise will demonstrate downloading an image, creating a container, publishing a port, listing containers, and stopping and restarting one. Each command's options are explained where they are used.
 
@@ -116,7 +117,7 @@ The exercise will demonstrate downloading an image, creating a container, publis
 
 ![Docker Compose configuration](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/14-compose-menu.svg)
 
-Repeatedly typing long `docker run` commands is error-prone and leaves a poor record of the setup. The illustrated `compose.yaml` describes the web, application, and database components together. **YAML** is a configuration format that uses indentation to express structure. `docker compose up` creates and starts containers from that configuration, making the same combination easier to reproduce. [[6]](#ref-6)
+Repeatedly typing long `docker run` commands is error-prone and makes the configuration difficult to preserve. In Fig 11, `compose.yaml` records the web, application, and database configurations together. **YAML** is a configuration format that expresses structure through indentation. Running `docker compose up` creates and starts containers from that file, making the same combination easier to reproduce. [[6]](#ref-6)
 
 Compose is primarily designed for a **single host**. It organizes containers on one server rather than managing many servers as a cluster. If that server fails, the applications managed by Compose are also at risk.
 
@@ -126,7 +127,7 @@ Compose is primarily designed for a **single host**. It organizes containers on 
 
 With multiple servers, operators must decide where each container belongs and where to restart work when a server fails, in addition to configuring execution on each host.
 
-In the diagram, servers A and C continue running web, application, and database containers while server B has stopped. Operators must decide where to place web containers, how many to run, and who will restart containers that have exited. Distributing requests among web containers and finding them by a stable name when their IP addresses change add more work.
+In Fig 12, servers A and C continue running web, application, and database containers, while server B has failed. Operators must decide where to place web containers, how many replicas to run, and who will restart stopped containers. Distributing requests across web containers and finding them by service name after their IP addresses change add to that work.
 
 **Container orchestration** delegates these tasks to a platform that coordinates placement, recovery, and connectivity across servers.
 
@@ -140,11 +141,11 @@ In the diagram, servers A and C continue running web, application, and database 
 
 A **node** is a server participating in the cluster. A **cluster** groups servers into one logical unit. The platform coordinates which nodes run containers and how to replace containers that exit. [[7]](#ref-7)
 
-When an application managed with Compose expands across servers, orchestration such as Swarm extends management to placement and recovery between machines.
+On the left of Fig 14, Compose runs the web, application, and database containers together on one server. On the right, Swarm distributes containers between Nodes A and B and maintains the required replicas. As the server count grows, management expands from a single server’s configuration to placement and recovery across servers.
 
 ![Docker Swarm and Kubernetes](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/16-complex-vs-city.svg)
 
-**Kubernetes** is also a container orchestration platform. Swarm supports service deployment, scaling, and rolling updates. Kubernetes provides more detailed declarations for operational policies such as autoscaling, communication boundaries, storage, and permissions, supported by a broad ecosystem of tools.
+Fig 15 compares the orchestration capabilities shared by Docker Swarm and **Kubernetes** with the operational policies Kubernetes can declare. Swarm also supports service deployment, scaling, and gradual version replacement. Kubernetes offers more detailed policies for autoscaling, communication boundaries, storage, and permissions, supported by a broad ecosystem of tools.
 
 Next, we will examine the work required when operating containers directly with Docker commands, without orchestration.
 
@@ -158,7 +159,7 @@ Docker must be installed and running; see the official installation guide [[8]](
 
 ![Starting a web server and publishing its port](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/17-lab-run.svg)
 
-Start an nginx web server. Docker downloads the image first if it is not available locally.
+In Fig 16, Docker starts a web server container from an nginx image downloaded from a registry and maps host port 8080 to container port 80. A request to `localhost:8080` then reaches nginx inside the container. Start it with the following command; Docker downloads the image first if it is not available locally.
 
 ```bash
 # Start an nginx container and list running containers
@@ -193,7 +194,7 @@ Server: nginx/...
 
 ![Stopping and manually restarting a container](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/18-lab-restart.svg)
 
-Stop the container and check its state. `docker ps -a` includes stopped containers.
+Fig 17 follows a running container through `stop`, when it can no longer respond, and a manual `start`, after which it responds again. First, stop the container and inspect its exited state with `docker ps -a`.
 
 ```bash
 # Stop the container and inspect its exit state
@@ -226,7 +227,7 @@ Docker also offers restart policies for restarting exited containers on the same
 
 ![Manually replacing web server images](https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/01/en/33-lab-image-replacement.svg)
 
-Start three more web servers. They all listen on port 80 inside their containers, but each needs a distinct name and published port on the shared host.
+Fig 18 stops and removes the first of four web server containers, then starts a replacement from another image. Requests to that port are interrupted during replacement, and the remaining containers require the same procedure. To demonstrate this, first start three more web servers. They all listen on port 80 inside their containers, but each uses a different host port and container name.
 
 ```bash
 # Start three more web servers from the same image
@@ -275,15 +276,14 @@ Kubernetes lets users declare the desired operational state, and its components 
 ## Before the Next Article
 
 This article covered the progression from VMs for sharing server resources, to containers and Docker for moving lightweight runtime environments, and then to Compose and Swarm as the number of containers grows.
-
 The next article introduces Kubernetes, why it is useful, and how its core concepts fit together.
 
 ## References
 
 - <a id="ref-1"></a>[1] [Stack Overflow 2025 Developer Survey: Docker usage](https://stackoverflow.co/company/press/archive/stack-overflow-2025-developer-survey/)
 - <a id="ref-2"></a>[2] [Docker documentation: Containers and VMs](https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/)
-- <a id="ref-3"></a>[3] [Docker documentation: Resource constraints](https://docs.docker.com/engine/containers/resource_constraints/)
-- <a id="ref-4"></a>[4] [Docker documentation: Architecture](https://docs.docker.com/get-started/docker-overview/#docker-architecture)
+- <a id="ref-3"></a>[3] [Docker documentation: Architecture](https://docs.docker.com/get-started/docker-overview/#docker-architecture)
+- <a id="ref-4"></a>[4] [Docker documentation: Resource constraints](https://docs.docker.com/engine/containers/resource_constraints/)
 - <a id="ref-5"></a>[5] [Docker documentation: Publishing ports](https://docs.docker.com/get-started/docker-concepts/running-containers/publishing-ports/)
 - <a id="ref-6"></a>[6] [Docker Compose documentation](https://docs.docker.com/compose/)
 - <a id="ref-7"></a>[7] [Docker Swarm documentation](https://docs.docker.com/engine/swarm/)

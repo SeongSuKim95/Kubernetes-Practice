@@ -2,6 +2,10 @@
 
 Docker에서 Kubernetes 기본 리소스, 스토리지, 네트워크, 스케줄링과 운영까지 순서대로 학습하고, AWS 환경에서 EKS·Ingress·GitOps·HPA를 실습하는 저장소입니다.
 
+## 블로그 연재
+
+[16장 연재 구성과 초안 목차](articles/series-plan.md)에서 각 장을 확인할 수 있습니다. 실습 폴더 번호와 글의 장 번호는 서로 다릅니다.
+
 ## 학습 경로
 
 ```text

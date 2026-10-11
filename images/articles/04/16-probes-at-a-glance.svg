@@ -44,6 +44,5 @@
 <path d="M767,660 H853" fill="none" stroke="#526680" stroke-width="2.5" marker-end="url(#a)"/>
 <text x="810" y="765" text-anchor="middle" font-size="20" font-weight="700">목적: 컨테이너 재시작 필요 여부</text>
 <text x="810" y="794" text-anchor="middle" font-size="18" font-weight="400">실패 기준 도달 시 런타임을 통해 재시작</text>
-<text x="550" y="850" text-anchor="middle" font-size="17" font-weight="400">같은 Pod의 검사 흐름 / 재시작 정책 Always / 준비된 Pod에 요청을 보내는 구성</text>
-<text x="550" y="912" text-anchor="middle" font-size="20" font-weight="400">Fig 6. 세 프로브의 순서와 역할: 기동 완료 후 요청 준비와 생존 상태 검사</text>
+<text x="550" y="912" text-anchor="middle" font-size="20" font-weight="400">Fig 6. 세 프로브의 순서와 역할</text>
 </g></svg>

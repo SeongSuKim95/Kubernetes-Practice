@@ -1,6 +1,6 @@
 # 후속 초안. PriorityClass와 선점
 
-> 이 글은 7장에서 분리한 후속 주제 초안이며 장 번호는 아직 정하지 않았습니다. requests를 기준으로 한 자원 경쟁에서 PriorityClass와 선점이 작동하는 조건을 실습합니다.
+> 이 글은 Namespace와 RBAC 글에서 분리한 후속 주제 초안이며 장 번호는 아직 정하지 않았습니다. requests를 기준으로 한 자원 경쟁에서 PriorityClass와 선점이 작동하는 조건을 실습합니다.
 
 ## 들어가며
 
