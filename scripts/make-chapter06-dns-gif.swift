@@ -95,7 +95,7 @@ func background(_ idx:Int,_ progress:CGFloat){
  // Two actual tables: stable Service addresses and the Pods selected behind them.
  for (x,title,left,right,rows) in [
  (75.0,"Service 이름과 가상 IP","Service 이름","가상 IP",[("kube-dns","10.96.0.10"),("web",serviceIP)]),
- (825.0,"Service와 실제 Pod의 매핑 정보","Service 이름","Pod IP와 포트",[("kube-dns",dnsIP+":53"),("web",webIP+":80")])] {
+ (825.0,"EndpointSlice: Service의 대상 Pod 정보","Service 이름","Pod IP와 포트",[("kube-dns",dnsIP+":53"),("web",webIP+":80")])] {
  text(title,x,130,680,21,ink,true)
  box(x,166,680,132)
  NSColor(calibratedRed:0.89,green:0.93,blue:0.99,alpha:1).setFill()
