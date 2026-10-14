@@ -1,6 +1,7 @@
 """Service type diagrams with validated midpoint connections and orthogonal routes."""
 from pathlib import Path
 import base64,html
+from chapter06_figure_style import normalize_svg
 ROOT=Path(__file__).resolve().parents[1];OUT=ROOT/'images/articles/06'
 ICONS={k:base64.b64encode((ROOT/'images/characters/refs'/v).read_bytes()).decode() for k,v in {'node':'node-official.png','pod':'pod-official.png','svc':'svc.png','deploy':'deploy-unlabeled.png'}.items()}
 C={'traffic':'#2464ce','external':'#bd650d','dns':'#7952b3','config':'#7b8798'}
@@ -31,23 +32,23 @@ def make(kind,figure_number,filename):
  for k,c in C.items():s.append(f'<marker id="{k}" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="{c}"/></marker>')
  s.append('</defs><rect width="1600" height="1150" fill="white"/><g font-family="Apple SD Gothic Neo,Noto Sans KR,sans-serif">')
  if kind=='ClusterIP':
-  s=[part.replace('1600','1200').replace('1150','850') for part in s]
+  s=[part.replace('1600','1200').replace('1150','770') for part in s]
   text(600,35,'ClusterIP: 클러스터 내부의 Pod 통신',27)
   box('svc',40,60,510,100,'#fff8e8','svc');text(315,100,'Service: web / ClusterIP',23);text(295,138,'10.96.10.20:80',23)
   box('deploy',650,60,510,100,'#fff8e8','deploy');text(925,100,'Deployment: web-app',23);text(905,138,'replicas: 2 / app=web',21)
   for x,label in [(50,'Worker Node A'),(690,'Worker Node B')]:
-   box(label,x,200,460,570,'#eef7f1','node',True);text(x+245,243,label,24)
-  box('client',90,290,380,100,icon='pod');text(300,330,'클라이언트 Pod',23);text(280,368,'web:80',22)
+   box(label,x,200,460,520,'#eef7f1','node',True);text(x+245,243,label,24)
+  box('client',110,290,340,100,icon='pod');text(300,330,'클라이언트 Pod',23);text(280,368,'web:80',22)
   box('proxya',90,450,380,65,'#f0f3f7');text(280,477,'kube-proxy',22);text(280,503,'Node 안의 프로세스',17)
-  box('rulesa',90,620,380,100,'#e9f0ff');text(280,658,'운영체제의 전달 규칙',22);text(280,698,'Service IP → Pod IP',21)
+  box('rulesa',90,570,380,100,'#e9f0ff');text(280,608,'운영체제의 전달 규칙',22);text(280,648,'Service IP → Pod IP',21)
   box('proxyb',730,290,380,65,'#f0f3f7');text(920,317,'kube-proxy',22);text(920,343,'Node 안의 프로세스',17)
-  box('pod2',730,410,380,100,icon='pod');text(940,448,'웹 Pod 2 / app=web',22);text(920,487,'10.244.3.8:80',22)
-  box('pod1',730,620,380,100,icon='pod');text(940,658,'웹 Pod 1 / app=web',22);text(920,698,'10.244.2.8:80',22)
+  box('pod2',750,410,340,100,icon='pod');text(940,448,'웹 Pod 2 / app=web',22);text(920,487,'10.244.3.8:80',22)
+  box('pod1',750,570,340,100,icon='pod');text(940,608,'웹 Pod 1 / app=web',22);text(920,648,'10.244.2.8:80',22)
   route('config-a',('proxya','b'),('rulesa','t'),'config',dash=True)
-  route('internal-start',('client','b'),('rulesa','l'),'traffic',[(280,420),(70,420),(70,670)])
+  route('internal-start',('client','b'),('rulesa','l'),'traffic',[(280,420),(70,420),(70,620)])
   route('internal-target',('rulesa','r'),('pod1','l'),'traffic')
-  text(600,825,'Fig 6. ClusterIP의 요청 경로',24)
-  OUT.joinpath(filename).write_text('\n'.join(s+['</g></svg>']))
+  text(600,745,'Fig 6. ClusterIP의 요청 경로',24)
+  OUT.joinpath(filename).write_text(normalize_svg('\n'.join(s+['</g></svg>'])))
   return
  if kind=='LoadBalancer':
   s=[part.replace('1600','1100').replace('1150','850') for part in s]
@@ -72,7 +73,7 @@ def make(kind,figure_number,filename):
    text(x+115,425,'Worker Node',19);text(x+115,451,n,21)
    box('rules'+n,x+40,475,340,80,'#e9f0ff')
    text(center,507,'NodePort: 30080',23);text(center,538,'요청을 받을 Pod 선택',20)
-   box('pod'+n,x+40,590,340,90,icon='pod')
+   box('pod'+n,x+60,590,300,90,icon='pod')
    text(center+18,625,'웹 Pod '+str(num)+' / app=web',21)
    text(center,662,ip+':80',22)
    box('proxy'+n,x+90,710,290,60,'#f0f3f7')
@@ -81,7 +82,7 @@ def make(kind,figure_number,filename):
    route('node-pod-'+n,('rules'+n,'b'),('pod'+n,'t'),'external')
    route('config-'+n,('proxy'+n,'l'),('rules'+n,'l'),'config',[(x+20,740),(x+20,515)],dash=True)
   text(550,830,'Fig 8. NLB의 Node 선택과 Pod로의 요청 전달',24)
-  OUT.joinpath(filename).write_text('\n'.join(s+['</g></svg>']))
+  OUT.joinpath(filename).write_text(normalize_svg('\n'.join(s+['</g></svg>'])))
   return
  if kind=='ExternalName':
   s=[part.replace('1600','1200').replace('1150','800') for part in s]
@@ -113,7 +114,7 @@ def make(kind,figure_number,filename):
   text(760,262,'3. 외부 API 요청',22,C['external'])
   text(760,293,'api.example.com의 IP 조회 후 접속',19,C['external'])
   text(600,766,'Fig 9. ExternalName의 DNS 조회와 요청 경로',24)
-  OUT.joinpath(filename).write_text('\n'.join(s+['</g></svg>']))
+  OUT.joinpath(filename).write_text(normalize_svg('\n'.join(s+['</g></svg>'])))
   return
  text(800,35,f'{kind}: '+({'ClusterIP':'클러스터 내부에서 사용하는 접근점','NodePort':'Node의 포트로 들어오는 외부 요청','LoadBalancer':'AWS 외부 로드 밸런서로 들어오는 요청','ExternalName':'이름 조회 후 외부 서버에 직접 요청'}[kind]),28)
  box('svc',50,70,690,140,'#fff8e8','svc');box('deploy',810,70,740,140,'#fff8e8','deploy')
@@ -161,7 +162,7 @@ def make(kind,figure_number,filename):
    route('external-node',origin,('rulesb','r'),'external',via)
    text(1300,378,'NodePort로 진입',20,C['external'])
  text(800,1130,f'Fig {figure_number}. {kind}의 요청 경로',24)
- OUT.joinpath(filename).write_text('\n'.join(s+['</g></svg>']))
+ OUT.joinpath(filename).write_text(normalize_svg('\n'.join(s+['</g></svg>'])))
 make('ClusterIP',6,'03-clusterip-topology.svg')
 make('NodePort',7,'02-nodeport-paths.svg')
 make('LoadBalancer',8,'04-loadbalancer-aws-topology.svg')

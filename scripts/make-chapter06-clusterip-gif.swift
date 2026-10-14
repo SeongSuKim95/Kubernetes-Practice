@@ -1,9 +1,9 @@
 // Render a temporary 1200 x 1200 SVG canvas (viewBox 0 0 1200 1200) with qlmanage -t -s 1200.
-// Pass the full-width PNG path as the first argument; the renderer crops the 1200 x 850 artwork.
+// Pass the full-width PNG path as the first argument; the renderer crops the 1200 x 770 artwork.
 import AppKit
 import ImageIO
 import UniformTypeIdentifiers
-let width = 1200, height = 980
+let width = 1200, height = 900
 let output = "images/articles/06/03-clusterip-traffic.gif"
 let ink = NSColor(calibratedRed:0.12,green:0.20,blue:0.30,alpha:1)
 let gray = NSColor(calibratedRed:0.40,green:0.46,blue:0.54,alpha:1)
@@ -13,9 +13,9 @@ func p(_ x:CGFloat,_ y:CGFloat)->CGPoint {CGPoint(x:x,y:y)}
 struct Stage {let section:String;let sentence:String;let color:NSColor;let paths:[[CGPoint]];let control:Bool}
 let purple = NSColor(calibratedRed:0.48,green:0.26,blue:0.72,alpha:1)
 // Every connection attaches to the midpoint of a component edge.
-let configA=[p(280,515),p(280,620)]
-let incoming=[p(280,390),p(280,420),p(70,420),p(70,670),p(90,670)]
-let target=[p(470,670),p(730,670)]
+let configA=[p(280,515),p(280,570)]
+let incoming=[p(280,390),p(280,420),p(70,420),p(70,620),p(90,620)]
+let target=[p(470,620),p(750,620)]
 let stages:[Stage] = [
  Stage(section:"규칙 준비",sentence:"1. kube-proxy의 Node 전달 규칙 설정",color:gray,paths:[configA],control:true),
  Stage(section:"내부 요청",sentence:"2. 클라이언트 Pod의 Service IP로 요청",color:blue,paths:[incoming],control:false),
@@ -24,8 +24,8 @@ let stages:[Stage] = [
 ]
 let pngPath=CommandLine.arguments.count>1 ? CommandLine.arguments[1] : "/tmp/03-clusterip-topology.svg.png"
 let pngSource=CGImageSourceCreateWithURL(URL(fileURLWithPath:pngPath) as CFURL,nil)!
-let cropped=CGImageSourceCreateImageAtIndex(pngSource,0,nil)!.cropping(to:CGRect(x:0,y:0,width:1200,height:850))!
-let backdrop=NSImage(cgImage:cropped,size:NSSize(width:1200,height:850))
+let cropped=CGImageSourceCreateImageAtIndex(pngSource,0,nil)!.cropping(to:CGRect(x:0,y:0,width:1200,height:770))!
+let backdrop=NSImage(cgImage:cropped,size:NSSize(width:1200,height:770))
 var icons:[String:NSImage]=[:]
 for (key,path) in ["node":"images/characters/refs/node-official.png","pod":"images/characters/refs/pod-official.png","svc":"images/characters/refs/svc.png","deploy":"images/characters/refs/deploy-unlabeled.png","ing":"images/characters/refs/ing.png","k8s":"images/k8s-icon-color.png"] {icons[key]=NSImage(contentsOfFile:path)!}
 func box(_ x:CGFloat,_ y:CGFloat,_ w:CGFloat,_ h:CGFloat,_ fill:NSColor = .white){
@@ -35,6 +35,7 @@ func box(_ x:CGFloat,_ y:CGFloat,_ w:CGFloat,_ h:CGFloat,_ fill:NSColor = .white
 // Flipped graphics context gives all labels and route points the same top-left origin.
 var labelBounds:[(CGRect,String)]=[]
 func text(_ value:String,_ x:CGFloat,_ y:CGFloat,_ w:CGFloat,_ size:CGFloat=21,_ color:NSColor=ink,_ bold:Bool=false){
+ let size: CGFloat = value.hasPrefix("Fig ") ? 23 : size >= 27 ? 26 : size >= 21 ? 21 : 18
  let style=NSMutableParagraphStyle();style.alignment = .center
  let attrs:[NSAttributedString.Key:Any]=[.font:bold ? NSFont.boldSystemFont(ofSize:size):NSFont.systemFont(ofSize:size),.foregroundColor:color,.paragraphStyle:style]
  let measured=(value as NSString).size(withAttributes:attrs)
@@ -42,7 +43,7 @@ func text(_ value:String,_ x:CGFloat,_ y:CGFloat,_ w:CGFloat,_ size:CGFloat=21,_
  labelBounds.append((CGRect(x:x+(w-measured.width)/2,y:y,width:measured.width,height:measured.height),value))
  (value as NSString).draw(in:CGRect(x:x,y:y,width:w,height:size*1.6),withAttributes:attrs)
 }
-func icon(_ key:String,_ x:CGFloat,_ y:CGFloat){icons[key]!.draw(in:CGRect(x:x,y:y,width:36,height:36),from:.zero,operation:.sourceOver,fraction:1,respectFlipped:true,hints:nil)}
+func icon(_ key:String,_ x:CGFloat,_ y:CGFloat){icons[key]!.draw(in:CGRect(x:x,y:y,width:32,height:32),from:.zero,operation:.sourceOver,fraction:1,respectFlipped:true,hints:nil)}
 func card(_ x:CGFloat,_ y:CGFloat,_ w:CGFloat,_ h:CGFloat,_ title:String,_ sub:String,_ key:String?=nil){
  box(x,y,w,h);if let key=key {icon(key,x+10,y+12)}
  text(title,x+(key == nil ? 5:48),y+14,w-(key == nil ? 10:55),21,ink,true);text(sub,x+8,y+53,w-16,18)
@@ -70,11 +71,11 @@ func route(_ pts:[CGPoint],_ color:NSColor,_ progress:CGFloat,_ square:Bool,_ sh
 }
 func background(_ idx:Int,_ progress:CGFloat){
  NSColor.white.setFill();NSRect(x:0,y:0,width:width,height:height).fill()
- backdrop.draw(in:CGRect(x:0,y:0,width:1200,height:850),from:.zero,operation:.sourceOver,fraction:1,respectFlipped:true,hints:nil)
+ backdrop.draw(in:CGRect(x:0,y:0,width:1200,height:770),from:.zero,operation:.sourceOver,fraction:1,respectFlipped:true,hints:nil)
 }
 func emphasis(_ idx:Int){
  for i in 0..<stages.count {
- let r=NSBezierPath(roundedRect:CGRect(x:40+i*280,y:955,width:264,height:6),xRadius:3,yRadius:3)
+ let r=NSBezierPath(roundedRect:CGRect(x:40+i*280,y:878,width:264,height:6),xRadius:3,yRadius:3)
  (i==idx ? stages[idx].color:NSColor(calibratedWhite:0.88,alpha:1)).setFill();r.fill()
  }
 }
@@ -97,8 +98,8 @@ for (idx,stage) in stages.enumerated(){
    let fraction=stage.control ? progress : min(1,max(0,progress*CGFloat(stage.paths.count)-CGFloat(i)))
    if stage.control || fraction>0 {route(points,stage.color,fraction,stage.control,stage.control || (fraction < 1 || i == stage.paths.count-1))}
   }
-  box(30,860,1140,75,stage.color.withAlphaComponent(0.07))
-  text(stage.sentence,45,888,1110,20,stage.color,true)
+  box(30,795,1140,75,stage.color.withAlphaComponent(0.07))
+  text(stage.sentence,45,820,1110,20,stage.color,true)
   NSGraphicsContext.restoreGraphicsState()
   let image=bitmap.cgImage!
   let delay = f == framesPerStage-1 ? 1.6 : 0.09

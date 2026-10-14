@@ -1,11 +1,11 @@
-"""Rebuild the Korean and English publication copies of chapters 1 through 5.
+"""Rebuild the Korean and English publication copies of chapters 1 through 6.
 English blocks are keyed by their source text; a changed draft requires translation review.
 """
 from pathlib import Path
 import re,json
 ROOT=Path(__file__).resolve().parents[2]
 RAW='https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/'
-NAMES=['01-background-and-docker-limits','02-understanding-kubernetes','03-pod-and-workload-management','04-pod-lifecycle-and-self-healing','05-pod-failure-and-self-healing']
+NAMES=['01-background-and-docker-limits','02-understanding-kubernetes','03-pod-and-workload-management','04-pod-lifecycle-and-self-healing','05-pod-failure-and-self-healing','06-service-types']
 def blocks(s):
  s=re.sub(r'<!--.*?-->','',s,flags=re.S).replace('<div align="center">','').replace('</div>','')
  return [v.strip() for v in re.split(r'\n\s*\n',s.strip()) if v.strip()]

@@ -2,7 +2,8 @@
 import AppKit
 import ImageIO
 import UniformTypeIdentifiers
-let width = 1600, height = 1200
+let width = 1200, height = 900
+let drawingScale: CGFloat = 0.75
 let output = "images/articles/06/09-coredns-stable-entry.gif"
 let ink = NSColor(calibratedRed:0.12,green:0.20,blue:0.30,alpha:1)
 let gray = NSColor(calibratedRed:0.40,green:0.46,blue:0.54,alpha:1)
@@ -15,11 +16,11 @@ let purple = NSColor(calibratedRed:0.48,green:0.26,blue:0.72,alpha:1)
 let dnsOut=[p(240,610),p(240,650),p(375,650),p(375,690)]
 let dnsToPod=[p(680,815),p(800,815),p(800,612.5),p(950,612.5)]
 let httpOut=dnsOut
-let httpToPod=[p(680,815),p(800,815),p(800,915),p(950,915)]
-let syncDNS=[p(800,335),p(800,460),p(1210,460),p(1210,500)]
-let syncRules=[p(800,335),p(800,460),p(555,460),p(555,500)]
-let setRules=[p(555,580),p(555,650),p(375,650),p(375,690)]
-let connectedBoxes=[CGRect(x:50,y:70,width:1500,height:265),CGRect(x:70,y:500,width:340,height:110),CGRect(x:430,y:500,width:250,height:80),CGRect(x:70,y:690,width:610,height:250),CGRect(x:950,y:500,width:520,height:225),CGRect(x:950,y:860,width:520,height:110)]
+let httpToPod=[p(680,815),p(800,815),p(800,915),p(1010,915)]
+let syncDNS=[p(800,350),p(800,460),p(1210,460),p(1210,500)]
+let syncRules=[p(800,350),p(800,460),p(555,460),p(555,500)]
+let setRules=[p(555,600),p(555,650),p(375,650),p(375,690)]
+let connectedBoxes=[CGRect(x:50,y:70,width:1500,height:280),CGRect(x:70,y:500,width:340,height:110),CGRect(x:430,y:500,width:250,height:100),CGRect(x:70,y:690,width:610,height:250),CGRect(x:950,y:500,width:520,height:225),CGRect(x:1010,y:860,width:400,height:110)]
 let midpoints=connectedBoxes.flatMap {r in [p(r.midX,r.minY),p(r.midX,r.maxY),p(r.minX,r.midY),p(r.maxX,r.midY)]}
 for path in [dnsOut,dnsToPod,httpOut,httpToPod,syncDNS,syncRules,setRules] {
  precondition(midpoints.contains(path.first!) && midpoints.contains(path.last!),"Connection must use edge midpoints")
@@ -49,6 +50,7 @@ func box(_ x:CGFloat,_ y:CGFloat,_ w:CGFloat,_ h:CGFloat,_ fill:NSColor = .white
 // Flipped graphics context gives all labels and route points the same top-left origin.
 var labelBounds:[(CGRect,String)]=[]
 func text(_ value:String,_ x:CGFloat,_ y:CGFloat,_ w:CGFloat,_ size:CGFloat=21,_ color:NSColor=ink,_ bold:Bool=false){
+ let size: CGFloat = (value.hasPrefix("Fig ") ? 23 : size >= 27 ? 26 : size >= 21 ? 21 : 18) / drawingScale
  let style=NSMutableParagraphStyle();style.alignment = .center
  let attrs:[NSAttributedString.Key:Any]=[.font:bold ? NSFont.boldSystemFont(ofSize:size):NSFont.systemFont(ofSize:size),.foregroundColor:color,.paragraphStyle:style]
  let measured=(value as NSString).size(withAttributes:attrs)
@@ -56,7 +58,7 @@ func text(_ value:String,_ x:CGFloat,_ y:CGFloat,_ w:CGFloat,_ size:CGFloat=21,_
  labelBounds.append((CGRect(x:x+(w-measured.width)/2,y:y,width:measured.width,height:measured.height),value))
  (value as NSString).draw(in:CGRect(x:x,y:y,width:w,height:size*1.6),withAttributes:attrs)
 }
-func icon(_ key:String,_ x:CGFloat,_ y:CGFloat){icons[key]!.draw(in:CGRect(x:x,y:y,width:36,height:36),from:.zero,operation:.sourceOver,fraction:1,respectFlipped:true,hints:nil)}
+func icon(_ key:String,_ x:CGFloat,_ y:CGFloat){icons[key]!.draw(in:CGRect(x:x,y:y,width:44,height:44),from:.zero,operation:.sourceOver,fraction:1,respectFlipped:true,hints:nil)}
 func card(_ x:CGFloat,_ y:CGFloat,_ w:CGFloat,_ h:CGFloat,_ title:String,_ sub:String,_ key:String?=nil){
  box(x,y,w,h);if let key=key {icon(key,x+10,y+12)}
  text(title,x+(key == nil ? 5:48),y+14,w-(key == nil ? 10:55),21,ink,true);text(sub,x+8,y+53,w-16,18)
@@ -85,12 +87,12 @@ func route(_ pts:[CGPoint],_ color:NSColor,_ progress:CGFloat,_ square:Bool,_ sh
 func background(_ idx:Int,_ progress:CGFloat){
  let dnsReady = idx > 0 || progress >= 1
  let rulesReady = idx > 1 || (idx == 1 && progress >= 1)
- NSColor.white.setFill();NSRect(x:0,y:0,width:width,height:height).fill()
+ NSColor.white.setFill();NSRect(x:0,y:0,width:1600,height:1200).fill()
  let serviceIP="10.96.10.20"
  let webIP="10.244.3.8"
  let dnsIP="10.244.2.3"
  text("DNS 조회와 가상 IP를 통한 Pod 통신",30,15,1540,29,ink,true)
- box(50,70,1500,265,NSColor(calibratedRed:0.95,green:0.97,blue:1,alpha:1))
+ box(50,70,1500,280,NSColor(calibratedRed:0.95,green:0.97,blue:1,alpha:1))
  icon("node",65,82);text("Control Plane / API Server가 제공하는 정보",110,85,1380,24,ink,true)
  // Two actual tables: stable Service addresses and the Pods selected behind them.
  for (x,title,left,right,rows) in [
@@ -113,7 +115,7 @@ func background(_ idx:Int,_ progress:CGFloat){
  text("Worker Node \(name)",x+60,y+21,w-80,25,ink,true)
  }
  card(70,500,340,110,"클라이언트 Pod","DNS 서버: 10.96.0.10","pod")
- card(430,500,250,80,"kube-proxy","규칙 설정 프로세스")
+ card(430,500,250,100,"kube-proxy","규칙 설정 프로세스")
  box(70,690,610,250)
  text("Node 운영체제의 Service 전달 규칙",80,703,590,22,ink,true)
  if rulesReady {
@@ -136,16 +138,16 @@ func background(_ idx:Int,_ progress:CGFloat){
  text("아직 조회 정보가 없습니다",975,613,470,23,gray)
  text("API에서 Service 정보 수신 중",975,677,470,18,gray)
  }
- card(950,860,520,110,"웹 Pod / app: web","IP: \(webIP):80","pod")
+ card(1010,860,400,110,"웹 Pod / app: web","IP: \(webIP):80","pod")
 }
 func emphasis(_ idx:Int){
  let regions:[CGRect]
  switch idx {
  case 0: regions=[CGRect(x:950,y:500,width:520,height:225)]
- case 1: regions=[CGRect(x:430,y:500,width:250,height:80),CGRect(x:70,y:690,width:610,height:250)]
+ case 1: regions=[CGRect(x:430,y:500,width:250,height:100),CGRect(x:70,y:690,width:610,height:250)]
  case 2: regions=[CGRect(x:70,y:500,width:340,height:110)]
  case 3,4: regions=[CGRect(x:950,y:500,width:520,height:225)]
- default: regions=[CGRect(x:950,y:860,width:520,height:110)]
+ default: regions=[CGRect(x:1010,y:860,width:400,height:110)]
  }
  for r in regions {let outline=NSBezierPath(roundedRect:r.insetBy(dx:-3,dy:-3),xRadius:14,yRadius:14);stages[idx].color.setStroke();outline.lineWidth=4;outline.stroke()}
  for i in 0..<stages.count {
@@ -161,7 +163,7 @@ for (idx,stage) in stages.enumerated(){
   let bitmap=NSBitmapImageRep(bitmapDataPlanes:nil,pixelsWide:width,pixelsHigh:height,bitsPerSample:8,samplesPerPixel:4,hasAlpha:true,isPlanar:false,colorSpaceName:.deviceRGB,bytesPerRow:0,bitsPerPixel:0)!
   let base=NSGraphicsContext(bitmapImageRep:bitmap)!
   NSGraphicsContext.saveGraphicsState()
-  let ctx=base.cgContext;ctx.translateBy(x:0,y:CGFloat(height));ctx.scaleBy(x:1,y:-1)
+  let ctx=base.cgContext;ctx.translateBy(x:0,y:CGFloat(height));ctx.scaleBy(x:drawingScale,y:-drawingScale)
   NSGraphicsContext.current=NSGraphicsContext(cgContext:ctx,flipped:true)
   labelBounds.removeAll()
   let progress=min(1,max(0,CGFloat(f-5)/18))
@@ -174,7 +176,7 @@ for (idx,stage) in stages.enumerated(){
   }
   box(30,1070,1540,75,stage.color.withAlphaComponent(0.07))
   text(stage.sentence,45,1092,1510,22,stage.color,true)
-  text("Fig 3. DNS 조회와 가상 IP를 통한 Pod 통신",30,1163,1540,22)
+  text("Fig 3. DNS 조회와 가상 IP를 통한 Pod 통신",30,1015,1540,22)
   NSGraphicsContext.restoreGraphicsState()
   let image=bitmap.cgImage!
   let delay = f == framesPerStage-1 ? 1.6 : 0.09

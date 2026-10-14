@@ -18,7 +18,7 @@
 
 ## 1. Pod 사이의 통신과 Service의 필요성
 
-안정적인 접속 주소가 필요한 이유를 이해하려면, 먼저 주소가 바뀌기 전의 Pod끼리 어떻게 통신하는지 살펴볼 필요가 있습니다.
+Service가 제공할 접근점을 이해하기 위해, 먼저 두 Pod가 서로의 주소로 직접 통신하는 상황부터 살펴보겠습니다.
 
 ### 1.1 Pod IP를 이용한 클러스터 내부 통신
 
@@ -26,7 +26,7 @@
 
 예를 들어 웹 Pod가 상품 API Pod의 `10.244.2.8:80`으로 HTTP 요청을 보내면, 이 주소의 80번 포트에서 실행 중인 API 프로세스가 요청을 받아 응답합니다. 이처럼 Pod 사이에서도 애플리케이션이 사용하는 HTTP 요청과 응답으로 데이터를 주고받습니다.
 
-클러스터에는 서로 다른 Node의 Pod도 IP로 연결할 수 있는 네트워크가 구성됩니다. 이 연결을 구현하는 것이 클러스터에 설치된 네트워크 플러그인입니다. 통신을 막는 별도 정책이 없고 네트워크와 수신 프로세스가 정상이라면, 웹 Pod와 API Pod가 서로 다른 Node에 있어도 통신할 수 있습니다. Namespace가 서로 달라도 이 조건은 같습니다. 3장에서 나눈 리소스의 관리 범위와 별개로, Pod 간 통신을 제한하려면 네트워크 정책을 적용합니다. [[1]](#ref-1)
+클러스터에 설치된 네트워크 플러그인은 서로 다른 Node의 Pod도 IP로 통신할 수 있도록 연결합니다. 따라서 웹 Pod와 API Pod의 실행 Node가 달라도 이 방식으로 요청할 수 있습니다. Namespace는 리소스의 관리 범위를 구분하며, Pod 사이의 통신을 제한하려면 별도의 네트워크 정책이 필요합니다. [[1]](#ref-1)
 
 ### 1.2 Pod 교체와 접속 주소 관리의 한계
 
@@ -64,7 +64,7 @@ Deployment가 **어떤 Pod를 몇 개 실행할지** 관리한다면, Service는
 
 <div align="center">
 
-![Deployment가 유지하는 웹 Pod와 Service의 선택 조건 및 클라이언트의 접근 관계](../images/articles/06/08-service-pod-relationship.svg)
+<img src="../images/articles/06/08-service-pod-relationship.svg" alt="Deployment가 유지하는 웹 Pod와 Service의 선택 조건 및 클라이언트의 접근 관계" width="100%" />
 
 </div>
 
@@ -76,17 +76,17 @@ Fig 1의 왼쪽 위 파란 배경은 요청을 보내는 클라이언트 Pod가 
 
 Service는 자신과 같은 Namespace 안에서 Label에 맞는 Pod를 찾습니다. 예를 들어 `dev`의 Service는 `dev`의 웹 Pod를 선택하고, 같은 Label이 붙어 있어도 `prod`의 Pod는 선택 대상에 포함하지 않습니다.
 
-클라이언트가 `web`으로 요청할 수 있도록, 이 관계를 Service의 이름과 선택 조건, 포트로 선언합니다.
+이제 이 선택 관계에 클라이언트가 사용할 이름과 요청을 받을 포트를 더하면 Service의 기본 구성이 갖춰집니다.
 
 ### 2.2 Service가 선언하는 이름과 대상 및 포트
 
-Fig 1의 관계를 설정으로 표현하려면 다음 세 가지가 필요합니다.
+Service에 선언할 항목을 Fig 1의 웹 애플리케이션에 맞춰 정리하면 다음과 같습니다.
 
 - **접근할 이름**: 클라이언트가 애플리케이션을 찾을 때 사용할 이름입니다. 여기서는 `web`입니다.
 - **연결할 Pod의 조건**: 같은 역할의 Pod를 찾는 기준입니다. Pod에 붙인 Label을 Service의 Selector로 선택합니다.
 - **연결할 포트**: 클라이언트가 사용할 Service 포트와, 실제 애플리케이션이 요청을 받을 Pod 쪽 포트를 연결합니다.
 
-예를 들어 클라이언트에게는 80번 포트를 제공하면서, 실제 애플리케이션의 8080번 포트로 전달할 수 있습니다. 이때 애플리케이션은 실제로 8080번 포트에서 요청을 받고 있어야 합니다. 다음 웹 서버 예시는 Service와 애플리케이션 모두 80번 포트를 사용합니다.
+Service의 포트와 애플리케이션의 수신 포트는 서로 다르게 지정할 수 있습니다. 이후 웹 서버 예시에서는 둘 다 80번 포트를 사용합니다.
 
 이 연결 방식은 웹 서버뿐 아니라 데이터베이스 같은 애플리케이션에도 사용할 수 있습니다. Service는 IP와 포트, TCP 같은 통신 규약을 기준으로 연결을 전달합니다. 여기서 TCP는 웹 요청이나 데이터베이스 명령을 주고받는 데 사용하는 통신 방식이며, Service의 기본 프로토콜입니다. [[3]](#ref-3)
 
@@ -102,9 +102,9 @@ Fig 1에서 확인한 선택 관계를 아래 삽화와 함께 매니페스트�
 
 오른쪽의 Deployment는 두 웹 Pod에 같은 하늘색 표식을 붙여 관리합니다. Pod의 표식은 `app: web`이라는 Label을, Service가 들고 있는 같은 표식은 그 Label을 찾는 Selector를 나타냅니다.
 
-왼쪽에서 봉투를 든 Pod는 요청을 보내는 클라이언트입니다. 봉투와 색 띠는 웹 애플리케이션으로 보내는 요청과 그 목적지를 표현합니다. 실제 통신에서는 클라이언트가 Service의 이름과 포트로 요청하고, Service의 Selector가 Pod에 붙은 Label을 기준으로 대상을 선택합니다.
+왼쪽에서 봉투를 든 Pod는 Service의 이름과 포트로 요청하는 클라이언트입니다. 봉투와 색 띠는 웹 애플리케이션으로 보내는 요청과 그 목적지를 표현합니다.
 
-먼저 Deployment를 아래와 같이 선언합니다. `default` Namespace에 웹 Pod 두 개를 유지하고, Pod 템플릿에 `app: web`이라는 Label을 지정합니다. 그림에서 두 Pod에 붙인 하늘색 표식에 해당합니다.
+먼저 Deployment를 아래와 같이 선언합니다. `default` Namespace에 웹 Pod 두 개를 유지하고, Pod 템플릿에 `app: web`이라는 Label을 지정합니다.
 
 ```yaml
 apiVersion: apps/v1
@@ -154,21 +154,21 @@ spec:
 
 두 선언의 이름은 `web-app`과 `web`으로 서로 다릅니다. **연결 기준은 리소스 이름이 아니라 Pod의 Label과 Service의 Selector**이기 때문입니다. 새 Pod로 교체되어도 같은 Label이 붙으면 계속 같은 Service의 대상 후보가 됩니다.
 
-이렇게 요청을 받을 Pod와 그 앞의 Service를 선언했습니다. 이제 클라이언트가 `web`이라는 이름으로 요청했을 때, 실제 웹 Pod에 도달하기까지의 과정을 살펴보겠습니다.
+요청을 받을 Pod와 접근할 이름을 연결했으므로, 이제 클라이언트가 이 이름으로 실제 접속 주소를 찾는 과정을 살펴볼 수 있습니다.
 
 ## 3. Service의 주소 조회와 요청 전달
 
 앞의 Service를 생성하면 Kubernetes가 클러스터 내부에서 사용할 가상 IP를 자동으로 할당합니다. 여기서는 `web` Service에 `10.96.10.20`이 할당되었다고 가정합니다. [[3]](#ref-3)
 
-클라이언트가 `http://web:80/`로 접속하려면 먼저 `web`에 해당하는 IP 주소를 알아내야 합니다. 이 주소를 알아낸 뒤 웹 요청을 보내면, 클러스터의 전달 규칙을 거쳐 실제 Pod에 도달합니다. 이름으로 주소를 찾는 과정부터 따라가 보겠습니다.
+클라이언트가 `http://web:80/`로 접속하는 과정은 `web`의 IP 주소를 찾는 일과, 그 주소로 웹 요청을 보내는 일로 나뉩니다.
 
 ### 3.1 CoreDNS를 통한 Service 주소 조회
 
-클라이언트가 이름으로 접속하려면 그 이름에 해당하는 IP 주소가 필요합니다. **DNS**(Domain Name System)는 이 주소를 알려 주는 시스템이며, 이름으로 주소를 알아내는 과정을 **이름 해석**이라고 합니다. [[4]](#ref-4) Kubernetes에서는 보통 **CoreDNS**라는 DNS 서버 프로그램이 이 질문에 답합니다. 웹 서버처럼 CoreDNS도 Pod 안의 컨테이너에서 실행되며, 다른 애플리케이션들이 Service 이름으로 접속할 주소를 찾도록 돕습니다. [[5]](#ref-5)
+이름에 해당하는 IP 주소를 알려 주는 시스템이 **DNS**(Domain Name System)이며, 이름으로 주소를 알아내는 과정을 **이름 해석**이라고 합니다. [[4]](#ref-4) Kubernetes에서는 보통 **CoreDNS**라는 DNS 서버 프로그램이 이 질문에 답합니다. 웹 서버처럼 CoreDNS도 Pod 안의 컨테이너에서 실행되며, 다른 애플리케이션들이 Service 이름으로 접속할 주소를 찾도록 돕습니다. [[5]](#ref-5)
 
 <div align="center">
 
-![API Server와 CoreDNS Pod의 관계 및 Service IP 주소 조회](../images/articles/06/06-service-dns-resolution.svg)
+<img src="../images/articles/06/06-service-dns-resolution.svg" alt="API Server와 CoreDNS Pod의 관계 및 Service IP 주소 조회" width="100%" />
 
 </div>
 
@@ -196,7 +196,7 @@ coredns-76f75df574-fghij     10.244.3.4    worker-c
 - `IP`: DNS 서버가 실행되는 CoreDNS Pod 자체의 주소입니다.
 - `NODE`: 해당 Pod가 배정된 Node입니다.
 
-CoreDNS Pod도 교체되면 IP가 바뀔 수 있으므로, 클라이언트는 DNS용 Service인 `kube-dns`의 일정한 주소로 조회를 보냅니다. 일반적인 Pod에는 이 주소가 DNS 서버 주소로 설정됩니다. Fig 2에서 살펴본 주소 조회도 실제로는 이 Service를 거쳐 CoreDNS에 도달합니다. 이제 이 전달 경로까지 포함해 웹 요청이 도착하는 과정을 살펴보겠습니다. [[5]](#ref-5)
+CoreDNS Pod도 교체되면 IP가 바뀔 수 있으므로, 클라이언트는 DNS용 Service인 `kube-dns`의 일정한 주소로 조회를 보냅니다. 일반적인 Pod에는 이 주소가 DNS 서버 주소로 설정됩니다. Fig 2에서 살펴본 주소 조회도 실제로는 이 Service를 거쳐 CoreDNS에 도달합니다. DNS 조회에도 Service의 전달 경로가 사용되는 것입니다. [[5]](#ref-5)
 
 ### 3.2 DNS 조회와 웹 요청의 전달 경로
 
@@ -208,7 +208,7 @@ CoreDNS Pod도 교체되면 IP가 바뀔 수 있으므로, 클라이언트는 DN
 
 <div align="center">
 
-![DNS 조회로 가상 IP를 알아내고 실제 Pod에 요청을 전달하는 과정](../images/articles/06/09-coredns-stable-entry.gif)
+<img src="../images/articles/06/09-coredns-stable-entry.gif" alt="DNS 조회로 가상 IP를 알아내고 실제 Pod에 요청을 전달하는 과정" width="100%" />
 
 </div>
 
@@ -222,11 +222,11 @@ CoreDNS는 `web`의 Service IP인 `10.96.10.20`을 응답합니다. 이 값을 �
 
 ### 3.3 여러 Pod로의 요청 분배
 
-앞에서는 한 웹 Pod로 요청이 도착하는 경로를 따라갔습니다. 그렇다면 같은 Service에 준비된 웹 Pod가 두 개 있다면 어느 쪽이 요청을 받을까요? 클라이언트는 동일한 Service 주소를 사용하고, Node의 전달 규칙이 대상 Pod를 선택합니다.
+앞에서는 한 웹 Pod로 요청이 도착하는 경로를 따라갔습니다. 같은 Service에 준비된 웹 Pod가 두 개 있다면, Node의 전달 규칙이 어느 Pod를 선택하는지에 따라 요청 경로가 나뉩니다.
 
 <div align="center">
 
-![동일한 Service IP로 보낸 두 요청이 서로 다른 Worker Node의 Pod 복제본에 전달되는 과정](../images/articles/06/07-service-packet-path.svg)
+<img src="../images/articles/06/07-service-packet-path.svg" alt="동일한 Service IP로 보낸 두 요청이 서로 다른 Worker Node의 Pod 복제본에 전달되는 과정" width="100%" />
 
 </div>
 
@@ -236,7 +236,7 @@ Fig 4에서는 Deployment가 유지하는 웹 Pod가 Worker Node B와 C에 하�
 
 Fig 4처럼 요청을 나눠 처리할 때는 먼저 요청을 받을 수 있는 Pod를 추린 뒤, 그중 하나를 선택합니다. 기본적인 선택 기준과 이를 바꾸는 설정은 다음과 같습니다.
 
-- **Label과 준비 상태**: 앞의 예시에서는 Service의 Selector와 Label이 일치하고 요청을 받을 준비가 된 Pod가 후보입니다. 두 웹 Pod가 모두 이 조건을 만족하므로 어느 쪽으로도 요청을 보낼 수 있습니다. [[3]](#ref-3)
+- **Label과 준비 상태**: 앞의 예시에서는 Service의 Selector와 Label이 일치하고 요청을 받을 준비가 된 Pod가 후보입니다. [[3]](#ref-3)
 - **새 연결의 대상 선택**: kube-proxy의 `iptables` 또는 `nftables` 방식에서는 기본적으로 후보 중 하나를 무작위로 선택합니다. 따라서 그림의 요청 1과 요청 2가 서로 다른 Pod에 도착할 수도 있고, 같은 Pod에 도착할 수도 있습니다. [[7]](#ref-7)
 - **클라이언트 IP에 따른 대상 유지**: Service에 `sessionAffinity: ClientIP`를 설정하면 같은 클라이언트 IP에서 오는 연결을 같은 Pod로 보내도록 할 수 있습니다. 기본값은 `None`이며, 앞의 매니페스트도 이 기본값을 사용합니다. [[7]](#ref-7)
 
@@ -244,15 +244,15 @@ Fig 4처럼 요청을 나눠 처리할 때는 먼저 요청을 받을 수 있는
 
 ### 3.4 Pod 교체와 준비 상태에 따른 대상 갱신
 
-웹 Pod가 새 IP로 교체되면, Service의 선택 조건을 실제 주소 목록에 다시 반영해야 합니다. 이 일을 하는 **EndpointSlice Controller**는 Control Plane에서 Service와 Pod의 변화를 관찰합니다. Service와 같은 Namespace에서 Selector에 맞는 Pod를 찾고, 그 주소와 준비 상태를 EndpointSlice에 기록합니다. kube-proxy는 API Server를 통해 변경된 정보를 받아 각 Node의 전달 규칙을 갱신합니다. [[8]](#ref-8)
+이 대상 목록을 관리하는 **EndpointSlice Controller**는 Control Plane에서 Service와 Pod의 변화를 관찰합니다. Service와 같은 Namespace에서 Selector에 맞는 Pod를 찾아 주소와 준비 상태를 EndpointSlice에 기록합니다. Pod가 교체될 때 이 정보가 실제 전달 규칙에 어떻게 반영되는지 Fig 5에서 살펴보겠습니다. [[8]](#ref-8)
 
 <div align="center">
 
-![웹 Pod 교체 후 API의 대상 목록과 Node의 전달 규칙이 갱신되는 과정](../images/articles/06/10-service-target-update.gif)
+<img src="../images/articles/06/10-service-target-update.gif" alt="웹 Pod 교체 후 API의 대상 목록과 Node의 전달 규칙이 갱신되는 과정" width="100%" />
 
 </div>
 
-Fig 5에서는 기존 웹 Pod인 `10.244.3.8`이 요청을 처리하다가 종료됩니다. 이후 새 웹 Pod가 `10.244.3.9`를 받고 요청을 받을 준비를 마칩니다. EndpointSlice Controller가 새 주소를 대상 정보에 반영하면, kube-proxy가 이 변경을 받아 Node A의 전달 규칙을 새 Pod 주소로 갱신합니다. 그림은 새 Pod가 준비된 뒤 요청 대상으로 반영되는 흐름을 중심으로 보여 줍니다.
+Fig 5에서는 기존 웹 Pod인 `10.244.3.8`이 요청을 처리하다가 종료됩니다. 이후 새 웹 Pod가 `10.244.3.9`를 받고 요청을 받을 준비를 마칩니다. EndpointSlice Controller가 새 주소를 대상 정보에 반영하면, kube-proxy가 이 변경을 받아 Node A의 전달 규칙을 새 Pod 주소로 갱신합니다.
 
 그동안 CoreDNS가 보관하는 `web`의 Service IP는 `10.96.10.20`으로 유지됩니다. 그림 후반에 클라이언트가 이름을 다시 조회해도 같은 주소를 받습니다. 이미 이 주소를 알고 있는 클라이언트는 그대로 새 요청을 보낼 수 있으며, 갱신된 Node의 규칙이 요청을 `10.244.3.9`로 전달합니다. Pod 교체에 맞춰 바뀌는 것은 클라이언트의 접속 주소가 아니라, 그 뒤에서 요청을 받을 Pod 주소입니다.
 
@@ -260,18 +260,18 @@ Fig 5에서는 기존 웹 Pod인 `10.244.3.8`이 요청을 처리하다가 종�
 
 따라서 이름 조회에 성공하더라도 요청을 처리할 준비가 된 Pod가 있어야 응답을 받을 수 있습니다. 교체 정보가 반영되는 동안에는 요청이 실패할 수 있어, 클라이언트가 다시 연결해 시도해야 할 수도 있습니다. Service의 일정한 주소와 준비된 대상 목록이 함께 갖춰져야 통신이 이어집니다.
 
-지금까지는 클러스터 내부의 클라이언트가 Service에 접근하는 흐름을 살펴봤습니다. 외부 사용자의 요청을 받거나 내부 애플리케이션이 외부 시스템을 호출할 때에는 접근 방법도 달라집니다. Kubernetes는 이를 위해 `spec.type`에 **ClusterIP, NodePort, LoadBalancer, ExternalName** 네 가지 값을 제공하며, 이어서 각 방식의 사용 상황을 비교하겠습니다.
+이 내부 통신 구조를 바탕으로 외부 사용자의 요청을 받거나 외부 시스템에 접근할 수도 있습니다. Kubernetes는 접근 방법을 선택할 수 있도록 `spec.type`에 **ClusterIP, NodePort, LoadBalancer, ExternalName** 네 가지 값을 제공합니다.
 
 ## 4. 클러스터 내부와 외부의 통신을 위한 Service 타입
 
-앞에서 살펴본 내부 통신을 외부까지 넓히려면, 요청을 보내는 클라이언트의 위치와 사용할 접속 주소를 먼저 정해야 합니다. Service의 `spec.type`은 이 접근 방식을 선택하는 필드입니다.
+어떤 타입을 사용할지는 요청을 보내는 쪽과 받는 쪽의 위치에 따라 결정합니다.
 
 - **ClusterIP**: 같은 클러스터의 애플리케이션끼리 Service 이름과 가상 IP로 통신할 때 사용합니다.
 - **NodePort**: 외부 클라이언트가 접근 가능한 Node의 IP와 지정된 포트로 접속할 때 사용합니다.
 - **LoadBalancer**: 외부 로드 밸런서의 주소로 요청을 받아 클러스터의 애플리케이션에 전달할 때 사용합니다.
 - **ExternalName**: 내부 애플리케이션이 외부 시스템의 DNS 이름을 Service 이름의 별칭으로 찾을 때 사용합니다.
 
-먼저 같은 웹 Pod 집합에 내부와 외부에서 접근하는 세 가지 방식을 비교하겠습니다. ClusterIP, NodePort, LoadBalancer 예시에서는 `web` Service의 접근 방법만 달라집니다. ExternalName에서는 요청 방향을 바꾸어, 내부 Pod가 외부 API를 호출하는 상황을 살펴봅니다.
+ClusterIP, NodePort, LoadBalancer는 같은 웹 Pod 집합에 접근하는 방식을 바꾸어 비교하고, ExternalName은 내부 Pod가 외부 API를 호출하는 상황으로 살펴보겠습니다.
 
 ### 4.1 ClusterIP: 내부 Pod 간 통신
 
@@ -281,7 +281,7 @@ Fig 5에서는 기존 웹 Pod인 `10.244.3.8`이 요청을 처리하다가 종�
 
 <div align="center">
 
-![ClusterIP를 통한 내부 요청과 선택된 Pod의 응답 과정](../images/articles/06/03-clusterip-traffic.gif)
+<img src="../images/articles/06/03-clusterip-traffic.gif" alt="ClusterIP를 통한 내부 요청과 선택된 Pod의 응답 과정" width="100%" />
 
 </div>
 
@@ -297,7 +297,7 @@ Fig 6은 두 웹 Pod 중 아래쪽 Pod가 선택된 요청을 보여 줍니다. 
 
 <div align="center">
 
-![내부 Pod의 Service 이름 호출과 외부 클라이언트의 NodePort 접근 경로](../images/articles/06/02-nodeport-paths.svg)
+<img src="../images/articles/06/02-nodeport-paths.svg" alt="내부 Pod의 Service 이름 호출과 외부 클라이언트의 NodePort 접근 경로" width="100%" />
 
 </div>
 
@@ -326,9 +326,7 @@ spec:
 ```
 
 - `spec.type: NodePort`: 내부 접근점에 Node 포트 진입점을 추가합니다.
-- `nodePort: 30080`: 클라이언트가 `Node IP:30080`으로 접근할 때 사용하는 포트입니다.
-
-`port: 80`은 기존 내부 접근점의 포트이고, `nodePort: 30080`은 외부에서 Node에 접속할 때의 포트입니다. 어느 쪽으로 들어오든 `targetPort: 80`에서 실행 중인 웹 서버에 전달됩니다.
+- `nodePort: 30080`: 외부 클라이언트가 `Node IP:30080`으로 접근할 때 사용하는 포트입니다. 내부 클라이언트는 기존 Service의 `port: 80`을 사용하며, 두 경로 모두 `targetPort: 80`의 웹 서버로 이어집니다.
 
 `nodePort`를 생략하면 기본적으로 30000~32767 범위에서 포트를 자동 할당합니다. 이 범위는 클러스터 설정에 따라 달라질 수 있습니다. 외부 클라이언트가 실제로 접속하려면 Node까지의 네트워크 경로와 해당 포트를 허용하는 방화벽 또는 클라우드 보안 그룹도 필요합니다.
 
@@ -366,17 +364,16 @@ spec:
 - `spec.type: LoadBalancer`와 `spec.loadBalancerClass`: 외부 접근점을 요청하고, 이를 AWS Load Balancer Controller가 처리하도록 지정합니다.
 - `aws-load-balancer-nlb-target-type: instance`: NLB가 Node의 NodePort로 요청을 전달하도록 지정합니다.
 - `aws-load-balancer-scheme: internet-facing`: 인터넷에서 접근할 수 있는 NLB를 요청합니다.
-- `port: 80`과 `targetPort: 80`: 이 예시에서 NLB가 요청을 받을 포트는 `80`이며, 최종 목적지인 웹 Pod도 `80`번 포트를 사용합니다. `port`는 클러스터 내부에서 사용하는 Service 포트이기도 합니다.
 
 이 선언에는 `nodePort`가 없지만, `LoadBalancer` Service를 생성하면 Kubernetes가 기본적으로 사용 가능한 NodePort를 자동 할당합니다. 할당된 값은 API Server에 저장되는 Service의 `spec.ports[].nodePort`에 기록됩니다. Fig 8에서는 `30080`이 할당되었다고 가정합니다. [[3]](#ref-3)
 
 AWS Load Balancer Controller는 이 값을 읽고 AWS API를 호출해 NLB를 생성한 뒤, 요청을 전달할 Node들과 포트 `30080`을 등록합니다. AWS에서는 이 전달 대상과 포트를 **Target Group**이라는 리소스로 묶어 관리합니다. 이어서 컨트롤러는 NLB에 요청을 받는 설정인 **리스너**를 80번 포트로 만들고, 등록된 대상으로 전달하도록 연결합니다. 사용자가 AWS 콘솔에 입력할 대상과 포트 설정을 컨트롤러가 대신 작성하는 것입니다. [[10]](#ref-10)
 
-이렇게 Kubernetes가 NodePort를 할당하고 컨트롤러가 그 값을 AWS에 반영하면, NLB에는 요청을 어디로 보낼지에 대한 설정이 준비됩니다. 클라이언트가 요청을 보낼 때에는 NLB가 이미 구성된 수신 포트와 전달 대상 설정에 따라 요청을 보냅니다.
+이제 NLB가 요청을 받을 포트와 전달할 대상이 준비되었습니다. Fig 8에서는 이 설정을 따라 실제 요청이 이동하는 경로를 살펴보겠습니다.
 
 <div align="center">
 
-<img src="../images/articles/06/04-loadbalancer-aws-topology.svg" alt="AWS NLB 뒤의 두 Worker Node로 요청이 분배되어 웹 Pod에 전달되는 구성" width="80%" />
+<img src="../images/articles/06/04-loadbalancer-aws-topology.svg" alt="AWS NLB 뒤의 두 Worker Node로 요청이 분배되어 웹 Pod에 전달되는 구성" width="100%" />
 
 </div>
 
@@ -384,15 +381,13 @@ Fig 8에서는 NLB 뒤에 Worker Node B와 C가 나란히 있으며, 두 Node가
 
 NLB가 Node를 선택한 뒤에는 해당 Node의 Service 전달 규칙이 최종 Pod를 선택합니다. 그림에서는 각 Node 안의 Pod로 이어지는 경로를 보여 주며, 기본 설정에서는 다른 Node의 준비된 Pod로도 전달할 수 있습니다. 클라이언트는 이 대상들을 직접 고를 필요 없이 같은 NLB 주소로 요청합니다.
 
-이 예시의 포트와 설정 주체를 정리하면 다음과 같습니다.
+이 경로에서 각 포트의 역할과 설정 주체는 다음과 같습니다.
 
-| 요청이 도착하는 곳 | 포트 | 설정 주체와 기준 |
-| --- | --- | --- |
-| NLB 리스너 | `80` | 컨트롤러가 Service의 `port`를 읽어 설정 |
-| 로드 밸런서에 등록된 Node | `30080` | Kubernetes가 NodePort를 할당하고, 컨트롤러가 AWS의 전달 포트에 반영 |
-| 웹 Pod | `80` | 웹 서버의 수신 포트이며, Service의 `targetPort`로 지정 |
+- **NLB의 수신 포트 `80`**: AWS Load Balancer Controller가 Service의 `port: 80`을 읽어 리스너에 설정합니다. 클러스터 내부의 Service 포트도 같은 값을 사용합니다.
+- **Node의 수신 포트 `30080`**: Kubernetes가 NodePort로 자동 할당한 값입니다. 컨트롤러가 이 값을 NLB의 전달 포트에 반영합니다.
+- **웹 Pod의 수신 포트 `80`**: 웹 서버가 실행 중인 포트이며, Service의 `targetPort: 80`으로 지정합니다. Node의 전달 규칙은 요청을 이 포트로 보냅니다.
 
-여기서는 컨트롤러가 NLB와 전달 대상 설정을 함께 관리하므로 AWS에서 포트를 별도로 입력하지 않습니다. NLB를 AWS 콘솔이나 Terraform으로 직접 구성하는 경우에는 전달 대상의 포트도 실제 NodePort에 맞춰 설정해야 합니다.
+이처럼 컨트롤러가 전달 포트까지 구성해 줍니다. AWS 콘솔이나 Terraform으로 NLB를 직접 만드는 경우에는 사용자가 실제 NodePort에 맞춰 전달 포트를 설정해야 합니다.
 
 Fig 8과 달리 NLB의 대상을 Pod IP로 등록하는 `ip` 방식에서는 NLB가 Pod로 직접 요청을 전달할 수 있습니다. [[10]](#ref-10) 이처럼 NodePort를 거치지 않는 구현에서는 NodePort 자동 할당을 끄도록 설정할 수도 있습니다. [[11]](#ref-11)
 
@@ -404,7 +399,7 @@ Fig 8과 달리 NLB의 대상을 Pod IP로 등록하는 `ip` 방식에서는 NLB
 
 <div align="center">
 
-![ExternalName의 DNS 별칭 응답과 외부 API로 향하는 요청](../images/articles/06/05-externalname-traffic.gif)
+<img src="../images/articles/06/05-externalname-traffic.gif" alt="ExternalName의 DNS 별칭 응답과 외부 API로 향하는 요청" width="100%" />
 
 </div>
 
@@ -432,17 +427,17 @@ spec:
 - `metadata.name: api`: 클라이언트가 조회할 내부 Service 이름입니다.
 - `spec.type: ExternalName`과 `spec.externalName`: Service 이름을 `api.example.com`이라는 외부 DNS 이름에 연결합니다.
 
-앞의 세 타입이 웹 Pod를 선택할 접근점을 제공했다면, ExternalName은 DNS에서 사용할 이름을 연결합니다. 실제 요청은 조회 결과를 받은 클라이언트가 외부 서버로 직접 보냅니다. [[12]](#ref-12)
-
-접속하려면 외부 서버까지의 네트워크 경로가 있어야 합니다. HTTP나 HTTPS를 사용한다면 이름도 확인해야 합니다. 클라이언트가 사용한 `api`라는 별칭과 외부 서버가 기대하는 호스트 이름이나 인증서 이름이 다르면 요청이 실패할 수 있으므로, 서버와 클라이언트의 설정을 함께 맞춰야 합니다.
+이 선언으로 이름을 연결한 뒤에는 외부 서버까지의 네트워크 경로와 HTTP·HTTPS에서 사용할 이름을 함께 확인해야 합니다. 클라이언트가 사용한 `api`라는 별칭과 외부 서버가 기대하는 호스트 이름이나 인증서 이름이 다르면 요청이 실패할 수 있으므로, 서버와 클라이언트의 설정을 함께 맞춰야 합니다.
 
 외부 서버의 주소를 알아낸 뒤 직접 연결했듯이, 클러스터 내부에서도 가상 IP를 거치지 않고 개별 Pod의 주소를 알아내 연결하는 구성이 필요할 수 있습니다.
 
 ### 4.5 가상 IP 없이 Pod 주소를 제공하는 Headless Service
 
-여러 Pod 중 하나에 요청을 맡기는 대신, 애플리케이션이 연결할 Pod를 직접 선택해야 하는 경우도 있습니다. 예를 들어 데이터베이스의 여러 구성원 중 특정 Pod와 통신하려면 개별 Pod의 주소를 알아야 합니다. **Headless Service**는 이를 위해 가상 IP 없이 대상 주소를 DNS로 알려 주는 구성입니다. `spec.type: ClusterIP`에 `spec.clusterIP: None`을 지정하므로, 앞의 네 타입 중 ClusterIP를 사용하는 방식입니다. [[3]](#ref-3)
+앞의 웹 서버처럼 같은 기능을 제공하는 Pod들은 어느 Pod가 요청을 받아도 처리할 수 있습니다. 반면 여러 데이터베이스 Pod가 함께 동작하면서 특정 구성원에게 데이터를 받아야 한다면, 접속할 Pod를 구분할 수 있어야 합니다. **Headless Service**는 이런 상황에서 가상 IP 대신 대상 Pod들의 주소를 DNS로 알려 주는 구성입니다. `spec.type: ClusterIP`에 `spec.clusterIP: None`을 지정하므로, 앞의 네 타입 중 ClusterIP를 사용하는 방식입니다. [[3]](#ref-3)
 
-앞의 웹 Pod 두 개를 선택하는 Service를 이 방식으로 선언하면 다음과 같습니다.
+예를 들어 데이터베이스를 `db-0`, `db-1`, `db-2`라는 세 Pod로 실행하고, `db-1`과 `db-2`가 `db-0`에서 데이터를 복제하도록 구성했다고 가정해 보겠습니다. 이때 두 Pod는 복제할 데이터를 가진 `db-0`에 정확히 접속해야 합니다. 3장에서 살펴본 StatefulSet에 `db`라는 Headless Service를 연결하면, 같은 Namespace에서 `db-0.db`라는 이름으로 해당 Pod의 주소를 조회할 수 있습니다. Pod가 교체되어 IP가 달라져도 같은 이름으로 새 주소를 알아내 다시 접속할 수 있습니다. [[13]](#ref-13)
+
+또한 애플리케이션이 여러 서버의 주소를 받아 자체 기준으로 접속할 곳을 선택할 때도 사용할 수 있습니다. Headless Service로 준비된 Pod 주소 목록을 알아내고, 애플리케이션이나 통신 라이브러리가 그중 하나를 선택하는 방식입니다. 아래에서는 앞의 웹 Pod 두 개를 그대로 사용해, 이러한 주소 조회와 선택 과정을 살펴보겠습니다. [[3]](#ref-3)
 
 ```yaml
 apiVersion: v1
@@ -462,25 +457,30 @@ spec:
 
 - `spec.clusterIP: None`: Service의 가상 IP를 할당하지 않고, DNS 조회로 대상 Pod 주소를 제공하도록 지정합니다.
 
-두 웹 Pod가 모두 준비되어 있다면, `web-headless`를 조회한 클라이언트는 `10.244.2.8`과 `10.244.3.8`처럼 Pod들의 IP를 응답으로 받습니다. 애플리케이션이나 사용하는 통신 라이브러리가 그중 접속할 주소를 선택해 Pod의 80번 포트로 직접 연결합니다. 이때 kube-proxy가 Service 가상 IP를 Pod IP로 바꾸는 과정은 필요하지 않습니다. [[3]](#ref-3)
+이 선언으로 이름을 조회했을 때 어떤 주소를 받는지 Fig 10에서 살펴보겠습니다. 두 웹 Pod가 모두 요청을 받을 준비가 된 상태를 가정합니다.
+
+<div align="center">
+
+<img src="../images/articles/06/11-headless-service-traffic.gif" alt="Headless Service의 이름 조회로 두 Pod IP를 받은 클라이언트가 하나를 선택해 직접 요청하는 과정" width="100%" />
+
+</div>
+
+Fig 10의 클라이언트 Pod가 `web-headless`의 주소를 조회하면 CoreDNS는 `10.244.2.8`과 `10.244.3.8`이라는 두 웹 Pod의 IP를 응답합니다. 클라이언트가 받은 목록에는 Service의 가상 IP 대신 실제 요청을 받을 Pod들의 주소가 들어 있습니다.
+
+이제 클라이언트 애플리케이션이나 사용하는 통신 라이브러리가 접속할 주소를 선택합니다. 그림에서는 `10.244.2.8`을 선택한 뒤, 파란 경로를 따라 Worker Node B의 웹 Pod 1에 있는 80번 포트로 요청합니다. 클라이언트가 처음부터 Pod IP로 요청하므로 Service 가상 IP를 Pod IP로 바꾸는 과정 없이 해당 Pod에 도달합니다. [[3]](#ref-3)
 
 같은 웹 Pod 집합이라도, 두 구성에서 클라이언트가 받는 주소와 대상을 고르는 주체가 달라집니다.
 
-| 비교 항목 | 일반 ClusterIP 구성 | Headless 구성 |
-| --- | --- | --- |
-| DNS 조회 결과 | Service 가상 IP 하나 | 준비된 대상 Pod들의 IP |
-| 이 예시의 응답 주소 | `10.96.10.20` | `10.244.2.8`, `10.244.3.8` |
-| 접속할 Pod 선택 | Node에 설정된 Service 전달 규칙 | 클라이언트 애플리케이션이나 통신 라이브러리 |
+- **일반 ClusterIP 구성**: DNS가 공통 접근점인 Service 가상 IP를 알려 주고, Node의 전달 규칙이 대상 Pod를 선택합니다.
+- **Headless 구성**: DNS가 준비된 Pod들의 IP를 알려 주고, 클라이언트 애플리케이션이나 통신 라이브러리가 대상을 선택합니다.
 
-Headless도 여기서는 `type: ClusterIP`로 선언합니다. 내부 통신에서 하나의 접근점 뒤로 요청을 분배할지, 개별 Pod 주소를 알려 주어 클라이언트가 선택하게 할지에 따른 구성 차이입니다.
+여러 Pod가 같은 요청을 처리한다면 공통 접근점으로 분배하고, 특정 구성원을 찾아야 하거나 클라이언트가 대상을 선택해야 한다면 개별 주소를 제공하는 방식으로 구성할 수 있습니다.
 
 ## 다음 글로 넘어가기 전에
 
-이번 글에서 다룬 내용은 이렇습니다. Pod끼리는 클러스터 네트워크에서 IP와 포트로 통신하지만, Pod가 교체될 때마다 클라이언트가 새 주소를 추적하는 방식은 관리하기 어렵습니다. Service는 그 앞에 일정한 접근점을 제공합니다. Deployment가 Pod 집합을 유지하는 역할과 Service가 통신할 접근점을 선언하는 역할은 서로 다릅니다.
+이번 글에서 다룬 내용은 이렇습니다. Service는 Pod가 교체되어도 애플리케이션에 접근할 이름을 유지하도록 돕습니다. 일반적인 ClusterIP 구성에서는 DNS로 가상 IP를 찾고, Node의 전달 규칙을 통해 준비된 Pod에 도달합니다. 대상 Pod가 바뀌면 주소 목록과 전달 규칙도 갱신됩니다.
 
-클라이언트는 DNS에서 Service 주소를 알아낸 뒤 연결을 시작합니다. Node의 네트워크 규칙은 그 연결을 준비된 Pod로 전달하며, EndpointSlice Controller와 kube-proxy는 Pod 변화가 이 경로에 반영되도록 대상 정보와 규칙을 갱신합니다. 이름 해석의 성공과 실제 요청 처리의 성공은 구분해서 확인해야 합니다.
-
-접근 방법은 요청을 보내는 쪽과 대상의 위치에 따라 선택합니다. 내부 통신에는 ClusterIP를, 외부 요청의 진입점에는 NodePort나 LoadBalancer를, 외부 시스템의 이름 연결에는 ExternalName을 사용할 수 있습니다.
+클러스터 외부에서 요청을 받으려면 NodePort나 LoadBalancer로 진입점을 마련할 수 있고, 외부 시스템의 이름을 연결하려면 ExternalName을 사용할 수 있습니다. 개별 Pod에 직접 접속할 주소가 필요하다면 Headless 구성이 적합합니다.
 
 Service로 IP와 포트를 통한 접근점을 마련했다면, 여러 웹 애플리케이션을 하나의 사이트로 제공하는 상황도 생각해 볼 수 있습니다. 이때는 같은 주소로 들어온 요청 중 `/web`은 웹 화면으로, `/api`는 상품 정보 API로 나누어 보내야 합니다. 다음 글에서는 Ingress를 통해 요청한 이름과 경로에 따라 알맞은 Service로 연결하고, HTTPS로 안전하게 접속하는 방법을 살펴봅니다.
 
@@ -498,3 +498,4 @@ Service로 IP와 포트를 통한 접근점을 마련했다면, 여러 웹 애�
 - <a id="ref-10"></a>[10] [AWS Load Balancer Controller의 NLB 공식 문서](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/service/nlb/)
 - <a id="ref-11"></a>[11] [LoadBalancer의 NodePort 할당 공식 문서](https://kubernetes.io/docs/concepts/services-networking/service/#load-balancer-nodeport-allocation)
 - <a id="ref-12"></a>[12] [ExternalName 공식 문서](https://kubernetes.io/docs/concepts/services-networking/service/#externalname)
+- <a id="ref-13"></a>[13] [StatefulSet의 안정적인 네트워크 이름 공식 문서](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#stable-network-id)

@@ -1,6 +1,7 @@
 """Concept diagrams: DNS lookup is separate from application traffic."""
 from pathlib import Path
 import base64, html, sys
+from chapter06_figure_style import normalize_svg
 ONLY = set(sys.argv[1:])
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'images/articles/06'
@@ -24,7 +25,7 @@ def node(s,x,y,w,h,name):
     box(s,x,y,w,h,'#eef7f1');icon(s,'node',x+16,y+15);text(s,x+w/2+20,y+45,name,25)
 def finish(s,name):
     if ONLY and name not in ONLY: return
-    (OUT/name).write_text('\n'.join(s+['</g></svg>']))
+    (OUT/name).write_text(normalize_svg('\n'.join(s+['</g></svg>'])))
 # DNS server placement, information updates, and lookup are distinct.
 s=start(900)
 text(s,700,43,'CoreDNS: Service 이름에 해당하는 IP 주소를 알려 주는 서버',28)
@@ -38,7 +39,7 @@ text(s,1150,194,'Deployment: coredns',24)
 text(s,1130,237,'CoreDNS Pod 관리',19)
 node(s,70,445,400,310,'Worker Node A')
 box(s,930,445,400,310,'#eef7f1');icon(s,'node',946,460)
-text(s,1000,485,'Worker Node B',19,anchor='start')
+text(s,1000,478,'Worker',21,anchor='start');text(s,1000,508,'Node B',21,anchor='start')
 box(s,100,525,340,190);icon(s,'pod',115,541)
 text(s,285,575,'클라이언트 Pod',24);text(s,270,625,'웹 애플리케이션',21)
 text(s,270,679,'접속할 이름: web',20)
