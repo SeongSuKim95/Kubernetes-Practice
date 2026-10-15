@@ -7,6 +7,7 @@
 | 3 | `week03-thumbnail.png` | Chap03. Pod와 Deployment | 본문 핵심 제목과 일치, 글자 잘림과 겹침 없음 |
 | 4 | `week04-thumbnail-v2.png` | Chap04. Pod의 실행과 상태 확인 | 이전 제목의 자동 복구 내용을 제거한 수정본 |
 | 5 | `week05-thumbnail.png` | Chap05. Pod의 장애와 자동 복구 | 본문의 부제는 생략하고 핵심 제목을 사용한 신규 이미지 |
+| 6 | `week06-thumbnail.png` | Chap06. Service와 클러스터 통신 | 본문 핵심 제목과 일치, 글자 잘림과 겹침 없음 |
 
 기존 `week04-thumbnail.png`는 이전 버전입니다. 현재 4장에는 v2 파일을 사용합니다.
 
@@ -21,3 +22,7 @@
 5장 참조: `week03-thumbnail.png`
 
 > Create the chapter 5 thumbnail by editing this reference thumbnail from the same series. Preserve the reference background, Kubernetes official logo, layout, colors, aspect ratio, Korean top line "성수 선임과 함께 배우는", and large word "Kubernetes" exactly. Replace ONLY the chapter subtitle with the exact single line "Chap05. Pod의 장애와 자동 복구". Match the existing white text with crisp black outline, placement below Kubernetes, and generous right margin. Keep everything readable at thumbnail size, no text overlap, no new illustrations or elements. Use the same image dimensions as the reference.
+
+6장 참조: `week05-thumbnail.png`
+
+> Create the chapter 6 thumbnail by editing this reference thumbnail from the same series. Preserve the reference background, Kubernetes official logo, layout, colors, aspect ratio, Korean top line "성수 선임과 함께 배우는", and large word "Kubernetes" exactly. Replace ONLY the chapter subtitle with the exact single line "Chap06. Service와 클러스터 통신". Match the existing white text with crisp black outline, placement below Kubernetes, and generous right margin. Keep everything readable at thumbnail size, no text overlap, no new illustrations or elements. Use the same image dimensions as the reference.
