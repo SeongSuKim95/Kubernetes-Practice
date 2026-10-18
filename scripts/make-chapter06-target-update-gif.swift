@@ -94,7 +94,7 @@ func background(_ idx:Int,_ progress:CGFloat){
  let endpointIP = idx >= 3 ? "10.244.3.9":"10.244.3.8"
  let ruleIP = idx > 5 || (idx == 5 && progress >= 1) ? "10.244.3.9":"10.244.3.8"
  let dnsIP="10.244.2.3"
- text("Pod 교체 후 Service 연결 대상의 갱신",30,15,1540,29,ink,true)
+
  box(50,70,1500,280,NSColor(calibratedRed:0.95,green:0.97,blue:1,alpha:1))
  icon("node",65,82);text("Control Plane / API Server가 제공하는 정보",110,85,1380,24,ink,true)
  // Two actual tables: stable Service addresses and the Pods selected behind them.

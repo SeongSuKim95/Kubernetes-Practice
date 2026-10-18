@@ -227,7 +227,7 @@ Throughout this process, CoreDNS keeps the Service IP for `web` as `10.96.10.20`
 
 Readiness matters alongside Labels. In practice, a new Pod's address may appear in an EndpointSlice before the Pod is ready, and kube-proxy considers readiness when determining forwarding targets. If the readiness check from Chapter 4 fails, the Pod is excluded from new connections through an ordinary Service; it can be included again when readiness recovers. [[9]](#ref-9)
 
-A successful name lookup therefore still requires a ready Pod to receive a response. Requests can fail while replacement information propagates, and clients may need to reconnect and retry. Continued communication depends on both a stable Service address and a list of ready targets.
+Resolving a Service name and receiving an application response are separate steps. A regular ClusterIP Service can still resolve to its Service IP even when no Pods are ready. For a request sent to that address to be processed, there must be a ready Pod and a working forwarding path to it. When troubleshooting access, first check whether the name resolves to an address, then check whether a request to that address receives an application response. Requests may also fail while Pod replacement information is being propagated, requiring the client to reconnect.
 
 This internal communication model can also support requests from external users or access to external systems. Kubernetes provides four values for `spec.type` to choose the access method: **ClusterIP, NodePort, LoadBalancer, and ExternalName**.
 
@@ -388,7 +388,7 @@ Just as the client discovered an external server's address and connected directl
 
 Interchangeable web server Pods can handle a request regardless of which one receives it. A group of database Pods that needs data from a particular member, however, must distinguish that member's address. A **Headless Service** supplies target Pod addresses through DNS instead of a virtual IP. It uses `spec.type: ClusterIP` with `spec.clusterIP: None`, so it is a configuration of ClusterIP within the four types above. [[3]](#ref-3)
 
-For example, suppose a database runs as `db-0`, `db-1`, and `db-2`, with `db-1` and `db-2` configured to replicate data from `db-0`. Those two Pods must connect specifically to `db-0`. Associating the StatefulSet introduced in Chapter 3 with a Headless Service named `db` allows that Pod's address to be looked up as `db-0.db` within the same Namespace. Even if replacement changes its IP, the same name can resolve to the new address for reconnection. [[13]](#ref-13)
+When the StatefulSet introduced in Chapter 3 is linked to a Headless Service, a specific Pod can be found using `<pod-name>.<service-name>` in the same Namespace. If replacement changes the Pod IP, clients can look up the same name again and reconnect to the new address. [[13]](#ref-13)
 
 This configuration also suits applications that receive multiple server addresses and choose a destination by their own criteria. A Headless Service provides the ready Pod addresses, and the application or communication library selects one. We will use the same two web Pods to follow this lookup and selection process. [[3]](#ref-3)
 
@@ -423,15 +423,25 @@ Even with the same web Pods, the address returned to the client and the componen
 - **Ordinary ClusterIP configuration**: DNS returns the shared Service virtual IP, and the Node's forwarding rules choose a target Pod.
 - **Headless configuration**: DNS returns ready Pod IPs, and the client application or communication library chooses a target.
 
-When several Pods can handle the same request, a shared access point can distribute it. When a particular member must be reached or the client needs to choose, individual addresses can be provided instead.
+A concrete database example is a MySQL primary and replica configuration. The Kubernetes documentation combines a Headless Service for finding the primary by its individual name with a normal ClusterIP Service for distributing read requests. Fig 11 simplifies this relationship to two Pods. [[14]](#ref-14)
+
+<img src="https://raw.githubusercontent.com/SeongSuKim95/Kubernetes-Practice/main/images/articles/06/en/12-mysql-headless-example.png" alt="Writing and replication through the primary's individual name, compared with reads through a normal Service" width="100%" />
+
+Consider saving an order in an online store. The **primary** on the left records changes, and the **replica** on the right receives and stores those changes. They maintain the same data but have different roles, so the destination of a connection matters.
+
+- **Saving an order:** The application uses the primary's individual name to find that Pod and send a write request. This uses the per-Pod name provided by the Headless Service and StatefulSet.
+- **Replicating data:** The replica resolves the same primary-specific name to establish a replication connection. The orange arrow shows the direction in which the replica connects; changes travel from the primary to the replica over that connection.
+- **Browsing products:** Read requests that can tolerate replication lag use the normal Service's shared read address. In the official example, any ready primary or replica Pod can be selected; the diagram shows the replica being selected.
+
+If replication connections were distributed to arbitrary Pods, a replica could connect to itself. A Headless Service allows the specific primary to be addressed, while a normal Service is suitable when any server ready to handle reads can be used. The application chooses an address according to its purpose, and the configured MySQL replication mechanism copies the data.
 
 ## Before Moving On
 
-Here is what we covered. A Service helps preserve an application's access name even when Pods are replaced. In an ordinary ClusterIP configuration, DNS provides the virtual IP and the Node's forwarding rules lead to a ready Pod. Changes to target Pods update both the address list and forwarding rules.
+Here is what we covered in this chapter. Pods running an application can be replaced, but communication becomes difficult if callers must find a new address each time. A Service separates the address used to access an application from the Pods that actually handle requests, so callers can keep using the same access point as Pods change. Kubernetes tracks destination addresses and readiness so requests can reach Pods that are able to handle them.
 
-NodePort and LoadBalancer provide entry points for external requests, while ExternalName associates a Service name with an external system's name. A Headless configuration is suitable when clients need addresses for direct access to individual Pods.
+When choosing an access method, start with who will send requests and from where. Consider whether reaching any one of several Pods is sufficient or whether the caller needs to connect to a specific Pod. The approaches compared in this chapter provide ways to reach applications according to those needs.
 
-With access through IP addresses and ports in place, consider serving several web applications as one site. Requests arriving at the same address may need to send `/web` to the web interface and `/api` to the product API. In the next chapter, we will use Ingress to direct requests to the appropriate Service by host name and path, and provide secure access with HTTPS.
+With a way to reach each application in place, we can now consider how to offer several features through a single website. The next chapter explores how to direct requests arriving at one entry point to the appropriate application and protect communication between users and the site.
 
 ## References
 
@@ -448,3 +458,4 @@ With access through IP addresses and ports in place, consider serving several we
 - <a id="ref-11"></a>[11] [NodePort allocation for LoadBalancer Services](https://kubernetes.io/docs/concepts/services-networking/service/#load-balancer-nodeport-allocation)
 - <a id="ref-12"></a>[12] [ExternalName Services](https://kubernetes.io/docs/concepts/services-networking/service/#externalname)
 - <a id="ref-13"></a>[13] [StatefulSet stable network identity](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#stable-network-id)
+- <a id="ref-14"></a>[14] [Kubernetes: Run a Replicated Stateful Application](https://kubernetes.io/docs/tasks/run-application/run-replicated-stateful-application/)

@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="771" viewBox="0 0 1400 900">
 <defs><marker id="dns" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="12" refY="6" orient="auto"><path d="M0 0L12 6L0 12Z" fill="#7952b3"/></marker><marker id="traffic" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="12" refY="6" orient="auto"><path d="M0 0L12 6L0 12Z" fill="#2464ce"/></marker><marker id="config" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="12" refY="6" orient="auto"><path d="M0 0L12 6L0 12Z" fill="#7b8798"/></marker></defs>
 <rect width="1400" height="900" fill="#fff"/><g font-family="Apple SD Gothic Neo,Noto Sans KR,sans-serif" fill="#20334d">
-<text x="700" y="43" text-anchor="middle" font-size="30.33" fill="#20334d">CoreDNS: Service 이름에 해당하는 IP 주소를 알려 주는 서버</text>
+
 <rect x="25" y="70" width="1350" height="760" rx="14" fill="#f7faff" stroke="#afc1d2" stroke-width="2"/>
 <text x="80" y="108" text-anchor="start" font-size="24.50" fill="#20334d">Kubernetes Cluster</text>
 <rect x="70" y="135" width="670" height="205" rx="14" fill="#eef7f1" stroke="#afc1d2" stroke-width="2"/>

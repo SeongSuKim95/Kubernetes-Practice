@@ -65,7 +65,7 @@ func route(_ pts:[CGPoint],_ color:NSColor,_ progress:CGFloat,_ square:Bool,_ sh
 }
 func background(_ idx:Int,_ progress:CGFloat){
  NSColor.white.setFill();NSRect(x:0,y:0,width:width,height:height).fill()
- text("Headless Service: Pod 주소 조회와 클라이언트의 대상 선택",40,16,1120,27,ink,true)
+
  card(40,65,530,110,"Service: web-headless","clusterIP: None / selector: app=web","svc")
  card(630,65,530,110,"Deployment: web-app","replicas: 2 / app=web","deploy")
  for (x,y,h,title) in [(40.0,225.0,505.0,"Worker Node A"),(820.0,225.0,240.0,"Worker Node D"),(430.0,500.0,230.0,"Worker Node B"),(820.0,500.0,230.0,"Worker Node C")] {

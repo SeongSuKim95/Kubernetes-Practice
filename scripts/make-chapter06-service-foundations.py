@@ -28,7 +28,7 @@ def finish(s,name):
     (OUT/name).write_text(normalize_svg('\n'.join(s+['</g></svg>'])))
 # DNS server placement, information updates, and lookup are distinct.
 s=start(900)
-text(s,700,43,'CoreDNS: Service 이름에 해당하는 IP 주소를 알려 주는 서버',28)
+
 box(s,25,70,1350,760,'#f7faff');text(s,80,108,'Kubernetes Cluster',22,anchor='start')
 node(s,70,135,670,205,'Control Plane Node')
 box(s,95,205,270,105);text(s,230,244,'API Server',24);text(s,230,282,'Service 정보 조회 창구',18)
@@ -57,7 +57,7 @@ finish(s,'06-service-dns-resolution.svg')
 # Fig 3: two independent connections to one Service, each selecting a replica.
 s=start(1110)
 s.append('<defs><marker id="replica2" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="12" refY="6" orient="auto"><path d="M0 0L12 6L0 12Z" fill="#ba650b"/></marker></defs>')
-text(s,700,42,'같은 Service IP로 보낸 요청이 서로 다른 복제본에 도달',28)
+
 box(s,45,80,590,140,'#fff8e8',True);icon(s,'svc',60,96)
 text(s,360,119,'Service: web',24)
 text(s,340,158,'10.96.10.20:80',24)
@@ -100,7 +100,7 @@ text(s,700,1047,'Fig 4. 하나의 Service IP와 두 Worker Node의 Pod 복제본
 finish(s,'07-service-packet-path.svg')
 # Figure 1: client Node separated from the backend Nodes.
 s=start(790)
-text(s,700,43,'Service의 선언: 접근할 이름과 연결할 Pod 집합',29)
+
 box(s,30,90,370,250,'#edf1ff');icon(s,'node',46,104)
 text(s,233,133,'Worker Node A / Client',23)
 box(s,65,155,300,120);icon(s,'pod',77,167)

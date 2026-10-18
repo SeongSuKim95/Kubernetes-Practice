@@ -181,5 +181,21 @@
   "클라이언트 Pod 1": "Client Pod 1",
   "클라이언트 Pod 1과 Pod 2": "Client Pods 1 and 2",
   "클라이언트 Pod 2": "Client Pod 2",
-  "클라이언트 선택": "Client selection"
+  "클라이언트 선택": "Client selection",
+  "Headless Service의 응용 사례: 데이터베이스 복제": "Headless Service Use Case: Database Replication",
+  "애플리케이션": "Application",
+  "주문 저장 / 상품 조회": "Save orders / Browse products",
+  "주 서버 전용 이름 → 주 서버 IP": "Primary-specific name → Primary IP",
+  "일반 ClusterIP Service": "ClusterIP Service",
+  "읽기용 공통 주소": "Shared read address",
+  "StatefulSet이 관리하는 데이터베이스 Pod": "Database Pods managed by a StatefulSet",
+  "주 서버 Pod": "Primary Pod",
+  "변경 기록 / 읽기 처리": "Record changes / Serve reads",
+  "복제 서버 Pod": "Replica Pod",
+  "변경 사항 복제 / 읽기 처리": "Replicate changes / Serve reads",
+  "주문 생성 / 저장": "Save order",
+  "주 서버 지정 / 쓰기": "Primary / Write",
+  "상품 목록 조회 / 읽기": "Browse products / Read",
+  "주 서버 전용 이름으로 복제 연결": "Replication via the primary name",
+  "Fig 11. Headless Service의 응용 사례: 주 서버 지정과 데이터 복제": "Fig 11. Headless Service Use Case: Primary Access and Replication"
 }

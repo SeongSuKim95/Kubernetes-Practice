@@ -42,7 +42,7 @@
 
   <rect x="820" y="75" width="335" height="155" rx="14" fill="#FFFFFF" stroke="#2563EB" stroke-width="2"/>
   <text x="987.5" y="106" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="16" fill="#1D4ED8" font-weight="600">Ingress Controller</text>
-  <text x="987.5" y="139" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#3B82F6">Ingress의 host·path·secretName 확인</text>
+  <text x="987.5" y="139" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#3B82F6">Ingress의 host, path, secretName 확인</text>
   <text x="987.5" y="166" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#3B82F6">Secret에서 인증서와 개인 키 로드</text>
   <text x="987.5" y="193" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#3B82F6">HTTPS 443 진입점과 Service 경로 설정</text>
 
@@ -55,7 +55,7 @@
   <rect x="45" y="365" width="220" height="125" rx="14" fill="#FFFFFF" stroke="#EA580C" stroke-width="2"/>
   <text x="155" y="397" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#C2410C" font-weight="600">외부 클라이언트</text>
   <text x="155" y="428" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.8" fill="#EA580C">example.com으로 HTTPS 접속</text>
-  <text x="155" y="451" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.8" fill="#EA580C">인증서의 도메인·발급자·유효기간 확인</text>
+  <text x="155" y="451" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.8" fill="#EA580C">인증서의 도메인, 발급자, 유효기간 확인</text>
   <text x="155" y="474" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.3" fill="#9A3412">검증 후 암호화된 연결 수립</text>
 
   <path d="M265 410 H370" fill="none" stroke="#EA580C" stroke-width="2.5" marker-end="url(#arrow-orange)"/>
@@ -67,7 +67,7 @@
   <text x="520" y="382" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="15" fill="#1D4ED8" font-weight="600">Ingress Controller의 HTTPS 진입점</text>
   <text x="520" y="413" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.8" fill="#3B82F6">인증서와 개인 키로 TLS Handshake 수행</text>
   <rect x="395" y="431" width="250" height="30" rx="7" fill="#EFF6FF"/>
-  <text x="520" y="451" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.5" fill="#1D4ED8">tls.crt는 제시 · tls.key는 외부 전송 안 함</text>
+  <text x="520" y="451" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.5" fill="#1D4ED8">tls.crt는 제시 / tls.key는 외부 전송 안 함</text>
   <text x="520" y="486" text-anchor="middle" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="10.8" fill="#3B82F6">TLS 종료 후 HTTP 요청으로 라우팅</text>
 
   <path d="M670 427 H760" fill="none" stroke="#EA580C" stroke-width="2.5" marker-end="url(#arrow-orange)"/>

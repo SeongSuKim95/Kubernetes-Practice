@@ -2,7 +2,9 @@
 import AppKit
 import ImageIO
 import UniformTypeIdentifiers
-let width = 1200, height = 900
+let width = 1200, height = 740
+// Compress layout coordinates, while preserving font and icon sizes.
+let verticalDensity: CGFloat = 0.82
 let ink = NSColor(calibratedRed:0.12,green:0.20,blue:0.30,alpha:1)
 let gray = NSColor(calibratedRed:0.40,green:0.46,blue:0.54,alpha:1)
 let blue = NSColor(calibratedRed:0.12,green:0.36,blue:0.85,alpha:1)
@@ -16,7 +18,7 @@ struct Stage {let sentence:String;let color:NSColor;let paths:[[CGPoint]];let co
 var icons:[String:NSImage]=[:]
 for (key,path) in ["node":"images/characters/refs/node-official.png","pod":"images/characters/refs/pod-official.png","svc":"images/characters/refs/svc.png","deploy":"images/characters/refs/deploy-unlabeled.png","ing":"images/characters/refs/ing.png","k8s":"images/k8s-icon-color.png"] {icons[key]=NSImage(contentsOfFile:path)!}
 func box(_ x:CGFloat,_ y:CGFloat,_ w:CGFloat,_ h:CGFloat,_ fill:NSColor = .white){
- let r=NSBezierPath(roundedRect:CGRect(x:x,y:y,width:w,height:h),xRadius:12,yRadius:12)
+ let r=NSBezierPath(roundedRect:CGRect(x:x,y:y*verticalDensity,width:w,height:h*verticalDensity),xRadius:12,yRadius:12)
  fill.setFill();r.fill();NSColor(calibratedWhite:0.78,alpha:1).setStroke();r.lineWidth=1.5;r.stroke()
 }
 // Flipped graphics context gives all labels and route points the same top-left origin.
@@ -27,15 +29,26 @@ func text(_ value:String,_ x:CGFloat,_ y:CGFloat,_ w:CGFloat,_ size:CGFloat=21,_
  let attrs:[NSAttributedString.Key:Any]=[.font:bold ? NSFont.boldSystemFont(ofSize:size):NSFont.systemFont(ofSize:size),.foregroundColor:color,.paragraphStyle:style]
  let measured=(value as NSString).size(withAttributes:attrs)
  precondition(measured.width <= w+1,"Text exceeds reserved width: \(value) [\(measured.width) > \(w)]")
- labelBounds.append((CGRect(x:x+(w-measured.width)/2,y:y,width:measured.width,height:measured.height),value))
- (value as NSString).draw(in:CGRect(x:x,y:y,width:w,height:size*1.6),withAttributes:attrs)
+ labelBounds.append((CGRect(x:x+(w-measured.width)/2,y:y*verticalDensity,width:measured.width,height:measured.height),value))
+ (value as NSString).draw(in:CGRect(x:x,y:y*verticalDensity,width:w,height:size*1.6),withAttributes:attrs)
 }
-func icon(_ key:String,_ x:CGFloat,_ y:CGFloat){icons[key]!.draw(in:CGRect(x:x,y:y,width:32,height:32),from:.zero,operation:.sourceOver,fraction:1,respectFlipped:true,hints:nil)}
-func card(_ x:CGFloat,_ y:CGFloat,_ w:CGFloat,_ h:CGFloat,_ title:String,_ sub:String,_ key:String?=nil){
- box(x,y,w,h);if let key=key {icon(key,x+10,y+12)}
- text(title,x+(key == nil ? 5:48),y+14,w-(key == nil ? 10:55),21,ink,true);text(sub,x+8,y+53,w-16,18)
+func icon(_ key:String,_ x:CGFloat,_ y:CGFloat){icons[key]!.draw(in:CGRect(x:x,y:y*verticalDensity,width:32,height:32),from:.zero,operation:.sourceOver,fraction:1,respectFlipped:true,hints:nil)}
+// Center the icon/title group and the complete text block within each card.
+func card(_ x:CGFloat,_ y:CGFloat,_ w:CGFloat,_ h:CGFloat,_ title:String,_ sub:String,_ key:String?=nil,_ extra:String?=nil){
+ box(x,y,w,h)
+ let titleWidth=(title as NSString).size(withAttributes:[.font:NSFont.boldSystemFont(ofSize:21)]).width
+ let rowHeight:CGFloat=32, gap:CGFloat=7, subHeight:CGFloat=22
+ let total=rowHeight+gap+subHeight+(extra == nil ? 0:28)
+ let top=y+(h*verticalDensity-total)/2/verticalDensity
+ let groupWidth=titleWidth+(key == nil ? 0:42)
+ let left=x+(w-groupWidth)/2
+ if let key=key {icon(key,left,top)}
+ text(title,left+(key == nil ? 0:42),top+3/verticalDensity,titleWidth+1,21,ink,true)
+ text(sub,x+8,top+(rowHeight+gap)/verticalDensity,w-16,18)
+ if let extra=extra {text(extra,x+8,top+(rowHeight+gap+28)/verticalDensity,w-16,18)}
 }
-func route(_ pts:[CGPoint],_ color:NSColor,_ progress:CGFloat,_ square:Bool,_ showMarker:Bool=true){
+func route(_ originalPoints:[CGPoint],_ color:NSColor,_ progress:CGFloat,_ square:Bool,_ showMarker:Bool=true){
+ let pts=originalPoints.map { CGPoint(x:$0.x,y:$0.y*verticalDensity) }
  for (a,b) in zip(pts,pts.dropFirst()) {
   let segment=CGRect(x:min(a.x,b.x)-3,y:min(a.y,b.y)-3,width:abs(a.x-b.x)+6,height:abs(a.y-b.y)+6)
   for (bounds,label) in labelBounds {precondition(!segment.intersects(bounds),"Route crosses label: \(label)")}
@@ -44,7 +57,7 @@ func route(_ pts:[CGPoint],_ color:NSColor,_ progress:CGFloat,_ square:Bool,_ sh
  color.withAlphaComponent(0.18).setStroke();line.lineWidth=5;line.stroke()
  let lengths=zip(pts,pts.dropFirst()).map{hypot($1.x-$0.x,$1.y-$0.y)}
  var remaining=lengths.reduce(0,+)*progress
- let active=NSBezierPath();active.move(to:pts[0]);var tip=pts[0];var angle:CGFloat=0
+ let active=NSBezierPath();if square {active.setLineDash([7,6],count:2,phase:0)};active.move(to:pts[0]);var tip=pts[0];var angle:CGFloat=0
  for i in 0..<lengths.count {
   let a=pts[i],b=pts[i+1];let fraction=min(1,max(0,remaining/lengths[i]))
   tip=p(a.x+(b.x-a.x)*fraction,a.y+(b.y-a.y)*fraction);active.line(to:tip);angle=atan2(b.y-a.y,b.x-a.x)
@@ -59,13 +72,13 @@ func route(_ pts:[CGPoint],_ color:NSColor,_ progress:CGFloat,_ square:Bool,_ sh
 
 func blank(_ title:String){
  NSColor.white.setFill();NSRect(x:0,y:0,width:width,height:height).fill()
- text(title,30,16,1140,27,ink,true)
+
 }
 func node(_ x:CGFloat,_ y:CGFloat,_ w:CGFloat,_ h:CGFloat,_ name:String){
  box(x,y,w,h,greenBG);icon("node",x+12,y+10);text(name,x+55,y+16,230,21,ink,true)
 }
 func mark(_ x:CGFloat,_ y:CGFloat,_ w:CGFloat,_ h:CGFloat,_ color:NSColor){
- let r=NSBezierPath(roundedRect:CGRect(x:x,y:y,width:w,height:h),xRadius:12,yRadius:12)
+ let r=NSBezierPath(roundedRect:CGRect(x:x,y:y*verticalDensity,width:w,height:h*verticalDensity),xRadius:12,yRadius:12)
  color.setStroke();r.lineWidth=3;r.stroke()
 }
 func classes(){
@@ -96,7 +109,8 @@ let configureProxy=[p(725,240),p(725,285),p(300,285),p(300,429.5),p(280,429.5)]
 let proxyToRules=[p(175,462),p(175,525)]
 let directIn=[p(145,240),p(145,310),p(30,310),p(30,585),p(70,585)]
 let directOut=[p(280,585),p(310,585),p(310,710),p(600,710),p(600,435),p(760,435)]
-let ingressIn=[p(255,185),p(285,185),p(285,320),p(590,320),p(590,505),p(555,505)]
+// Use separate proxy ports: client traffic at the top midpoint, backend traffic at the right midpoint.
+let ingressIn=[p(255,185),p(285,185),p(285,320),p(445,320),p(445,425)]
 let ingressOut=[p(555,505),p(600,505),p(600,620),p(760,620)]
 let stages:[Stage]=[
  Stage(sentence:"1. Controller가 Ingress 규칙을 프록시에 반영합니다.",color:gray,paths:[configureIngress],control:true),
@@ -113,9 +127,8 @@ func traffic(_ idx:Int,_ progress:CGFloat){
  blank("Service 직접 요청과 Ingress 경유 요청")
  box(300,65,860,200,apiBG);text("API Server에 저장된 선언",320,77,820,21,ink,true)
  card(320,120,250,120,"Ingress: web","example.com /web","ing")
- card(600,120,250,120,"Service: web","80 → 8080","svc")
- text("EndpointSlice: Pod 1, 2",605,208,240,18)
- card(880,120,250,120,"Deployment: web","replicas: 2 / app=web","deploy")
+ card(600,120,250,120,"Service: web","80 → 8080","svc","EndpointSlice: Pod 1, 2")
+ card(880,120,250,120,"Deployment: web","replicas: 2","deploy")
  text("외부 클라이언트",35,85,220,21,ink,true)
  box(35,130,220,110,blueBG)
  text("브라우저 / curl",45,143,200,21,ink,true)
@@ -136,9 +149,9 @@ func traffic(_ idx:Int,_ progress:CGFloat){
  text((idx >= 1 || (idx == 0 && progress >= 0.85)) ? "/web → web:80":"규칙 반영 중",345,512,195,18,orange)
  text("프록시 :80",345,548,195,21,orange,true)
  node(625,335,530,160,"Worker Node B")
- card(760,390,350,90,"웹 Pod 1 / app=web","10.244.2.8:8080","pod")
+ card(760,390,350,90,"웹 Pod 1","10.244.2.8:8080","pod")
  node(625,520,530,160,"Worker Node C")
- card(760,575,350,90,"웹 Pod 2 / app=web","10.244.3.8:8080","pod")
+ card(760,575,350,90,"웹 Pod 2","10.244.3.8:8080","pod")
  if idx == 0 {mark(335,425,220,160,gray)}
  if idx == 1 {mark(70,525,210,120,gray)}
  if idx == 3 || idx == 4 {mark(760,390,350,90,blue)}
@@ -162,14 +175,12 @@ func routing(){
  text("Ingress Controller",115,440,210,21,ink,true)
  text("프록시",85,480,230,21,ink,true)
  text("호스트 + 경로 비교",85,525,230,18)
- box(440,270,735,60,apiBG)
- icon("svc",452,286);text("Service: web",495,288,220,21,blue,true)
- icon("deploy",755,286);text("Deployment: web",800,288,345,21,ink,true)
+ card(440,250,345,90,"Service: web","대상 선택 / app=web","svc")
+ card(815,250,360,90,"Deployment: web","Pod 복제본 관리","deploy")
  node(460,350,695,110,"Worker Node B")
  card(825,365,310,80,"웹 Pod / app=web",":8080","pod")
- box(440,515,735,60,apiBG)
- icon("svc",452,531);text("Service: api",495,533,220,21,orange,true)
- icon("deploy",755,531);text("Deployment: api",800,533,345,21,ink,true)
+ card(440,495,345,90,"Service: api","대상 선택 / app=api","svc")
+ card(815,495,360,90,"Deployment: api","Pod 복제본 관리","deploy")
  node(460,595,695,110,"Worker Node C")
  card(825,610,310,80,"API Pod / app=api",":8080","pod")
  route([p(200,220),p(200,420)],blue,1,false,false)
@@ -180,6 +191,93 @@ func routing(){
  text("/api/items",570,672,190,18,orange)
  text("Fig 6. 한 진입점에서 경로별 Service의 Pod로 전달하는 요청",25,790,1150,23,ink,true)
 }
+func overview(){
+ blank("쇼핑몰 요청과 Ingress")
+ box(260,70,915,250,apiBG)
+ text("API Server에 저장된 선언",280,88,875,21,ink,true)
+ card(300,155,270,120,"Ingress","요청 조건과 Service","ing")
+ card(650,155,230,120,"Service","화면 제공용","svc")
+ card(930,155,230,120,"Service","상품 조회용","svc")
+ box(260,390,350,395,greenBG)
+ icon("node",280,735);text("Worker Node A",325,738,260,21,ink,true)
+ box(630,390,545,395,greenBG)
+ icon("node",650,735);text("Worker Node B",705,738,435,21,ink,true)
+ card(300,500,270,110,"Controller Pod","Ingress 프록시","pod")
+ card(650,500,230,110,"Pod","상품 화면 제공","pod")
+ card(930,500,230,110,"Pod","상품 이름과 가격 조회","pod")
+ card(25,500,205,110,"브라우저","쇼핑몰 이용")
+ text("규칙 반영",280,340,150,18,gray)
+ text("대상 Pod",775,340,120,18,gray)
+ text("대상 Pod",1055,340,120,18,gray)
+ text("화면 요청",560,465,100,18,blue,true)
+ text("상품 정보 조회 요청",700,665,330,21,orange,true)
+ route([p(435,275),p(435,500)],gray,1,true,false)
+ route([p(765,275),p(765,500)],gray,1,true,false)
+ route([p(1045,275),p(1045,500)],gray,1,true,false)
+ route([p(230,555),p(300,555)],gray,1,false,false)
+ route([p(570,555),p(650,555)],blue,1,false,false)
+ route([p(435,610),p(435,710),p(1045,710),p(1045,610)],orange,1,false,false)
+ text("Fig 1. 쇼핑몰의 화면 요청과 상품 조회 요청의 분리",25,835,1150,23,ink,true)
+}
+func controllerFlow(){
+ blank("선언의 반영과 실제 요청의 전달")
+ box(25,85,1150,255,apiBG);text("설정 반영",45,102,180,21,gray,true)
+ card(60,175,280,115,"Ingress 선언","호스트 / 경로 / Service","ing")
+ card(460,175,280,115,"API Server","선언 저장")
+ card(860,175,280,115,"Controller","프록시 설정 구성")
+ text("저장",345,190,110,18,gray);text("변경 확인",745,190,110,18,gray)
+ route([p(340,232.5),p(460,232.5)],gray,1,true,false)
+ route([p(740,232.5),p(860,232.5)],gray,1,true,false)
+ box(25,420,1150,290,blueBG);text("애플리케이션 요청",45,438,270,21,orange,true)
+ card(60,530,280,115,"외부 클라이언트","example.com/web")
+ card(460,530,280,115,"프록시","호스트 / 경로 비교")
+ card(860,530,280,115,"웹 Pod","web의 준비된 대상","pod")
+ text("HTTP 요청",345,548,110,18,orange);text("전달",745,548,110,18,orange)
+ route([p(340,587.5),p(460,587.5)],orange,1,false,false)
+ route([p(740,587.5),p(860,587.5)],orange,1,false,false)
+ text("Fig 2. Controller의 설정 반영과 프록시의 요청 처리",25,790,1150,23,ink,true)
+}
+func serviceLink(){
+ blank("Ingress에서 Service를 거쳐 Pod로 이어지는 참조")
+ for x:CGFloat in [30,450,870]{box(x,100,300,595,apiBG)}
+ icon("ing",45,120);text("Ingress",90,125,215,21,ink,true)
+ icon("svc",465,120);text("Service: web",510,125,215,21,ink,true)
+ icon("pod",885,120);text("웹 Pod",930,125,215,21,ink,true)
+ text("host: example.com",45,180,270,18);text("path: /web",45,215,270,18)
+ card(50,285,260,100,"service.name","web")
+ card(470,285,260,100,"metadata.name","web")
+ card(50,440,260,100,"service.port.number","80")
+ card(470,440,260,100,"port → targetPort","80 → 8080")
+ card(890,440,260,100,"애플리케이션 포트","8080")
+ card(470,580,260,90,"selector","app: web")
+ card(890,580,260,90,"labels","app: web")
+ text("이름 참조",335,295,110,18,gray);text("포트 참조",335,450,110,18,gray)
+ text("대상 포트",750,450,110,18,gray);text("Label 선택",750,590,110,18,gray)
+ route([p(310,335),p(470,335)],gray,1,true,false)
+ route([p(310,490),p(470,490)],gray,1,true,false)
+ route([p(730,490),p(890,490)],gray,1,true,false)
+ route([p(730,625),p(890,625)],gray,1,true,false)
+ text("Fig 4. Service 이름과 포트, Pod Label의 연결",25,790,1150,23,ink,true)
+}
+func tlsFlow(){
+ blank("인증서 설정과 HTTPS 요청 전달")
+ box(25,80,1150,285,apiBG);text("인증서 설정",45,95,220,21,gray,true)
+ card(55,170,290,125,"Ingress: web","tls.hosts: example.com","ing","secretName: example-com-tls")
+ card(455,170,290,125,"TLS Secret","tls.crt / tls.key",nil,"example-com-tls")
+ card(855,170,290,125,"Controller","HTTPS 진입점 설정")
+ text("참조",350,187,100,18,gray);text("읽기",750,187,100,18,gray)
+ route([p(345,232.5),p(455,232.5)],gray,1,true,false)
+ route([p(745,232.5),p(855,232.5)],gray,1,true,false)
+ box(25,425,1150,295,blueBG);text("요청 전달",45,440,200,21,orange,true)
+ card(55,540,290,120,"브라우저","인증서 확인")
+ card(455,540,290,120,"HTTPS 진입점","TLS 종료 / web:80 선택")
+ card(855,540,290,120,"웹 Pod","HTTP :8080","pod")
+ text("HTTPS :443",345,495,110,18,orange);text("HTTP",750,555,100,18,orange)
+ route([p(345,600),p(455,600)],orange,1,false,false)
+ route([p(745,600),p(855,600)],orange,1,false,false)
+ text("Fig 7. TLS Secret 설정과 웹 Pod로의 요청 전달",25,790,1150,23,ink,true)
+}
+
 func render(_ draw:()->Void)->CGImage{
  let bitmap=NSBitmapImageRep(bitmapDataPlanes:nil,pixelsWide:width,pixelsHigh:height,bitsPerSample:8,samplesPerPixel:4,hasAlpha:true,isPlanar:false,colorSpaceName:.deviceRGB,bytesPerRow:0,bitsPerPixel:0)!
  let base=NSGraphicsContext(bitmapImageRep:bitmap)!
@@ -193,8 +291,19 @@ func savePNG(_ img:CGImage,_ path:String){
  CGImageDestinationAddImage(dst,img,nil);precondition(CGImageDestinationFinalize(dst))
 }
 let dir="images/articles/07/"
+if CommandLine.arguments.contains("--routing-only") {
+ savePNG(render{routing()},dir+"07-ingress-routing.png")
+ exit(0)
+}
+if !CommandLine.arguments.contains("--traffic-only") {
+savePNG(render{overview()},dir+"01-service-ingress-overview.png")
+if CommandLine.arguments.contains("--overview-only") { exit(0) }
+// Fig 2 is generated by make-chapter07-controller-figure.swift.
+savePNG(render{serviceLink()},dir+"03-ingress-service-link.png")
+savePNG(render{tlsFlow()},dir+"04-ingress-tls.png")
 savePNG(render{classes()},dir+"05-ingress-class.png")
 savePNG(render{routing()},dir+"07-ingress-routing.png")
+}
 let output=dir+"06-service-ingress-traffic.gif"
 let count=30
 let dst=CGImageDestinationCreateWithURL(URL(fileURLWithPath:output) as CFURL,UTType.gif.identifier as CFString,stages.count*count,nil)!
@@ -211,7 +320,7 @@ for (idx,stage) in stages.enumerated(){
    box(30,810,1140,60,stage.color.withAlphaComponent(0.07))
    text(stage.sentence,45,827,1110,20,stage.color,true)
    for i in 0..<stages.count {
-    let r=NSBezierPath(roundedRect:CGRect(x:30+i*128,y:882,width:112,height:5),xRadius:2,yRadius:2)
+    let r=NSBezierPath(roundedRect:CGRect(x:CGFloat(30+i*128),y:882*verticalDensity,width:112,height:5),xRadius:2,yRadius:2)
     (i==idx ? stage.color:NSColor(calibratedWhite:0.88,alpha:1)).setFill();r.fill()
    }
   }
@@ -227,4 +336,4 @@ for i in 0..<CGImageSourceGetCount(source){
  precondition(img.width==width && img.height==height)
  if i%count==count-1 {savePNG(img,"/tmp/ch07-stage-\(i/count+1).png")}
 }
-print("Validated all \(stages.count*count) GIF frames and two diagrams")
+print("Validated all \(stages.count*count) GIF frames and six diagrams")

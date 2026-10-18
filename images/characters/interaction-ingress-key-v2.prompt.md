@@ -1,0 +1,5 @@
+Built-in image_gen edit.
+
+Reference: interaction-ingress-key.png
+
+Edit this existing Ingress mascot illustration. Preserve its identity, navy and gold uniform, hat and routing emblem, body, white background and polished cute 3D style. Redraw BOTH eyes completely: clean natural matching eyes with visible white sclera, exactly one dark brown iris and one round pupil per eye, one small consistent catchlight. Remove the strange multiple blue blobs and oversized reflections. Both eyes should look coherently downward toward the golden key with a relaxed, friendly attentive expression, not cross-eyed or staring at viewer. Make the KEY the visual focus: enlarge the key approximately 30 percent, move it slightly forward from the body, retain its recognizable round bow and clear teeth, bright rich metallic gold with crisp highlights and two small subtle sparkle accents near its bow. Keep both hands holding it naturally without hiding its teeth. Clear separation from face, no overlap of key with face. No text or labels, no new props or characters. Full body uncropped.

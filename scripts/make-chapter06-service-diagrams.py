@@ -33,7 +33,7 @@ def make(kind,figure_number,filename):
  s.append('</defs><rect width="1600" height="1150" fill="white"/><g font-family="Apple SD Gothic Neo,Noto Sans KR,sans-serif">')
  if kind=='ClusterIP':
   s=[part.replace('1600','1200').replace('1150','770') for part in s]
-  text(600,35,'ClusterIP: 클러스터 내부의 Pod 통신',27)
+
   box('svc',40,60,510,100,'#fff8e8','svc');text(315,100,'Service: web / ClusterIP',23);text(295,138,'10.96.10.20:80',23)
   box('deploy',650,60,510,100,'#fff8e8','deploy');text(925,100,'Deployment: web-app',23);text(905,138,'replicas: 2 / app=web',21)
   for x,label in [(50,'Worker Node A'),(690,'Worker Node B')]:
@@ -52,7 +52,7 @@ def make(kind,figure_number,filename):
   return
  if kind=='LoadBalancer':
   s=[part.replace('1600','1100').replace('1150','850') for part in s]
-  text(550,35,'LoadBalancer: NLB에서 여러 Node로의 요청 분배',27)
+
   box('svc',40,60,495,115,'#fff8e8','svc')
   text(305,94,'Service: web / LoadBalancer',23)
   text(287,129,'port: 80 / nodePort: 30080',21)
@@ -86,7 +86,7 @@ def make(kind,figure_number,filename):
   return
  if kind=='ExternalName':
   s=[part.replace('1600','1200').replace('1150','800') for part in s]
-  text(600,35,'ExternalName: DNS 별칭 조회와 외부 API 요청',27)
+
   box('svc',40,60,530,125,'#fff8e8','svc')
   text(325,98,'Service: api / ExternalName',23)
   text(305,136,'api → api.example.com',22)
@@ -116,7 +116,7 @@ def make(kind,figure_number,filename):
   text(600,766,'Fig 9. ExternalName의 DNS 조회와 요청 경로',24)
   OUT.joinpath(filename).write_text(normalize_svg('\n'.join(s+['</g></svg>'])))
   return
- text(800,35,f'{kind}: '+({'ClusterIP':'클러스터 내부에서 사용하는 접근점','NodePort':'Node의 포트로 들어오는 외부 요청','LoadBalancer':'AWS 외부 로드 밸런서로 들어오는 요청','ExternalName':'이름 조회 후 외부 서버에 직접 요청'}[kind]),28)
+
  box('svc',50,70,690,140,'#fff8e8','svc');box('deploy',810,70,740,140,'#fff8e8','deploy')
  text(410,111,'Service: '+('api / ExternalName' if kind=='ExternalName' else 'web / '+kind),24)
  text(395,155,'api → api.example.com' if kind=='ExternalName' else '10.96.10.20:80 / selector: app=web',23)
