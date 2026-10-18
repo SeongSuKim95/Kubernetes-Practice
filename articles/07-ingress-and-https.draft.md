@@ -1,4 +1,4 @@
-# Chap07. Ingress와 HTTPS: 외부 요청을 Service로 연결하기
+# Chap07. Service와 Ingress: HTTP 라우팅과 HTTPS
 
 > 16장 연재의 일곱째 글입니다. 6장에서 비교한 Service 타입을 바탕으로, Ingress가 외부 HTTP와 HTTPS 요청을 Service에 연결하는 방법을 살펴봅니다.
 

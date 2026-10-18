@@ -3,7 +3,7 @@
   GitHub Flavored Markdown; figures use GitHub raw URLs.
 -->
 
-# Chap07. Ingress and HTTPS: Connecting External Requests to Services
+# Chap07. Services and Ingress: HTTP Routing and HTTPS
 
 > This is the seventh chapter in a 16-part series. Building on the Service types compared in Chapter 6, we explore how Ingress connects external HTTP and HTTPS requests to Services.
 
