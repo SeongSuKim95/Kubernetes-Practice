@@ -1,11 +1,11 @@
 """Check publication parity, references, local assets, and complete GIF decoding."""
 from pathlib import Path
-import importlib.util,json,re,xml.etree.ElementTree as ET
+import importlib.util,json,re,sys,xml.etree.ElementTree as ET
 from PIL import Image
 ROOT=Path(__file__).resolve().parents[2]
 spec=importlib.util.spec_from_file_location('pub',Path(__file__).with_name('rebuild-chapters.py'));m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
 assets=set()
-for name in m.NAMES:
+for name in (sys.argv[1:] or m.NAMES):
  draft=m.blocks((ROOT/'articles'/f'{name}.draft.md').read_text())
  trans=json.loads((ROOT/'scripts/publication'/f'{name}.translations.json').read_text())
  for lang in ['ko','en']:
@@ -22,7 +22,7 @@ for name in m.NAMES:
     continue  # Official upstream icons are shared by both languages.
    assert url.startswith(m.RAW),url
    p=ROOT/url[len(m.RAW):];assert p.exists(),p;assets.add(p)
-   if lang=='en' and p.suffix in ['.svg','.gif']:assert '/en/' in str(p),p
+   if lang=='en' and p.suffix in ['.svg','.gif'] and p.name not in ['01-k8s-logo.svg','cka-official.svg']:assert '/en/' in str(p),p
   # Output blocks remain verbatim; executable YAML/Bash values remain unchanged.
   source_code=re.findall(r'```(\w+)\n(.*?)```','\n\n'.join(draft),re.S)
   dest_code=re.findall(r'```(\w+)\n(.*?)```',s,re.S)

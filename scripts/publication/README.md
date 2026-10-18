@@ -1,4 +1,4 @@
-# Chapters 1–5 publication assets
+# Chapters 1–7 publication assets
 
 The drafts are the Korean source of truth. Publication copies use GitHub raw
 image URLs and omit local-preview alignment wrappers. English translations retain
@@ -58,3 +58,25 @@ values and command output, SVG parsing, and complete GIF decoding.
 Chapter 5 uses `ch05-labels.en.json` with the original Python renderers to keep
 English figures synchronized with Korean geometry. The English renderer checks
 component text bounds and writes full-size stage previews under `/tmp`.
+
+## Chapter 7
+
+Build only chapter 7 without rewriting the other publication copies:
+
+```sh
+/usr/bin/python3 scripts/publication/rebuild-chapters.py 07-ingress-and-https
+/usr/bin/python3 scripts/publication/prepare-ch07-english.py
+swift -module-cache-path /tmp/ch07-swift-cache /tmp/ch07-english/make-chapter07-concept-visuals.swift
+swift -module-cache-path /tmp/ch07-swift-cache /tmp/ch07-english/make-chapter07-controller-figure.swift
+swift -module-cache-path /tmp/ch07-swift-cache /tmp/ch07-english/make-chapter07-tls-gif.swift
+swift -module-cache-path /tmp/ch07-swift-cache /tmp/ch07-english/make-chapter07-diagnosis-figure.swift
+/usr/bin/python3 scripts/publication/validate-chapters.py 07-ingress-and-https
+```
+
+The eight figures include six static diagrams and two nine-stage animations.
+`ch07-labels.en.json` translates the original Swift renderers while preserving
+layout, routing, timing, and frame counts. English labels are fitted to their
+reserved widths with a 16px minimum; overflow and arrow/label overlap checks
+remain enabled. The Kubernetes and CKA logos and text-free illustrations are
+shared. Only explanatory certificate placeholders are translated in YAML;
+resource names, field values, commands, and output are preserved.
